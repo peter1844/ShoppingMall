@@ -24,7 +24,7 @@ public class TokenValidationHandler : DelegatingHandler
     {
         IEnumerable<string> authHeaders;
 
-        if (!IsLoginPath(request.RequestUri))
+        if (!IsIgnorePath(request.RequestUri))
         {
             if (request.Headers.TryGetValues("token", out authHeaders))
             {
@@ -47,9 +47,11 @@ public class TokenValidationHandler : DelegatingHandler
         // 回傳request繼續往下處理
         return await base.SendAsync(request, cancellationToken);
     }
-    private bool IsLoginPath(Uri requestUri)
+    private bool IsIgnorePath(Uri requestUri)
     {
-        // 登入路徑
-        return requestUri.AbsolutePath.ToLower().Contains("/api/login");
+        bool path1 = requestUri.AbsolutePath.ToLower().Contains("/api/login");
+        bool path2 = requestUri.AbsolutePath.ToLower().Contains("/api/logout");
+
+        return path1 || path2 ? true : false;
     }
 }

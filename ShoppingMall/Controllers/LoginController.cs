@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using ShoppingMall.Api.Login;
 using ShoppingMall.Models;
@@ -35,6 +36,9 @@ namespace ShoppingMall.Controllers
                 }
                 else
                 {
+                    HttpContext context = HttpContext.Current;
+                    context.Session.Clear();
+
                     return Unauthorized();
                 }
             }

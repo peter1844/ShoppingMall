@@ -19,13 +19,10 @@
     },
     created: function () {
 
-        // 馬上檢查登入是否還有效
-        this.checkLoginStatus();
-
         // 每30秒檢查一次登入狀態
         setInterval(() => {
             this.checkLoginStatus();
-        }, 10000);
+        }, 30000);
     },
     methods: {
         async checkLoginStatus() {
@@ -51,11 +48,24 @@
             })
         },
 
-        logout() {
-            localStorage.removeItem('adminName');
-            localStorage.removeItem('token');
+        async logout() {
 
-            window.location.href = '/Views/Login.aspx';
+            await fetch('/api/logout/logout', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => {
+                if (response.status !== 200) throw new Error(response.status)
+                return response.json()
+            }).then((myJson) => {
+                localStorage.removeItem('adminName');
+                localStorage.removeItem('token');
+
+                window.location.href = '/Views/Login.aspx';
+            }).catch((error) => {
+    
+            })
         }
     },
 });
