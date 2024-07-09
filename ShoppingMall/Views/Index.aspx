@@ -9,8 +9,8 @@
 
     <script src="/js/vue.js" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
-    <script src="/js/Commons/Menu.js" type="text/javascript"></script>
-    <script src="/js/Pages/Index.js" type="text/javascript"></script>
+    <script src="/js/Commons/MenuComponent.js" type="text/javascript"></script>
+    <script src="/js/Pages/IndexComponent.js" type="text/javascript"></script>
 
     <link href="/css/Commons/Menu.css" rel="stylesheet" type="text/css"/>
     <link href="/css/Pages/Index.css" rel="stylesheet" type="text/css"/>

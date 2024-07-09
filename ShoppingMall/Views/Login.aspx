@@ -9,7 +9,7 @@
 
     <script src="/js/vue.js" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
-    <script src="/js/Pages/Login.js" type="text/javascript"></script>
+    <script src="/js/Pages/LoginComponent.js" type="text/javascript"></script>
 
     <link href="/css/Pages/Login.css" rel="stylesheet" type="text/css"/>
 </head>

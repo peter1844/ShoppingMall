@@ -125,10 +125,10 @@
     <Content Include="css\Pages\Login.css" />
     <Content Include="Global.asax" />
     <Content Include="images\Zgmf-X20a.jpg" />
-    <Content Include="js\Commons\Menu.js" />
-    <Content Include="js\Pages\Admin.js" />
-    <Content Include="js\Pages\Index.js" />
-    <Content Include="js\Pages\Login.js" />
+    <Content Include="js\Commons\MenuComponent.js" />
+    <Content Include="js\Pages\AdminComponent.js" />
+    <Content Include="js\Pages\IndexComponent.js" />
+    <Content Include="js\Pages\LoginComponent.js" />
     <Content Include="js\SweetAlert2.js" />
     <Content Include="js\vue.js" />
     <Content Include="Views\Admin.aspx" />
