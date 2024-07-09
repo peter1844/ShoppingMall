@@ -13,6 +13,7 @@ namespace ShoppingMall
 
             // Web API 路由
             config.MapHttpAttributeRoutes();
+            config.MessageHandlers.Add(new TokenValidationHandler());
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
