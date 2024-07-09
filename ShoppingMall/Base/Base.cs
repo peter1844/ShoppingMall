@@ -1,6 +1,7 @@
 ﻿using StackExchange.Redis;
 using System;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Security.Cryptography;
@@ -18,7 +19,6 @@ namespace ShoppingMall.Base
         public Base()
         {
             SQLCONNECTION = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDbConn"].ConnectionString);
-            SQLCONNECTION.Open();
 
             KEY = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["AesKey"]);
             IV = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["AesIv"]);
@@ -32,8 +32,36 @@ namespace ShoppingMall.Base
 
             return Redis;
         }
+        public DataTable ExcuteQueryBySp(string acc, string pwd) 
+        {
+            SqlCommand cmd = new SqlCommand(); //宣告SqlCommand物件
+            cmd.Connection = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDbConn"].ConnectionString); //設定連線字串
+            SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
+            DataTable dt = new DataTable(); //宣告DataTable物件
+
+            cmd.CommandText = "EXEC pro_bkg_getLoginData @acc,@pwd";
+            cmd.Parameters.AddWithValue("@acc", acc);
+            cmd.Parameters.AddWithValue("@pwd", pwd);
+            cmd.Connection.Open(); //開啟資料庫連線
+
+            da.SelectCommand = cmd; //執行
+            da.Fill(dt); //結果存放至DataTable
+
+            cmd.Connection.Close(); //關閉連線
+
+            //int a = dt.Rows.Count;
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    //這邊可以開始處理取回來的操作
+            //    int aa = Convert.ToInt32(dt.Rows[i]["f_id"]);
+            //}
+            //string bb = dt.Rows[0]["f_name"].ToString();
+            return dt;
+        }
+
         public SqlDataReader ExecuteQuery(string sql)
         {
+            SQLCONNECTION.Open();
             SqlCommand command = new SqlCommand(sql, SQLCONNECTION);
             SqlDataReader reader = command.ExecuteReader();
 
@@ -43,6 +71,7 @@ namespace ShoppingMall.Base
         {
             sql += "SELECT SCOPE_IDENTITY();";
 
+            SQLCONNECTION.Open();
             SqlCommand command = new SqlCommand(sql, SQLCONNECTION);
             int newId = Convert.ToInt32(command.ExecuteScalar());
 
@@ -50,6 +79,7 @@ namespace ShoppingMall.Base
         }
         public int ExecuteUpdate(string sql)
         {
+            SQLCONNECTION.Open();
             SqlCommand command = new SqlCommand(sql, SQLCONNECTION);
             int result = command.ExecuteNonQuery();
 

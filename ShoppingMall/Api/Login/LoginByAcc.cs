@@ -1,7 +1,10 @@
-﻿using ShoppingMall.Models;
+﻿using Newtonsoft.Json.Linq;
+using ShoppingMall.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Runtime.Remoting.Contexts;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -9,6 +12,32 @@ namespace ShoppingMall.Api.Login
 {
     public class LoginByAcc : ShoppingMall.Base.Base
     {
+        public List<AdminUserData> TestSp(LoginData loginData) 
+        {
+            List<AdminUserData> adminUserData = new List<AdminUserData>();
+            HttpContext context = HttpContext.Current;
+            DataTable loginResult = ExcuteQueryBySp(loginData.Acc, loginData.Pwd);
+
+            if(loginResult.Rows.Count > 0)
+            {
+                string randCode = GenerateRandomBytes(32);
+                string originToken = $"{loginResult.Rows[0]["f_id"].ToString()},{randCode}";
+                string token = AesEncrypt(originToken);
+
+                // 将对象添加到列表中
+                adminUserData.Add(new AdminUserData
+                {
+                    Name = loginResult.Rows[0]["f_name"].ToString(),
+                    Token = token
+                });
+
+                RedisConnection().GetDatabase().StringSet($"{loginResult.Rows[0]["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(10));
+                context.Session["token"] = token;
+            }
+
+            return adminUserData;
+        }
+
         public List<AdminUserData> CheckLoginByAccountPassword(LoginData loginData)
         {
             string sql = $"SELECT f_id,f_name FROM t_adminUser WHERE f_acc = '{loginData.Acc}' AND f_pwd = HASHBYTES('MD5','{loginData.Pwd}') AND f_enabled = 1";
