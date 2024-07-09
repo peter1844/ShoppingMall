@@ -1,10 +1,9 @@
-﻿using ShoppingMall.Controllers;
+﻿using ShoppingMall.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Web;
-using ShoppingMall.Models;
 
 namespace ShoppingMall.Api.Login
 {
@@ -33,11 +32,21 @@ namespace ShoppingMall.Api.Login
                     Token = token
                 });
 
-                REDIS.GetDatabase().StringSet($"{adminUserReader["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(10));
+                RedisConnection().GetDatabase().StringSet($"{adminUserReader["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(10));
                 context.Session["token"] = token;
             }
 
             return adminUserData;
+        }
+
+        public bool CheckInputData(LoginData loginData)
+        {
+            string rule = @"^[a-zA-Z0-9]+$";
+            
+            if (loginData.Acc.Length > 16 || loginData.Pwd.Length > 16) return false;
+            if (!Regex.IsMatch(loginData.Acc, rule) || !Regex.IsMatch(loginData.Pwd, rule)) return false;
+
+            return true;
         }
     }
 }

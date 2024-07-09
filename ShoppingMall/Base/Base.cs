@@ -10,7 +10,7 @@ namespace ShoppingMall.Base
 {
     public class Base
     {
-        public readonly ConnectionMultiplexer REDIS;
+        public ConnectionMultiplexer Redis;
         private readonly SqlConnection SQLCONNECTION;
         private readonly byte[] KEY;
         private readonly byte[] IV;
@@ -20,10 +20,17 @@ namespace ShoppingMall.Base
             SQLCONNECTION = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDbConn"].ConnectionString);
             SQLCONNECTION.Open();
 
-            REDIS = ConnectionMultiplexer.Connect(ConfigurationManager.ConnectionStrings["MyRedisConn"].ConnectionString);
-
             KEY = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["AesKey"]);
             IV = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["AesIv"]);
+        }
+        public ConnectionMultiplexer RedisConnection()
+        {
+            if (Redis == null || !Redis.IsConnected)
+            {
+                Redis = ConnectionMultiplexer.Connect(ConfigurationManager.ConnectionStrings["MyRedisConn"].ConnectionString);
+            }
+
+            return Redis;
         }
         public SqlDataReader ExecuteQuery(string sql)
         {

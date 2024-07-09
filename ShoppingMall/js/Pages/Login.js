@@ -7,10 +7,10 @@
             </div>
             <div class="login_area" align="left">
                 <label class="login_description">帳號</label><br/><br/>
-                <input type="text" class="login_text" maxlength="14" v-model="account" @keyup.enter="Login"/><br/><br/>
+                <input type="text" class="login_text" maxlength="16" v-model="acc" @keyup.enter="Login"/><br/><br/>
 
                 <label class="login_description">密碼</label><br/><br/>
-                <input type="password" class="login_text" maxlength="14" v-model="password" @keyup.enter="Login"/><br/><br/>
+                <input type="password" class="login_text" maxlength="16" v-model="pwd" @keyup.enter="Login"/><br/><br/>
 
                 <input type="button" class="login_btn" value="登 入" @click="Login">
             </div>
@@ -18,17 +18,14 @@
     `,
     data() {
         return {
-            account: '',
-            password: ''
+            acc: '',
+            pwd: ''
         }
-    },
-    created: function () {
-
     },
     methods: {
         async Login() {
 
-            if (this.account == '' || this.password == '') {
+            if (this.acc == '' || this.pwd == '') {
                 Swal.fire({
                     title: '格式異常',
                     text: '帳號或密碼不得為空',
@@ -40,7 +37,7 @@
             }
 
             const validCharacters = /^[a-zA-Z0-9]+$/;
-            if (!validCharacters.test(this.account) || !validCharacters.test(this.password)) {
+            if (!validCharacters.test(this.acc) || !validCharacters.test(this.pwd)) {
                 Swal.fire({
                     title: '格式異常',
                     text: '帳號或密碼不得有特殊字元',
@@ -52,8 +49,8 @@
             }
 
             const data = {
-                Acc: this.account,
-                Pwd: this.password
+                Acc: this.acc,
+                Pwd: this.pwd
             };
 
             await fetch('/api/login/checkLoginByAccPwd', {

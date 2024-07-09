@@ -54,15 +54,24 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<AdminUserData> adminUserData = loginByAcc.CheckLoginByAccountPassword(loginData);
+                bool inputVaild = loginByAcc.CheckInputData(loginData);
 
-                if (adminUserData.Count == 0)
+                if (inputVaild)
                 {
-                    return Unauthorized();
+                    List<AdminUserData> adminUserData = loginByAcc.CheckLoginByAccountPassword(loginData);
+
+                    if (adminUserData.Count == 0)
+                    {
+                        return Unauthorized();
+                    }
+                    else
+                    {
+                        return Ok(adminUserData);
+                    }
                 }
-                else
+                else 
                 {
-                    return Ok(adminUserData);
+                    return InternalServerError();
                 }
             }
             catch (Exception ex)

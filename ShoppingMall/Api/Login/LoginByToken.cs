@@ -14,7 +14,7 @@ namespace ShoppingMall.Api.Login
             HttpRequest request = HttpContext.Current.Request;
             string token = request.Headers["token"];
 
-            if (token == null || token == "null")
+            if (token == null)
             {
                 return false;
             }
@@ -31,7 +31,7 @@ namespace ShoppingMall.Api.Login
 
             if (tokenData.Length != 2) { return false; }
 
-            bool isVaild = REDIS.GetDatabase().StringGet($"{tokenData[0]}_token") == token ? true : false;
+            bool isVaild = RedisConnection().GetDatabase().StringGet($"{tokenData[0]}_token") == token ? true : false;
 
             return isVaild;
         }
