@@ -119,16 +119,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="css\Commons\Menu.css" />
-    <Content Include="css\Pages\Admin.css" />
-    <Content Include="css\Pages\Index.css" />
-    <Content Include="css\Pages\Login.css" />
+    <Content Include="css\Commons\menu.css" />
+    <Content Include="css\Pages\admin.css" />
+    <Content Include="css\Pages\index.css" />
+    <Content Include="css\Pages\login.css" />
     <Content Include="Global.asax" />
     <Content Include="images\Zgmf-X20a.jpg" />
-    <Content Include="js\Commons\MenuComponent.js" />
-    <Content Include="js\Pages\AdminComponent.js" />
-    <Content Include="js\Pages\IndexComponent.js" />
-    <Content Include="js\Pages\LoginComponent.js" />
+    <Content Include="js\Commons\menuComponent.js" />
+    <Content Include="js\Pages\adminComponent.js" />
+    <Content Include="js\Pages\indexComponent.js" />
+    <Content Include="js\Pages\loginComponent.js" />
     <Content Include="js\SweetAlert2.js" />
     <Content Include="js\vue.js" />
     <Content Include="Views\Admin.aspx" />

@@ -10,10 +10,10 @@
     <script src="/js/vue.js" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
     <script src="/js/Commons/MenuComponent.js" type="text/javascript"></script>
-    <script src="/js/Pages/AdminComponent.js" type="text/javascript"></script>
+    <script src="/js/Pages/adminComponent.js" type="text/javascript"></script>
 
-    <link href="/css/Commons/Menu.css" rel="stylesheet" type="text/css"/>
-    <link href="/css/Pages/Admin.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/Commons/menu.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/Pages/admin.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <div id="app">

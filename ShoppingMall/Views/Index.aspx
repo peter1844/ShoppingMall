@@ -9,11 +9,11 @@
 
     <script src="/js/vue.js" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
-    <script src="/js/Commons/MenuComponent.js" type="text/javascript"></script>
-    <script src="/js/Pages/IndexComponent.js" type="text/javascript"></script>
+    <script src="/js/Commons/menuComponent.js" type="text/javascript"></script>
+    <script src="/js/Pages/indexComponent.js" type="text/javascript"></script>
 
-    <link href="/css/Commons/Menu.css" rel="stylesheet" type="text/css"/>
-    <link href="/css/Pages/Index.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/Commons/menu.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/Pages/index.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <div id="app">
