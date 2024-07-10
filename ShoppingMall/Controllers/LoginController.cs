@@ -55,8 +55,7 @@ namespace ShoppingMall.Controllers
 
                 if (inputVaild)
                 {
-                    List<AdminUserData> adminUserData = loginByAcc.TestSp(loginData);
-                    //List<AdminUserData> adminUserData = loginByAcc.CheckLoginByAccountPassword(loginData);
+                    List<AdminUserData> adminUserData = loginByAcc.CheckLoginByAccountPassword(loginData);
 
                     if (adminUserData.Count == 0)
                     {

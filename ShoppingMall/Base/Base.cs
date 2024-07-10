@@ -1,5 +1,6 @@
 ﻿using StackExchange.Redis;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -18,8 +19,6 @@ namespace ShoppingMall.Base
 
         public Base()
         {
-            SQLCONNECTION = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDbConn"].ConnectionString);
-
             KEY = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["AesKey"]);
             IV = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["AesIv"]);
         }
@@ -32,51 +31,42 @@ namespace ShoppingMall.Base
 
             return Redis;
         }
-        public DataTable ExcuteQueryBySp(string acc, string pwd) 
+        public DataTable ExcuteSp(string spName, Dictionary<string, object> param) 
         {
             SqlCommand cmd = new SqlCommand(); //宣告SqlCommand物件
             cmd.Connection = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDbConn"].ConnectionString); //設定連線字串
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
 
-            cmd.CommandText = "EXEC pro_bkg_getLoginData @acc,@pwd";
-            cmd.Parameters.AddWithValue("@acc", acc);
-            cmd.Parameters.AddWithValue("@pwd", pwd);
-            cmd.Connection.Open(); //開啟資料庫連線
+            try
+            {
+                string commandText = $"EXEC {spName} ";
+                int dataCount = 0;
 
-            da.SelectCommand = cmd; //執行
-            da.Fill(dt); //結果存放至DataTable
+                foreach (var data in param)
+                {
+                    commandText += dataCount == 0 ? $"@{data.Key}" : $",@{data.Key}";
+                    cmd.Parameters.AddWithValue($"@{data.Key}", data.Value);
 
-            cmd.Connection.Close(); //關閉連線
+                    dataCount++;
+                }
 
-            return dt;
-        }
+                cmd.CommandText = commandText;
+                cmd.Connection.Open(); //開啟資料庫連線
 
-        public SqlDataReader ExecuteQuery(string sql)
-        {
-            SQLCONNECTION.Open();
-            SqlCommand command = new SqlCommand(sql, SQLCONNECTION);
-            SqlDataReader reader = command.ExecuteReader();
+                da.SelectCommand = cmd; //執行
+                da.Fill(dt); //結果存放至DataTable
 
-            return reader;
-        }
-        public int ExecuteInsert(string sql)
-        {
-            sql += "SELECT SCOPE_IDENTITY();";
-
-            SQLCONNECTION.Open();
-            SqlCommand command = new SqlCommand(sql, SQLCONNECTION);
-            int newId = Convert.ToInt32(command.ExecuteScalar());
-
-            return newId;
-        }
-        public int ExecuteUpdate(string sql)
-        {
-            SQLCONNECTION.Open();
-            SqlCommand command = new SqlCommand(sql, SQLCONNECTION);
-            int result = command.ExecuteNonQuery();
-
-            return result;
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                cmd.Connection.Close(); //關閉連線
+            }
         }
         public string AesEncrypt(string encryptData)
         {
