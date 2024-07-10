@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingMall", "ShoppingMall\ShoppingMall.csproj", "{654E3AC8-3F32-4B4B-8EF7-E9203B3E4E3B}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ShoppingMall.DB", "ShoppingMall.DB\ShoppingMall.DB.sqlproj", "{B40A4AAE-9DCF-4ACC-8B29-E919ACC2BA8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,12 @@ Global
 		{654E3AC8-3F32-4B4B-8EF7-E9203B3E4E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{654E3AC8-3F32-4B4B-8EF7-E9203B3E4E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{654E3AC8-3F32-4B4B-8EF7-E9203B3E4E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B40A4AAE-9DCF-4ACC-8B29-E919ACC2BA8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B40A4AAE-9DCF-4ACC-8B29-E919ACC2BA8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B40A4AAE-9DCF-4ACC-8B29-E919ACC2BA8F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B40A4AAE-9DCF-4ACC-8B29-E919ACC2BA8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B40A4AAE-9DCF-4ACC-8B29-E919ACC2BA8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B40A4AAE-9DCF-4ACC-8B29-E919ACC2BA8F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
