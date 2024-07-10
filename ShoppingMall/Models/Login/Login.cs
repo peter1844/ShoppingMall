@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ShoppingMall.Models
+namespace ShoppingMall.Models.Login
 {
-    public class LoginData
+    public class LoginDataDto
     {
         public string Acc { get; set; }
         public string Pwd { get; set; }

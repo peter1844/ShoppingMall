@@ -1,4 +1,4 @@
-﻿using ShoppingMall.Models;
+﻿using ShoppingMall.Models.Login;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,9 +10,9 @@ namespace ShoppingMall.Api.Login
 {
     public class LoginByAcc : ShoppingMall.Base.Base
     {
-        public List<AdminUserData> CheckLoginByAccountPassword(LoginData loginData)
+        public List<AdminUserDataDtoResponse> CheckLoginByAccountPassword(LoginDataDto loginData)
         {
-            List<AdminUserData> adminUserData = new List<AdminUserData>();
+            List<AdminUserDataDtoResponse> adminUserData = new List<AdminUserDataDtoResponse>();
             HttpContext context = HttpContext.Current;
 
             try
@@ -32,13 +32,13 @@ namespace ShoppingMall.Api.Login
                     string token = AesEncrypt(originToken);
 
                     // 将对象添加到列表中
-                    adminUserData.Add(new AdminUserData
+                    adminUserData.Add(new AdminUserDataDtoResponse
                     {
                         Name = loginResult.Rows[0]["f_name"].ToString(),
                         Token = token
                     });
 
-                    RedisConnection().GetDatabase().StringSet($"{loginResult.Rows[0]["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(10));
+                    RedisConnection().GetDatabase().StringSet($"{loginResult.Rows[0]["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(20));
                     context.Session["token"] = token;
                 }
 
@@ -49,7 +49,7 @@ namespace ShoppingMall.Api.Login
                 throw;
             }
         }
-        public bool CheckInputData(LoginData loginData)
+        public bool CheckInputData(LoginDataDto loginData)
         {
             string rule = @"^[a-zA-Z0-9]+$";
 

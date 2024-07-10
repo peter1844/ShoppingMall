@@ -12,7 +12,7 @@ namespace ShoppingMall.Base
 {
     public class Base
     {
-        public ConnectionMultiplexer Redis;
+        private ConnectionMultiplexer Redis;
         private readonly SqlConnection SQLCONNECTION;
         private readonly byte[] KEY;
         private readonly byte[] IV;

@@ -1,5 +1,5 @@
 ﻿using ShoppingMall.Api.Login;
-using ShoppingMall.Models;
+using ShoppingMall.Models.Login;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -47,7 +47,7 @@ namespace ShoppingMall.Controllers
 
         [Route("checkLoginByAccPwd")]
         [HttpPost]
-        public IHttpActionResult LoginByAccountPassword([FromBody] LoginData loginData)
+        public IHttpActionResult LoginByAccountPassword([FromBody] LoginDataDto loginData)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace ShoppingMall.Controllers
 
                 if (inputVaild)
                 {
-                    List<AdminUserData> adminUserData = loginByAcc.CheckLoginByAccountPassword(loginData);
+                    List<AdminUserDataDtoResponse> adminUserData = loginByAcc.CheckLoginByAccountPassword(loginData);
 
                     if (adminUserData.Count == 0)
                     {

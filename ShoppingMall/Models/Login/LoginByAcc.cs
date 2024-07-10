@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ShoppingMall.Models
+namespace ShoppingMall.Models.Login
 {
-    public class AdminUserData
+    public class AdminUserDataDtoResponse
     {
         public string Name { get; set; }
         public string Token { get; set; }
