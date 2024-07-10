@@ -1,12 +1,9 @@
-﻿using System;
+﻿using ShoppingMall.Api.Login;
+using ShoppingMall.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using ShoppingMall.Api.Login;
-using ShoppingMall.Models;
 
 namespace ShoppingMall.Controllers
 {
@@ -70,7 +67,7 @@ namespace ShoppingMall.Controllers
                         return Ok(adminUserData);
                     }
                 }
-                else 
+                else
                 {
                     return InternalServerError();
                 }

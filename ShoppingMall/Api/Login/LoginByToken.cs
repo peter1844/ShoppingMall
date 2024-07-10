@@ -1,9 +1,4 @@
-﻿using ShoppingMall.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Net.Http;
-using System.Web;
+﻿using System.Web;
 
 namespace ShoppingMall.Api.Login
 {

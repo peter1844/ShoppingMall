@@ -49,13 +49,6 @@ namespace ShoppingMall.Base
 
             cmd.Connection.Close(); //關閉連線
 
-            //int a = dt.Rows.Count;
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //{
-            //    //這邊可以開始處理取回來的操作
-            //    int aa = Convert.ToInt32(dt.Rows[i]["f_id"]);
-            //}
-            //string bb = dt.Rows[0]["f_name"].ToString();
             return dt;
         }
 
