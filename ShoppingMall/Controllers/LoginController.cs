@@ -73,7 +73,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                //return Ok(new ExceptionData { StatusErrorCode = Convert.ToInt32(ex.Message)});
             }
         }
     }
