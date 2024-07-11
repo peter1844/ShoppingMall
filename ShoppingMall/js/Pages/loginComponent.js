@@ -24,6 +24,7 @@
     },
     methods: {
         async Login() {
+            //console.log(this.$t("greeting"));
 
             if (this.acc == '' || this.pwd == '') {
                 Swal.fire({

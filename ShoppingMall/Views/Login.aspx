@@ -8,7 +8,11 @@
     <title>後臺管理系統</title>
 
     <script src="/js/vue.js" type="text/javascript"></script>
+    <script src="/js/vue-i18n.js" type="text/javascript"></script>
+    <script src="/js/Lang/tw.js" type="text/javascript"></script>
+    <script src="/js/Lang/en.js" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
+
     <script src="/js/pages/loginComponent.js" type="text/javascript"></script>
 
     <link href="/css/pages/login.css" rel="stylesheet" type="text/css"/>
@@ -16,12 +20,22 @@
 <body>
     <div id="app">
         <login></login>
+        <div>{{ $t('greeting') }}</div>
     </div>
 </body>
 </html>
 
 <script>
+    const i18n = new VueI18n({
+        locale: localStorage.getItem("lang") ?? 'tw',
+        messages: {
+            en: en,
+            tw: tw
+        }
+    });
+
     new Vue({
         el: '#app',
+        i18n
     });
 </script>

@@ -126,10 +126,13 @@
     <Content Include="Global.asax" />
     <Content Include="images\Zgmf-X20a.jpg" />
     <Content Include="js\Commons\menuComponent.js" />
+    <Content Include="js\Lang\tw.js" />
+    <Content Include="js\Lang\en.js" />
     <Content Include="js\Pages\adminComponent.js" />
     <Content Include="js\Pages\indexComponent.js" />
     <Content Include="js\Pages\loginComponent.js" />
     <Content Include="js\SweetAlert2.js" />
+    <Content Include="js\vue-i18n.js" />
     <Content Include="js\vue.js" />
     <Content Include="Views\Admin.aspx" />
     <Content Include="Views\Index.aspx" />
