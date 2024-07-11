@@ -1,4 +1,5 @@
-﻿using ShoppingMall.Models.Login;
+﻿using ShoppingMall.Models.Common;
+using ShoppingMall.Models.Login;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,30 +16,34 @@ namespace ShoppingMall.Api.Login
             List<AdminUserDataDtoResponse> adminUserData = new List<AdminUserDataDtoResponse>();
             HttpContext context = HttpContext.Current;
 
+            SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
+            DataTable dt = new DataTable(); //宣告DataTable物件
+            SqlCommand command = MsSqlConnection();
+
             try
             {
-                Dictionary<string, object> spData= new Dictionary<string, object>
-                {
-                    { "acc", loginData.Acc },
-                    { "pwd", loginData.Pwd }
-                };
+                command.CommandText = "EXE1C pro_bkg_getLoginData @acc,@pwd";
+                command.Parameters.AddWithValue($"@acc", loginData.Acc);
+                command.Parameters.AddWithValue($"@pwd", loginData.Pwd);
+                command.Connection.Open();
 
-                DataTable loginResult = ExcuteSp("pro_bkg_getLoginData", spData);
+                da.SelectCommand = command;
+                da.Fill(dt); 
 
-                if (loginResult.Rows.Count > 0)
+                if (dt.Rows.Count > 0)
                 {
                     string randCode = GenerateRandomBytes(32);
-                    string originToken = $"{loginResult.Rows[0]["f_id"].ToString()},{randCode}";
+                    string originToken = $"{dt.Rows[0]["f_id"].ToString()},{randCode}";
                     string token = AesEncrypt(originToken);
 
                     // 将对象添加到列表中
                     adminUserData.Add(new AdminUserDataDtoResponse
                     {
-                        Name = loginResult.Rows[0]["f_name"].ToString(),
+                        Name = dt.Rows[0]["f_name"].ToString(),
                         Token = token
                     });
 
-                    RedisConnection().GetDatabase().StringSet($"{loginResult.Rows[0]["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(20));
+                    RedisConnection().GetDatabase().StringSet($"{dt.Rows[0]["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(20));
                     context.Session["token"] = token;
                 }
 
@@ -46,7 +51,11 @@ namespace ShoppingMall.Api.Login
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception("A102");
+            }
+            finally
+            {
+                command.Connection.Close(); //關閉連線
             }
         }
         public bool CheckInputData(LoginDataDto loginData)

@@ -60,17 +60,29 @@
                 },
                 body: JSON.stringify(data)
             }).then((response) => {
-                if (response.status !== 200) throw new Error(response.status)
+                if (response.status !== 200) throw new Error(response.json())
                 return response.json()
             }).then((myJson) => {
-                localStorage.setItem('adminName', myJson[0].Name);
-                localStorage.setItem('token', myJson[0].Token);
 
-                window.location.href = '/Views/Index.aspx';
+                if (myJson.StatusErrorCode === undefined) {
+                    localStorage.setItem('adminName', myJson[0].Name);
+                    localStorage.setItem('token', myJson[0].Token);
+
+                    window.location.href = '/Views/Index.aspx';
+                } else {
+                    Swal.fire({
+                        title: '登入失敗',
+                        text: myJson.StatusErrorCode,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+                }
+
             }).catch((error) => {
+
                 Swal.fire({
                     title: '登入失敗',
-                    text: '請確認帳號狀態及帳號密碼是否有誤',
+                    text: '系統異常，請稍後再試',
                     icon: "error",
                     confirmButtonText: '確認'
                 })

@@ -12,6 +12,7 @@ namespace ShoppingMall.Base
 {
     public class Base
     {
+        private SqlCommand Command;
         private ConnectionMultiplexer Redis;
         private readonly SqlConnection SQLCONNECTION;
         private readonly byte[] KEY;
@@ -31,42 +32,12 @@ namespace ShoppingMall.Base
 
             return Redis;
         }
-        public DataTable ExcuteSp(string spName, Dictionary<string, object> param) 
+        public SqlCommand MsSqlConnection() 
         {
-            SqlCommand cmd = new SqlCommand(); //宣告SqlCommand物件
-            cmd.Connection = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDbConn"].ConnectionString); //設定連線字串
-            SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
-            DataTable dt = new DataTable(); //宣告DataTable物件
+            Command = new SqlCommand(); //宣告SqlCommand物件
+            Command.Connection = new SqlConnection(ConfigurationManager.ConnectionStrings["MyDbConn"].ConnectionString); //設定連線字串
 
-            try
-            {
-                string commandText = $"EXEC {spName} ";
-                int dataCount = 0;
-
-                foreach (var data in param)
-                {
-                    commandText += dataCount == 0 ? $"@{data.Key}" : $",@{data.Key}";
-                    cmd.Parameters.AddWithValue($"@{data.Key}", data.Value);
-
-                    dataCount++;
-                }
-
-                cmd.CommandText = commandText;
-                cmd.Connection.Open(); //開啟資料庫連線
-
-                da.SelectCommand = cmd; //執行
-                da.Fill(dt); //結果存放至DataTable
-
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            finally
-            {
-                cmd.Connection.Close(); //關閉連線
-            }
+            return Command;
         }
         public string AesEncrypt(string encryptData)
         {

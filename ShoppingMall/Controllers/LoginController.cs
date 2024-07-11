@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Http;
+using ShoppingMall.Models.Common;
 
 namespace ShoppingMall.Controllers
 {
@@ -52,14 +53,14 @@ namespace ShoppingMall.Controllers
             try
             {
                 bool inputVaild = loginByAcc.CheckInputData(loginData);
-
+                
                 if (inputVaild)
                 {
                     List<AdminUserDataDtoResponse> adminUserData = loginByAcc.CheckLoginByAccountPassword(loginData);
 
                     if (adminUserData.Count == 0)
                     {
-                        return Unauthorized();
+                        return Ok(new ExceptionData { StatusErrorCode = "A100"});
                     }
                     else
                     {
@@ -68,12 +69,12 @@ namespace ShoppingMall.Controllers
                 }
                 else
                 {
-                    return InternalServerError();
+                    return Ok(new ExceptionData { StatusErrorCode = "A101"});
                 }
             }
             catch (Exception ex)
             {
-                //return Ok(new ExceptionData { StatusErrorCode = Convert.ToInt32(ex.Message)});
+                return Ok(new ExceptionData { StatusErrorCode = ex.Message});
             }
         }
     }
