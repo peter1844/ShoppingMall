@@ -37,12 +37,12 @@ namespace ShoppingMall.Controllers
                     HttpContext context = HttpContext.Current;
                     context.Session.Clear();
 
-                    return Unauthorized();
+                    return Ok(new ExceptionData { StatusErrorCode = "A103"});
                 }
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return Ok(new ExceptionData { StatusErrorCode = "A104"});
             }
         }
 

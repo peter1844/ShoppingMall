@@ -28,7 +28,6 @@
 
             if (this.acc == '' || this.pwd == '') {
                 Swal.fire({
-                    title: '格式異常',
                     text: '帳號或密碼不得為空',
                     icon: "error",
                     confirmButtonText: '確認'
@@ -40,7 +39,6 @@
             const validCharacters = /^[a-zA-Z0-9]+$/;
             if (!validCharacters.test(this.acc) || !validCharacters.test(this.pwd)) {
                 Swal.fire({
-                    title: '格式異常',
                     text: '帳號或密碼不得有特殊字元',
                     icon: "error",
                     confirmButtonText: '確認'
@@ -61,7 +59,6 @@
                 },
                 body: JSON.stringify(data)
             }).then((response) => {
-                if (response.status !== 200) throw new Error(response.json())
                 return response.json()
             }).then((myJson) => {
 
@@ -72,7 +69,6 @@
                     window.location.href = '/Views/Index.aspx';
                 } else {
                     Swal.fire({
-                        title: '登入失敗',
                         text: myJson.StatusErrorCode,
                         icon: "error",
                         confirmButtonText: '確認'
@@ -82,7 +78,6 @@
             }).catch((error) => {
 
                 Swal.fire({
-                    title: '登入失敗',
                     text: '系統異常，請稍後再試',
                     icon: "error",
                     confirmButtonText: '確認'

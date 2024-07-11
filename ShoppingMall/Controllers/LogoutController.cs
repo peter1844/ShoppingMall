@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Http;
 using ShoppingMall.Api.Logout;
+using ShoppingMall.Models.Common;
 
 namespace ShoppingMall.Controllers
 {
@@ -26,7 +27,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return Ok(new ExceptionData { StatusErrorCode = "A105"});
             }
         }
     }

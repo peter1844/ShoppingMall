@@ -33,18 +33,28 @@
                     'Content-Type': 'application/json',
                 },
             }).then((response) => {
-                if (response.status !== 200) throw new Error(response.status)
                 return response.json()
             }).then((myJson) => {
-                console.log('Is loging')
+
+                if (myJson.StatusErrorCode === undefined) {
+                    console.log('Is loging')
+                } else {
+                    Swal.fire({
+                        text: myJson.StatusErrorCode,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        window.location.href = '/Views/Login.aspx';
+                    });
+                }
+
             }).catch((error) => {
+
                 Swal.fire({
-                    text: '登入無效或過期，請重新登入',
+                    text: '系統異常，請稍後再試',
                     icon: "error",
                     confirmButtonText: '確認'
-                }).then((result) => {
-                    window.location.href = '/Views/Login.aspx';
-                });
+                })
             })
         },
 
@@ -56,15 +66,27 @@
                     'Content-Type': 'application/json',
                 },
             }).then((response) => {
-                if (response.status !== 200) throw new Error(response.status)
                 return response.json()
             }).then((myJson) => {
-                localStorage.removeItem('adminName');
-                localStorage.removeItem('token');
 
-                window.location.href = '/Views/Login.aspx';
+                if (myJson.StatusErrorCode === undefined) {
+                    localStorage.removeItem('adminName');
+                    localStorage.removeItem('token');
+
+                    window.location.href = '/Views/Login.aspx';
+                } else {
+                    Swal.fire({
+                        text: myJson.StatusErrorCode,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+                }
             }).catch((error) => {
-    
+                Swal.fire({
+                    text: '系統異常，請稍後再試',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
             })
         }
     },
