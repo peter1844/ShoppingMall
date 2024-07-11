@@ -1,5 +1,6 @@
 ﻿using ShoppingMall.Api.Login;
 using ShoppingMall.Base;
+using ShoppingMall.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +34,13 @@ public class TokenValidationHandler : DelegatingHandler
                 if (!loginByToken.IsValidToken(token))
                 {
                     // 無效Token
-                    return request.CreateResponse(HttpStatusCode.Unauthorized, "token無效或過期，請重新登入");
+                    return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { StatusErrorCode = "A401" });
                 }
             }
             else
             {
                 // header沒有token
-                return request.CreateResponse(HttpStatusCode.Unauthorized, "未帶token");
+                return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { StatusErrorCode = "A402" });
             }
         }
 

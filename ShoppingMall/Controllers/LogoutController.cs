@@ -9,10 +9,10 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/logout")]
     public class LogoutController : ApiController
     {
-        private Logout logoutClass;
+        private Logout LogoutClass;
 
         public LogoutController() {
-            logoutClass = new Logout();
+            LogoutClass = new Logout();
         }
 
         [Route("logout")]
@@ -21,7 +21,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                logoutClass.LogoutProccess();
+                LogoutClass.LogoutProccess();
 
                 return Ok(true);
             }

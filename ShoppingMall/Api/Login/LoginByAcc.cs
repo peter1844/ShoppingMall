@@ -23,8 +23,8 @@ namespace ShoppingMall.Api.Login
             try
             {
                 command.CommandText = "EXEC pro_bkg_getLoginData @acc,@pwd";
-                command.Parameters.AddWithValue($"@acc", loginData.Acc);
-                command.Parameters.AddWithValue($"@pwd", loginData.Pwd);
+                command.Parameters.AddWithValue("@acc", loginData.Acc);
+                command.Parameters.AddWithValue("@pwd", loginData.Pwd);
                 command.Connection.Open();
 
                 da.SelectCommand = command;

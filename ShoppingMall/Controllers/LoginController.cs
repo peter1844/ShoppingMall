@@ -11,13 +11,45 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/login")]
     public class LoginController : ApiController
     {
-        private LoginByAcc loginByAcc;
-        private LoginByToken loginByToken;
+        private LoginByAcc LoginByAccClass;
+        private LoginByToken LoginByTokenClass;
 
         public LoginController()
         {
-            loginByAcc = new LoginByAcc();
-            loginByToken = new LoginByToken();
+            LoginByAccClass = new LoginByAcc();
+            LoginByTokenClass = new LoginByToken();
+        }
+
+        [Route("checkLoginByAccPwd")]
+        [HttpPost]
+        public IHttpActionResult LoginByAccountPassword([FromBody] LoginDataDto loginData)
+        {
+            try
+            {
+                bool inputVaild = LoginByAccClass.CheckInputData(loginData);
+
+                if (inputVaild)
+                {
+                    List<AdminUserDataDtoResponse> adminUserData = LoginByAccClass.CheckLoginByAccountPassword(loginData);
+
+                    if (adminUserData.Count == 0)
+                    {
+                        return Ok(new ExceptionData { StatusErrorCode = "A100" });
+                    }
+                    else
+                    {
+                        return Ok(adminUserData);
+                    }
+                }
+                else
+                {
+                    return Ok(new ExceptionData { StatusErrorCode = "A101" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { StatusErrorCode = ex.Message });
+            }
         }
 
         [Route("checkLoginByToken")]
@@ -26,7 +58,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                bool checkResult = loginByToken.CheckLoginByToken();
+                bool checkResult = LoginByTokenClass.CheckLoginByToken();
 
                 if (checkResult)
                 {
@@ -43,38 +75,6 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 return Ok(new ExceptionData { StatusErrorCode = "A104"});
-            }
-        }
-
-        [Route("checkLoginByAccPwd")]
-        [HttpPost]
-        public IHttpActionResult LoginByAccountPassword([FromBody] LoginDataDto loginData)
-        {
-            try
-            {
-                bool inputVaild = loginByAcc.CheckInputData(loginData);
-                
-                if (inputVaild)
-                {
-                    List<AdminUserDataDtoResponse> adminUserData = loginByAcc.CheckLoginByAccountPassword(loginData);
-
-                    if (adminUserData.Count == 0)
-                    {
-                        return Ok(new ExceptionData { StatusErrorCode = "A100"});
-                    }
-                    else
-                    {
-                        return Ok(adminUserData);
-                    }
-                }
-                else
-                {
-                    return Ok(new ExceptionData { StatusErrorCode = "A101"});
-                }
-            }
-            catch (Exception ex)
-            {
-                return Ok(new ExceptionData { StatusErrorCode = ex.Message});
             }
         }
     }
