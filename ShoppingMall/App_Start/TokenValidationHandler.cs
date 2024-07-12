@@ -8,21 +8,24 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
+using ShoppingMall.Api.Logout;
 
 public class TokenValidationHandler : DelegatingHandler
 {
-    private Base baseClass;
-    private LoginByToken loginByToken;
+    private LoginByToken LoginByTokenClass;
+    private Logout LogoutClass;
 
     public TokenValidationHandler()
     {
-        baseClass = new Base();
-        loginByToken = new LoginByToken();
+        LoginByTokenClass = new LoginByToken();
+        LogoutClass = new Logout();
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         IEnumerable<string> authHeaders;
+        HttpContext context = HttpContext.Current;
 
         if (!IsIgnorePath(request.RequestUri))
         {
@@ -31,8 +34,10 @@ public class TokenValidationHandler : DelegatingHandler
                 string token = authHeaders.FirstOrDefault();
 
                 // Token驗證
-                if (!loginByToken.IsValidToken(token))
+                if (!LoginByTokenClass.IsValidToken(token))
                 {
+                    LogoutClass.LogoutProccess();
+
                     // 無效Token
                     return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { StatusErrorCode = "A401" });
                 }
