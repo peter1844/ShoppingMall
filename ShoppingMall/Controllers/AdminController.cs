@@ -56,14 +56,61 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                bool inputVaild = AdminProccessClass.CheckInputData(insertData);
+                bool inputVaild = AdminProccessClass.CheckInsertInputData(insertData);
 
                 if (inputVaild)
                 {
-                    bool adminUserData = AdminProccessClass.InsertAdminData(insertData);
+                    bool result = AdminProccessClass.InsertAdminData(insertData);
 
-                    return Ok(adminUserData);
-                    
+                    return Ok(result);
+                }
+                else
+                {
+                    return Ok(new ExceptionData { StatusErrorCode = "A101" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { StatusErrorCode = ex.Message });
+            }
+        }
+        [Route("updateAdminData")]
+        [HttpPut]
+        public IHttpActionResult UpdateAdminData([FromBody] UpdateAdminDataDto updateData)
+        {
+            try
+            {
+                bool inputVaild = AdminProccessClass.CheckUpdateInputData(updateData);
+
+                if (inputVaild)
+                {
+                    bool result = AdminProccessClass.UpdateAdminData(updateData);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    return Ok(new ExceptionData { StatusErrorCode = "A101" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { StatusErrorCode = ex.Message });
+            }
+        }
+        [Route("deleteAdminData")]
+        [HttpDelete]
+        public IHttpActionResult DeleteAdminData([FromBody] DeleteAdminDataDto deleteData)
+        {
+            try
+            {
+                bool inputVaild = AdminProccessClass.CheckDeleteInputData(deleteData);
+
+                if (inputVaild)
+                {
+                    bool result = AdminProccessClass.DeleteAdminData(deleteData);
+
+                    return Ok(result);
                 }
                 else
                 {

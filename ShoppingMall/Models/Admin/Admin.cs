@@ -25,4 +25,16 @@ namespace ShoppingMall.Models.Admin
         public List<int> Roles { get; set; }
         public int Enabled { get; set; }
     }
+    public class UpdateAdminDataDto
+    {
+        public int AdminId { get; set; }
+        public string Name { get; set; }
+        public string Pwd { get; set; }
+        public List<int> Roles { get; set; }
+        public int Enabled { get; set; }
+    }
+    public class DeleteAdminDataDto
+    {
+        public int AdminId { get; set; }
+    }
 }

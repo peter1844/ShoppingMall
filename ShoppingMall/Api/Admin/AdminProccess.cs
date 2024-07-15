@@ -90,7 +90,7 @@ namespace ShoppingMall.Api.Admin
                 command.Parameters.AddWithValue("@enabled", insertData.Enabled);
                 SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
-                parameter.TypeName = "dbo.insertAdminUserRoleTempType"; // 指定表型的名稱
+                parameter.TypeName = "dbo.adminUserRoleTempType";
 
                 command.Connection.Open();
 
@@ -110,12 +110,97 @@ namespace ShoppingMall.Api.Admin
             }
             
         }
-        public bool CheckInputData(InsertAdminDataDto insertData)
+        public bool UpdateAdminData(UpdateAdminDataDto updateData)
+        {
+            SqlCommand command = MsSqlConnection();
+
+            try
+            {
+                DataTable tempTable = new DataTable();
+                tempTable.Columns.Add("roleId", typeof(int));
+
+                foreach (int roleId in updateData.Roles)
+                {
+                    tempTable.Rows.Add(roleId);
+                }
+
+                command.CommandText = "EXEC pro_bkg_updateAdminData @adminId,@name,@pwd,@enabled,@roleId";
+
+                command.Parameters.AddWithValue("@adminId", updateData.AdminId);
+                command.Parameters.AddWithValue("@name", updateData.Name);
+                command.Parameters.AddWithValue("@pwd", updateData.Pwd);
+                command.Parameters.AddWithValue("@enabled", updateData.Enabled);
+                SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
+                parameter.SqlDbType = SqlDbType.Structured;
+                parameter.TypeName = "dbo.adminUserRoleTempType";
+
+                command.Connection.Open();
+
+                int statusMessage = Convert.ToInt32(command.ExecuteScalar());
+
+                if (statusMessage != 200) throw new Exception("A102");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("A102");
+            }
+            finally
+            {
+                command.Connection.Close(); //關閉連線
+            }
+
+        }
+        public bool DeleteAdminData(DeleteAdminDataDto deleteData)
+        {
+            SqlCommand command = MsSqlConnection();
+
+            try
+            {
+                command.CommandText = "EXEC pro_bkg_deleteAdminData @adminId";
+
+                command.Parameters.AddWithValue("@adminId", deleteData.AdminId);
+
+                command.Connection.Open();
+
+                int statusMessage = Convert.ToInt32(command.ExecuteScalar());
+
+                if (statusMessage != 200) throw new Exception("A102");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("A102");
+            }
+            finally
+            {
+                command.Connection.Close(); //關閉連線
+            }
+
+        }
+        public bool CheckInsertInputData(InsertAdminDataDto insertData)
         {
             string rule = @"^[a-zA-Z0-9]+$";
 
             if (insertData.Acc.Length > 16 || insertData.Pwd.Length > 16) return false;
             if (!Regex.IsMatch(insertData.Acc, rule) || !Regex.IsMatch(insertData.Pwd, rule)) return false;
+
+            return true;
+        }
+        public bool CheckUpdateInputData(UpdateAdminDataDto updateData)
+        {
+            string rule = @"^[a-zA-Z0-9]+$";
+
+            if (updateData.Pwd.Length > 16) return false;
+            if (updateData.Pwd != "" && !Regex.IsMatch(updateData.Pwd, rule)) return false;
+
+            return true;
+        }
+        public bool CheckDeleteInputData(DeleteAdminDataDto deleteData)
+        {
+            if (deleteData.AdminId <= 0) return false;
 
             return true;
         }
