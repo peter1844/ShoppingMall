@@ -8,13 +8,13 @@
             <table>
                 <thead>
                     <tr>
-                        <th>名字</th>
-                        <th>帳號</th>
+                        <th class="sort" @click="sortBy('Name')">名字</th>
+                        <th class="sort" @click="sortBy('Acc')">帳號</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in adminData" :key="item.Id">
+                    <tr v-for="item in sortedItems" :key="item.Id">
                         <td>{{ item.Name }}</td>
                         <td>{{ item.Acc }}</td>
                         <td>
@@ -69,6 +69,7 @@
     data() {
         return {
             adminData: {},
+            showUpdateData: {},
             optionData: {},
             showPopup: false,
             adminId: 0,
@@ -78,7 +79,9 @@
             roles: [],
             enabled: 1,
             accReadonly: false,
-            actionType: ''
+            actionType: '',
+            sortKey: '',
+            sortDesc: false 
         }
     },
     created: function () {
@@ -130,11 +133,13 @@
                 return response.json()
             }).then((myJson) => {
                 if (myJson.StatusErrorCode === undefined) {
-                    this.adminData = myJson.reduce((obj, item) => {
+                    this.showUpdateData = myJson.reduce((obj, item) => {
                         item.Role = item.Role.map(role => role.RoleId);
                         obj[item.Id] = item;
                         return obj;
                     }, {});
+
+                    this.adminData = Object.keys(this.showUpdateData).map(key => this.showUpdateData[key]);
                 } else if (myJson.StatusErrorCode == 'A401') {
                     Swal.fire({
                         text: myJson.StatusErrorCode,
@@ -234,11 +239,11 @@
             this.showPopup = true;
             this.accReadonly = true;
             this.adminId = id,
-            this.adminName = this.adminData[id].Name;
-            this.acc = this.adminData[id].Acc;
+                this.adminName = this.showUpdateData[id].Name;
+            this.acc = this.showUpdateData[id].Acc;
             this.pwd = '';
-            this.roles = this.adminData[id].Role;
-            this.enabled = this.adminData[id].Enabled;
+            this.roles = this.showUpdateData[id].Role;
+            this.enabled = this.showUpdateData[id].Enabled;
             this.actionType = 'update';
         },
         CheckAction() {
@@ -251,8 +256,33 @@
             if (event.keyCode === 27) {
                 this.ClosePopup();
             }
+        },
+        sortBy(key) {
+            if (key === this.sortKey) {
+                this.sortDesc = !this.sortDesc;
+            } else {
+                this.sortKey = key;
+                this.sortDesc = false;
+            }
         }
+    },
+    computed: {
+        sortedItems() {
+            if (this.sortKey) {
+                const key = this.sortKey;
+                const order = this.sortDesc ? -1 : 1;
 
+                return this.adminData.slice().sort((a, b) => {
+                    if (typeof a[key] === 'number' && typeof b[key] === 'number') {
+                        return (a[key] - b[key]) * order;
+                    } else {
+                        return (a[key].toString().localeCompare(b[key].toString())) * order;
+                    }
+                });
+            } else {
+                return this.adminData;
+            }
+        }
     },
     mounted() {
         window.addEventListener('keydown', this.HandleKeyDown);

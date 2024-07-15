@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Api.Admin
 {
@@ -67,24 +68,37 @@ namespace ShoppingMall.Api.Admin
                 command.Connection.Close(); //關閉連線
             }
         }
-        public int InsertAdminData(InsertAdminDataDto insertData)
+        public bool InsertAdminData(InsertAdminDataDto insertData)
         {
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_insertAdminData @name,@acc,@pwd,@enabled";
+                DataTable tempTable = new DataTable();
+                tempTable.Columns.Add("roleId", typeof(int));
+
+                foreach (int roleId in insertData.Roles)
+                {
+                    tempTable.Rows.Add(roleId);
+                }
+                
+                command.CommandText = "EXEC pro_bkg_insertAdminData @name,@acc,@pwd,@enabled,@roleId";
+                
                 command.Parameters.AddWithValue("@name", insertData.Name);
                 command.Parameters.AddWithValue("@acc", insertData.Acc);
                 command.Parameters.AddWithValue("@pwd", insertData.Pwd);
                 command.Parameters.AddWithValue("@enabled", insertData.Enabled);
+                SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
+                parameter.SqlDbType = SqlDbType.Structured;
+                parameter.TypeName = "dbo.insertAdminUserRoleTempType"; // 指定表型的名稱
+
                 command.Connection.Open();
 
-                int iExecuteCount = command.ExecuteNonQuery();
+                int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                if(statusMessage != 200) throw new Exception("A102");
 
-
-                return iExecuteCount;
+                return true;
             }
             catch (Exception ex)
             {
@@ -94,7 +108,7 @@ namespace ShoppingMall.Api.Admin
             {
                 command.Connection.Close(); //關閉連線
             }
-            return 1;
+            
         }
         public bool CheckInputData(InsertAdminDataDto insertData)
         {

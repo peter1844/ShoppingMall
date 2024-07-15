@@ -60,7 +60,7 @@ namespace ShoppingMall.Controllers
 
                 if (inputVaild)
                 {
-                    int adminUserData = AdminProccessClass.InsertAdminData(insertData);
+                    bool adminUserData = AdminProccessClass.InsertAdminData(insertData);
 
                     return Ok(adminUserData);
                     
