@@ -1,10 +1,9 @@
 ﻿using ShoppingMall.Api.Admin;
 using ShoppingMall.Models.Admin;
+using ShoppingMall.Models.Common;
 using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.Http;
-using ShoppingMall.Models.Common;
 
 namespace ShoppingMall.Controllers
 {

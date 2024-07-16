@@ -1,10 +1,10 @@
 ﻿using ShoppingMall.Api.Login;
+using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Login;
 using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Http;
-using ShoppingMall.Models.Common;
 
 namespace ShoppingMall.Controllers
 {

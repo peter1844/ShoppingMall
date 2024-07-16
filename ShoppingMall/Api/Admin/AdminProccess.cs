@@ -5,7 +5,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Api.Admin
@@ -185,6 +184,7 @@ namespace ShoppingMall.Api.Admin
             string rule = @"^[a-zA-Z0-9]+$";
 
             if (insertData.Acc == "" || insertData.Pwd == "" || insertData.Name == "" || insertData.Roles.Count == 0) return false;
+            if (insertData.Enabled < 0 || insertData.Enabled > 1) return false;
             if (insertData.Acc.Length > 16 || insertData.Pwd.Length > 16 || insertData.Name.Length > 20) return false;
             if (!Regex.IsMatch(insertData.Acc, rule) || !Regex.IsMatch(insertData.Pwd, rule)) return false;
 
@@ -195,6 +195,7 @@ namespace ShoppingMall.Api.Admin
             string rule = @"^[a-zA-Z0-9]+$";
 
             if (updateData.Name == "" || updateData.Roles.Count == 0) return false;
+            if (updateData.Enabled < 0 || updateData.Enabled > 1) return false;
             if (updateData.Pwd.Length > 16 || updateData.Name.Length > 20) return false;
             if (updateData.Pwd != "" && !Regex.IsMatch(updateData.Pwd, rule)) return false;
 

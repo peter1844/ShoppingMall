@@ -1,8 +1,7 @@
-﻿using System;
-using System.Web;
-using System.Web.Http;
-using ShoppingMall.Api.Logout;
+﻿using ShoppingMall.Api.Logout;
 using ShoppingMall.Models.Common;
+using System;
+using System.Web.Http;
 
 namespace ShoppingMall.Controllers
 {

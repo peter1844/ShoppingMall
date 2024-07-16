@@ -4,7 +4,7 @@
             <h4>{{welcomeText}}</h4><hr/>
 
             <ul class="menu">
-                <li onclick="location.href='#1'">會員管理</li>
+                <li onclick="location.href='/Views/Member.aspx'">會員管理</li>
                 <li onclick="location.href='#2'">商品管理</li>
                 <li onclick="location.href='#3'">訂單管理</li>
                 <li onclick="location.href='/Views/Admin.aspx'">後臺帳號管理</li>

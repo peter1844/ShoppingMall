@@ -1,5 +1,4 @@
-﻿using ShoppingMall.Models.Common;
-using ShoppingMall.Models.Login;
+﻿using ShoppingMall.Models.Login;
 using System;
 using System.Collections.Generic;
 using System.Data;

@@ -27,7 +27,7 @@
 
             <div class="popup" v-if="showPopup">
                 <div class="popup_head">
-                    <h5>新 增</h5>
+                    <h5>{{ actionText }}</h5>
                 </div>
 
                 <div class="popup_data">
@@ -39,7 +39,7 @@
                         <input type="text" class="text" maxlength="16" :readonly="accReadonly" v-model="acc"><br><br>
 
                         <label><label style="color:red;" v-if="pwdRequired">*</label>密碼</label><br><br>
-                        <input type="text" class="text" maxlength="16" v-model="pwd"><br><br>
+                        <input type="text" class="text" maxlength="16" :placeholder="showPlaceholder ? '未輸入則不修改密碼' : ''" v-model="pwd"><br><br>
 
                         <label><label style="color:red;">*</label>角色</label><br><br>
                         <label v-for="items in optionData" :key="items.RoleId">
@@ -81,7 +81,9 @@
             pwdRequired: true,
             actionType: '',
             sortKey: '',
-            sortDesc: false 
+            sortDesc: false,
+            actionText: '',
+            showPlaceholder: false
         }
     },
     created: function () {
@@ -384,6 +386,8 @@
             this.enabled = 1;
             this.actionType = 'insert';
             this.pwdRequired = true;
+            this.actionText = '新 增';
+            this.showPlaceholder = false;
         },
         OpenUpdate(id) {
             let updateData = this.adminData.find(item => item.Id === id);
@@ -398,6 +402,8 @@
             this.enabled = updateData.Enabled;
             this.actionType = 'update';
             this.pwdRequired = false;
+            this.actionText = '編 輯';
+            this.showPlaceholder = true;
         },
         CheckAction() {
             this.actionType == 'insert' ? this.InsertAdmin() : this.UpdateAdmin();

@@ -1,10 +1,4 @@
-﻿using ShoppingMall.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Text.RegularExpressions;
-using System.Web;
+﻿using System.Web;
 
 namespace ShoppingMall.Api.Logout
 {
