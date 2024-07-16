@@ -92,6 +92,46 @@
         window.addEventListener('keydown', this.HandleKeyDown);
     },
     methods: {
+        async GetAdminData() {
+            await fetch('/api/admin/getAdminData', {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => {
+                return response.json()
+            }).then((myJson) => {
+                if (myJson.StatusErrorCode === undefined) {
+                    let data = myJson.reduce((obj, item) => {
+                        item.Role = item.Role.map(role => role.RoleId);
+                        obj[item.Id] = item;
+                        return obj;
+                    }, {});
+
+                    this.adminData = Object.keys(data).map(key => data[key]);
+                } else if (myJson.StatusErrorCode == 'A401') {
+                    Swal.fire({
+                        text: myJson.StatusErrorCode,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        window.location.href = '/Views/Login.aspx';
+                    });
+                } else {
+                    Swal.fire({
+                        text: myJson.StatusErrorCode,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+                }
+            }).catch((error) => {
+                Swal.fire({
+                    text: '系統異常，請稍後再試',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+            })
+        },
         async GetOptionData() {
             await fetch('/api/admin/getAdminOptionData', {
                 headers: {
@@ -126,47 +166,6 @@
                 })
             })
         },
-        async GetAdminData() {
-            await fetch('/api/admin/getAdminData', {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => {
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.StatusErrorCode === undefined) {
-                    let data = myJson.reduce((obj, item) => {
-                        item.Role = item.Role.map(role => role.RoleId);
-                        obj[item.Id] = item;
-                        return obj;
-                    }, {});
-
-                    this.adminData = Object.keys(data).map(key => data[key]);
-                } else if (myJson.StatusErrorCode == 'A401') {
-                    Swal.fire({
-                        text: myJson.StatusErrorCode,
-                        icon: "error",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: myJson.StatusErrorCode,
-                        icon: "error",
-                        confirmButtonText: '確認'
-                    })
-                }
-            }).catch((error) => {
-                console.log(error);
-                Swal.fire({
-                    text: '系統異常，請稍後再試',
-                    icon: "error",
-                    confirmButtonText: '確認'
-                })
-            })
-        },
         async InsertAdmin() {
 
             if (this.acc == '' || this.pwd == '' || this.adminName == '' || this.roles.length == 0) {
@@ -175,6 +174,17 @@
                     icon: "error",
                     confirmButtonText: '確認'
                 });
+
+                return false;
+            }
+
+            const validCharacters = /^[a-zA-Z0-9]+$/;
+            if (!validCharacters.test(this.acc) || !validCharacters.test(this.pwd)) {
+                Swal.fire({
+                    text: '帳號或密碼不得有特殊字元',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
 
                 return false;
             }
@@ -223,7 +233,6 @@
                     })
                 }
             }).catch((error) => {
-                console.log(error);
                 Swal.fire({
                     text: '系統異常，請稍後再試',
                     icon: "error",
@@ -232,6 +241,27 @@
             })
         },
         async UpdateAdmin() {
+
+            if (this.adminName == '' || this.roles.length == 0) {
+                Swal.fire({
+                    text: '尚有必填欄位未填',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                });
+
+                return false;
+            }
+
+            const validCharacters = /^[a-zA-Z0-9]+$/;
+            if (!validCharacters.test(this.acc) || (this.pwd != '' && !validCharacters.test(this.pwd) )) {
+                Swal.fire({
+                    text: '帳號或密碼不得有特殊字元',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+
+                return false;
+            }
 
             const data = {
                 AdminId: this.adminId,
@@ -277,7 +307,6 @@
                     })
                 }
             }).catch((error) => {
-                console.log(error);
                 Swal.fire({
                     text: '系統異常，請稍後再試',
                     icon: "error",
@@ -335,7 +364,6 @@
                             })
                         }
                     }).catch((error) => {
-                        console.log(error);
                         Swal.fire({
                             text: '系統異常，請稍後再試',
                             icon: "error",
