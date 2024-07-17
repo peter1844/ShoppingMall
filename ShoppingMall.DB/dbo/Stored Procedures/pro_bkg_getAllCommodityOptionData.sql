@@ -3,13 +3,15 @@
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[pro_bkg_getLoginData]
+CREATE PROCEDURE [dbo].[pro_bkg_getAllCommodityOptionData]
 	-- Add the parameters for the stored procedure here
-	@acc VARCHAR(16),
-	@pwd VARCHAR(16)
 AS
 BEGIN
-	SELECT f_id,f_name FROM t_adminUser WITH(NOLOCK) WHERE f_acc = @acc AND f_pwd = HASHBYTES('md5',@pwd) AND f_enabled = 1;
-
+	SELECT 
+		f_id,
+		f_name
+	FROM 
+		t_commodityType WITH(NOLOCK);
+		
 	RETURN
 END

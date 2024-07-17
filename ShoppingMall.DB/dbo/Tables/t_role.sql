@@ -5,10 +5,16 @@
 );
 
 
+
+
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'流水序', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_role', @level2type = N'COLUMN', @level2name = N'f_id';
 
 
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'角色名稱', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_role', @level2type = N'COLUMN', @level2name = N'f_name';
+
+
+GO
+EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'角色', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_role';
 

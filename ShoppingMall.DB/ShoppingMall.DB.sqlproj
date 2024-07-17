@@ -61,6 +61,7 @@
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
     <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="dbo\User Defined Types\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\t_adminUser.sql" />
@@ -69,5 +70,17 @@
     <Build Include="dbo\Tables\t_rolePermissions.sql" />
     <Build Include="dbo\Tables\t_adminUserRole.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getLoginData.sql" />
+    <Build Include="dbo\Tables\t_member.sql" />
+    <Build Include="dbo\Tables\t_commodityType.sql" />
+    <Build Include="dbo\Tables\t_commodity.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_updateMemberData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_updateAdminData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_insertAdminData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_getAllMemberData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_getAllCommodityOptionData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_getAllAdminOptionData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_getAllAdminData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_deleteAdminData.sql" />
+    <Build Include="dbo\User Defined Types\adminUserRoleTempType.sql" />
   </ItemGroup>
 </Project>

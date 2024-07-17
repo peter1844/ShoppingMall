@@ -5,12 +5,16 @@
     [f_pwd]     VARBINARY (16) NOT NULL,
     [f_enabled] BIT            CONSTRAINT [DF_t_admin_user_f_enabled] DEFAULT ((1)) NOT NULL,
     CONSTRAINT [PK__t_admin___2911CBED987BDA13] PRIMARY KEY CLUSTERED ([f_id] ASC),
-    CONSTRAINT [IX_t_admin_user_f_account] UNIQUE NONCLUSTERED ([f_acc] ASC)
+    CONSTRAINT [IX_t_adminUser_f_acc] UNIQUE NONCLUSTERED ([f_acc] ASC)
 );
 
 
+
+
 GO
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'管理者帳號', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_adminUser';
+EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'管理者資料', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_adminUser';
+
+
 
 
 GO
@@ -26,5 +30,7 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'密碼', @l
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'是否刪除', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_adminUser', @level2type = N'COLUMN', @level2name = N'f_enabled';
+EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'是否有效', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_adminUser', @level2type = N'COLUMN', @level2name = N'f_enabled';
+
+
 
