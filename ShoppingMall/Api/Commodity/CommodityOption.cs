@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ShoppingMall.Api.Admin
+namespace ShoppingMall.Api.Commodity
 {
-    public class AdminOption : ShoppingMall.Base.Base
+    public class CommodityOption : ShoppingMall.Base.Base
     {
-        public List<AdminOptionDataDtoResponse> GetAllAdminOptionData()
+        public List<CommodityOptionDataDtoResponse> GetAllCommodityOptionData()
         {
-            List<AdminOptionDataDtoResponse> adminOptionData = new List<AdminOptionDataDtoResponse>();
+            List<CommodityOptionDataDtoResponse> commodityOptionData = new List<CommodityOptionDataDtoResponse>();
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
@@ -18,7 +18,7 @@ namespace ShoppingMall.Api.Admin
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_getAllAdminOptionData";
+                command.CommandText = "EXEC pro_bkg_getAllCommodityOptionData";
                 command.Connection.Open();
 
                 da.SelectCommand = command;
@@ -28,15 +28,15 @@ namespace ShoppingMall.Api.Admin
                 {
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        adminOptionData.Add(new AdminOptionDataDtoResponse
+                        commodityOptionData.Add(new CommodityOptionDataDtoResponse
                         {
-                            RoleId = Convert.ToInt32(dt.Rows[i]["f_id"]),
-                            RoleName = dt.Rows[i]["f_name"].ToString(),
+                            CommodityId = Convert.ToInt32(dt.Rows[i]["f_id"]),
+                            CommodityName = dt.Rows[i]["f_name"].ToString(),
                         });
                     }
                 }
 
-                return adminOptionData;
+                return commodityOptionData;
             }
             catch (Exception ex)
             {

@@ -1,3 +1,4 @@
 ﻿const tw = {
-    greeting: '你好！'
+    greeting: '你好！',
+    101: 'OKOK'
 }

@@ -1,3 +1,3 @@
 ﻿const en = {
-    greeting: 'Hello！'
+    greeting: 'Hello！',
 }

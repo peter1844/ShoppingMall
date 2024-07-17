@@ -61,6 +61,7 @@ namespace ShoppingMall.Api.Login
         {
             string rule = @"^[a-zA-Z0-9]+$";
 
+            if (string.IsNullOrEmpty(loginData.Acc) || string.IsNullOrEmpty(loginData.Pwd)) return false;
             if (loginData.Acc.Length > 16 || loginData.Pwd.Length > 16) return false;
             if (!Regex.IsMatch(loginData.Acc, rule) || !Regex.IsMatch(loginData.Pwd, rule)) return false;
 

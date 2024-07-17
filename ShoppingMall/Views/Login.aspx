@@ -20,7 +20,7 @@
 <body>
     <div id="app">
         <login></login>
-        <%--<div>{{ $t('greeting') }}</div>--%>
+        <%--<div>{{ $t('101') }}</div>--%>
     </div>
 </body>
 </html>

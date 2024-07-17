@@ -33,11 +33,11 @@
 }
 
 .member .update {
-    background-color: #2778c4;
+    background-color: #7ec7df;
 }
 
 .member .update:hover {
-    background-color: #296fb1;
+    background-color: #64b9d5;
 }
 
 .member .submit {
@@ -111,7 +111,6 @@
     margin-top: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: #f9f9f9;
     cursor: pointer;
 }
 
@@ -129,4 +128,8 @@
 
 .member .sort {
     cursor: pointer;
+}
+
+.member .required_mark {
+    color: red;
 }

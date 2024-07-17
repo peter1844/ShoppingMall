@@ -5,7 +5,7 @@
 
             <ul class="menu">
                 <li onclick="location.href='/Views/Member.aspx'">會員管理</li>
-                <li onclick="location.href='#2'">商品管理</li>
+                <li onclick="location.href='/Views/Commodity.aspx'">商品管理</li>
                 <li onclick="location.href='#3'">訂單管理</li>
                 <li onclick="location.href='/Views/Admin.aspx'">後臺帳號管理</li>
                 <li @click="logout">登出</li>
@@ -22,7 +22,7 @@
         // 每30秒檢查一次登入狀態
         setInterval(() => {
             this.checkLoginStatus();
-        }, 30000);
+        }, 10000);
     },
     methods: {
         async checkLoginStatus() {

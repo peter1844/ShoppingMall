@@ -138,6 +138,7 @@ namespace ShoppingMall.Api.Admin
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
                 if (statusMessage != 200) throw new Exception("A102");
+                if (!string.IsNullOrEmpty(updateData.Pwd)) RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
 
                 return true;
             }
@@ -183,7 +184,7 @@ namespace ShoppingMall.Api.Admin
         {
             string rule = @"^[a-zA-Z0-9]+$";
 
-            if (insertData.Acc == "" || insertData.Pwd == "" || insertData.Name == "" || insertData.Roles.Count == 0) return false;
+            if (string.IsNullOrEmpty(insertData.Acc) || string.IsNullOrEmpty(insertData.Pwd) || string.IsNullOrEmpty(insertData.Name) || insertData.Roles.Count == 0) return false;
             if (insertData.Enabled < 0 || insertData.Enabled > 1) return false;
             if (insertData.Acc.Length > 16 || insertData.Pwd.Length > 16 || insertData.Name.Length > 20) return false;
             if (!Regex.IsMatch(insertData.Acc, rule) || !Regex.IsMatch(insertData.Pwd, rule)) return false;
@@ -194,10 +195,10 @@ namespace ShoppingMall.Api.Admin
         {
             string rule = @"^[a-zA-Z0-9]+$";
 
-            if (updateData.Name == "" || updateData.Roles.Count == 0) return false;
+            if (string.IsNullOrEmpty(updateData.Name) || updateData.Roles.Count == 0) return false;
             if (updateData.Enabled < 0 || updateData.Enabled > 1) return false;
             if (updateData.Pwd.Length > 16 || updateData.Name.Length > 20) return false;
-            if (updateData.Pwd != "" && !Regex.IsMatch(updateData.Pwd, rule)) return false;
+            if (!string.IsNullOrEmpty(updateData.Pwd) && !Regex.IsMatch(updateData.Pwd, rule)) return false;
 
             return true;
         }

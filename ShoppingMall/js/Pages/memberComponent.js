@@ -30,7 +30,7 @@
                         <label>帳號</label><br><br>
                         <input type="text" class="text" maxlength="16" v-model="acc" readonly><br><br>
 
-                        <label>會員等級</label><br/>
+                        <label><label class="required_mark">*</label>會員等級</label><br/>
                         <select class="select" v-model="level">
                             <option value="1">LV1</option>
                             <option value="2">LV2</option>
@@ -40,7 +40,7 @@
                         </select>
                         <br/><br/>
 
-                        <label>啟用狀態</label><br/>
+                        <label><label class="required_mark">*</label>啟用狀態</label><br/>
                         <select class="select" v-model="enabled">
                             <option value="1">有效</option>
                             <option value="0">無效</option>
