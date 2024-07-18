@@ -22,7 +22,7 @@
         // 每30秒檢查一次登入狀態
         setInterval(() => {
             this.checkLoginStatus();
-        }, 10000);
+        }, 30000);
     },
     methods: {
         async checkLoginStatus() {
@@ -36,11 +36,11 @@
                 return response.json()
             }).then((myJson) => {
 
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     console.log('Is loging')
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     }).then((result) => {
@@ -57,7 +57,6 @@
                 })
             })
         },
-
         async logout() {
 
             await fetch('/api/logout/logout', {
@@ -69,14 +68,14 @@
                 return response.json()
             }).then((myJson) => {
 
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     localStorage.removeItem('adminName');
                     localStorage.removeItem('token');
 
                     window.location.href = '/Views/Login.aspx';
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     })

@@ -61,15 +61,14 @@
             }).then((response) => {
                 return response.json()
             }).then((myJson) => {
-
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     localStorage.setItem('adminName', myJson[0].Name);
                     localStorage.setItem('token', myJson[0].Token);
 
                     window.location.href = '/Views/Index.aspx';
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     })

@@ -1,10 +1,12 @@
-﻿using ShoppingMall.Models.Admin;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Models.Admin;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web.Http.Results;
 using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Api.Admin
@@ -60,7 +62,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception("A102");
+                throw new Exception(StateCode.DbError.ToString());
             }
             finally
             {
@@ -95,13 +97,13 @@ namespace ShoppingMall.Api.Admin
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
-                if(statusMessage != 200) throw new Exception("A102");
+                if(statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("A102");
+                throw new Exception(StateCode.DbError.ToString());
             }
             finally
             {
@@ -112,7 +114,7 @@ namespace ShoppingMall.Api.Admin
         public bool UpdateAdminData(UpdateAdminDataDto updateData)
         {
             SqlCommand command = MsSqlConnection();
-
+            
             try
             {
                 DataTable tempTable = new DataTable();
@@ -136,15 +138,15 @@ namespace ShoppingMall.Api.Admin
                 command.Connection.Open();
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
-
-                if (statusMessage != 200) throw new Exception("A102");
+                
+                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
                 if (!string.IsNullOrEmpty(updateData.Pwd)) RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("A102");
+                throw new Exception(StateCode.DbError.ToString());
             }
             finally
             {
@@ -166,13 +168,14 @@ namespace ShoppingMall.Api.Admin
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
-                if (statusMessage != 200) throw new Exception("A102");
+                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
+                RedisConnection().GetDatabase().KeyDelete($"{deleteData.AdminId}_token");
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("A102");
+                throw new Exception(StateCode.DbError.ToString());
             }
             finally
             {

@@ -1,5 +1,6 @@
 ﻿using ShoppingMall.Api.Admin;
 using ShoppingMall.Api.Commodity;
+using ShoppingMall.App_Code;
 using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Common;
 using System;
@@ -34,7 +35,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new ExceptionData { StatusErrorCode = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
         [Route("getCommodityOptionData")]
@@ -49,7 +50,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new ExceptionData { StatusErrorCode = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
         [Route("insertAdminData")]
@@ -68,12 +69,12 @@ namespace ShoppingMall.Controllers
                 }
                 else
                 {
-                    return Ok(new ExceptionData { StatusErrorCode = "A101" });
+                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                return Ok(new ExceptionData { StatusErrorCode = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
         [Route("updateAdminData")]
@@ -92,12 +93,12 @@ namespace ShoppingMall.Controllers
                 }
                 else
                 {
-                    return Ok(new ExceptionData { StatusErrorCode = "A101" });
+                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                return Ok(new ExceptionData { StatusErrorCode = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
     }

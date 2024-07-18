@@ -2,6 +2,6 @@
 {
     public class ExceptionData
     {
-        public string StatusErrorCode { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }

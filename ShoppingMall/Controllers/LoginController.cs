@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.Api.Login;
+using ShoppingMall.App_Code;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Login;
 using System;
@@ -34,7 +35,7 @@ namespace ShoppingMall.Controllers
 
                     if (adminUserData.Count == 0)
                     {
-                        return Ok(new ExceptionData { StatusErrorCode = "A100" });
+                        return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildLogin.ToString() });
                     }
                     else
                     {
@@ -43,12 +44,12 @@ namespace ShoppingMall.Controllers
                 }
                 else
                 {
-                    return Ok(new ExceptionData { StatusErrorCode = "A101" });
+                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                return Ok(new ExceptionData { StatusErrorCode = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
 
@@ -69,12 +70,12 @@ namespace ShoppingMall.Controllers
                     HttpContext context = HttpContext.Current;
                     context.Session.Clear();
 
-                    return Ok(new ExceptionData { StatusErrorCode = "A103"});
+                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildToken.ToString()});
                 }
             }
             catch (Exception ex)
             {
-                return Ok(new ExceptionData { StatusErrorCode = "A104"});
+                return Ok(new ExceptionData { ErrorMessage = ex.Message});
             }
         }
     }

@@ -129,7 +129,7 @@
             }).then((response) => {
                 return response.json()
             }).then((myJson) => {
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     let data = myJson.reduce((obj, item) => {
                         item.Role = item.Role.map(role => role.RoleId);
                         obj[item.Id] = item;
@@ -137,9 +137,9 @@
                     }, {});
 
                     this.adminData = Object.keys(data).map(key => data[key]);
-                } else if (myJson.StatusErrorCode == 'A401') {
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     }).then((result) => {
@@ -147,7 +147,7 @@
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     })
@@ -169,11 +169,11 @@
             }).then((response) => {
                 return response.json()
             }).then((myJson) => {
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     this.optionData = myJson;
-                } else if (myJson.StatusErrorCode == 'A401') {
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     }).then((result) => {
@@ -181,7 +181,7 @@
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     })
@@ -216,7 +216,7 @@
 
                 return response.json()
             }).then((myJson) => {
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     Swal.fire({
                         text: '新增完成',
                         icon: "success",
@@ -224,9 +224,9 @@
                     }).then((result) => {
                         location.reload();
                     });
-                } else if (myJson.StatusErrorCode == 'A401') {
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     }).then((result) => {
@@ -234,7 +234,7 @@
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     })
@@ -290,7 +290,7 @@
 
                 return response.json()
             }).then((myJson) => {
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     Swal.fire({
                         text: '編輯完成',
                         icon: "success",
@@ -298,9 +298,9 @@
                     }).then((result) => {
                         location.reload();
                     });
-                } else if (myJson.StatusErrorCode == 'A401') {
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     }).then((result) => {
@@ -308,7 +308,7 @@
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     })

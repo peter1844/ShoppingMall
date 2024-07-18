@@ -87,11 +87,11 @@
             }).then((response) => {
                 return response.json()
             }).then((myJson) => {
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     this.memberData = myJson
-                } else if (myJson.StatusErrorCode == 'A401') {
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     }).then((result) => {
@@ -99,7 +99,7 @@
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     })
@@ -132,7 +132,7 @@
 
                 return response.json()
             }).then((myJson) => {
-                if (myJson.StatusErrorCode === undefined) {
+                if (myJson.ErrorMessage === undefined) {
                     Swal.fire({
                         text: '編輯完成',
                         icon: "success",
@@ -140,9 +140,9 @@
                     }).then((result) => {
                         location.reload();
                     });
-                } else if (myJson.StatusErrorCode == 'A401') {
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     }).then((result) => {
@@ -150,7 +150,7 @@
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.StatusErrorCode,
+                        text: myJson.ErrorMessage,
                         icon: "error",
                         confirmButtonText: '確認'
                     })

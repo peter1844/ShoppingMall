@@ -1,5 +1,6 @@
 ﻿using ShoppingMall.Api.Login;
 using ShoppingMall.Api.Logout;
+using ShoppingMall.App_Code;
 using ShoppingMall.Models.Common;
 using System;
 using System.Collections.Generic;
@@ -38,13 +39,13 @@ public class TokenValidationHandler : DelegatingHandler
                     LogoutClass.LogoutProccess();
 
                     // 無效Token
-                    return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { StatusErrorCode = "A401" });
+                    return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { ErrorMessage = StateCode.InvaildToken.ToString() });
                 }
             }
             else
             {
                 // header沒有token
-                return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { StatusErrorCode = "A402" });
+                return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { ErrorMessage = StateCode.NoHeaderToken.ToString() });
             }
         }
 

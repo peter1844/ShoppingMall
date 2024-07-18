@@ -26,7 +26,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new ExceptionData { StatusErrorCode = "A105"});
+                return Ok(new ExceptionData { ErrorMessage = ex.Message});
             }
         }
     }

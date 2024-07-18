@@ -1,4 +1,5 @@
-﻿using ShoppingMall.Models.Admin;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Models.Admin;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -40,7 +41,7 @@ namespace ShoppingMall.Api.Commodity
             }
             catch (Exception ex)
             {
-                throw new Exception("A102");
+                throw new Exception(StateCode.DbError.ToString());
             }
             finally
             {

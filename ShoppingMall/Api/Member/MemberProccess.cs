@@ -1,4 +1,5 @@
-﻿using ShoppingMall.Models.Member;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Models.Member;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -43,7 +44,7 @@ namespace ShoppingMall.Api.Member
             }
             catch (Exception ex)
             {
-                throw new Exception("A102");
+                throw new Exception(StateCode.DbError.ToString());
             }
             finally
             {
@@ -69,7 +70,7 @@ namespace ShoppingMall.Api.Member
             }
             catch (Exception ex)
             {
-                throw new Exception("A102");
+                throw new Exception(StateCode.DbError.ToString());
             }
             finally
             {

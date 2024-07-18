@@ -153,6 +153,7 @@
     <Compile Include="Api\Login\LoginByToken.cs" />
     <Compile Include="Api\Logout\Logout.cs" />
     <Compile Include="Api\Member\MemberProccess.cs" />
+    <Compile Include="App_Code\Tools.cs" />
     <Compile Include="App_Start\TokenValidationHandler.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Base\Base.cs" />

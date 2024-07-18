@@ -1,4 +1,5 @@
-﻿using ShoppingMall.Models.Login;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Models.Login;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -50,7 +51,7 @@ namespace ShoppingMall.Api.Login
             }
             catch (Exception ex)
             {
-                throw new Exception("A102");
+                throw new Exception(StateCode.DbError.ToString());
             }
             finally
             {
