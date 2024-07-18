@@ -23,20 +23,16 @@
                 <thead>
                     <tr>
                         <th class="sort" @click="SortBy('Name')">商品名稱</th>
-                        <th class="sort" @click="SortBy('Acc')">商品類型</th>
-                        <th class="sort" @click="SortBy('Acc')">價格</th>
-                        <th class="sort" @click="SortBy('Acc')">庫存量</th>
-                        <th class="sort" @click="SortBy('Acc')">狀態</th>
+                        <th class="sort" @click="SortBy('Price')">價格</th>
+                        <th class="sort" @click="SortBy('Stock')">庫存量</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in sortedItems" :key="item.Id">
                         <td>{{ item.Name }}</td>
-                        <td>{{ item.Acc }}</td>
-                        <td>{{ item.Acc }}</td>
-                        <td>{{ item.Acc }}</td>
-                        <td>{{ item.Acc }}</td>
+                        <td>{{ item.Price }}</td>
+                        <td>{{ item.Stock }}</td>
                         <td>
                             <input type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
                         </td>
@@ -66,6 +62,8 @@
                         <label>商品圖示</label><br/><br/>
                         <input type="file" accept="image/jpeg, image/png, image/gif" @change="CheckFileType($event)"><br/><br/>
 
+                        <img :src="imagePath" class="preview_img" v-if="showImage"/><br/><br/>
+
                         <label><label class="required_mark">*</label>價格</label><br><br>
                         <input type="number" class="text" v-model="price"><br><br>
 
@@ -79,7 +77,7 @@
                         </select>
                         <br/><br/>
                     </div>
-
+                    
                     <div align="right">
                         <input type="button" class="btn submit" value="送 出" @click="CheckAction()"/>
                         <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
@@ -101,6 +99,7 @@
             type: '',
             uploadFile: '',
             imagePath: '',
+            showImage: false,
             price: '',
             stock: '',
             open: 1,
@@ -113,7 +112,7 @@
         }
     },
     created: function () {
-        //this.GetCommodityData();
+        this.GetCommodityData();
         this.GetOptionData();
     },
     mounted() {
@@ -121,7 +120,7 @@
     },
     methods: {
         async GetCommodityData() {
-            await fetch('/api/admin/getAdminData', {
+            await fetch('/api/commodity/getCommodityData', {
                 headers: {
                     'token': localStorage.getItem('token'),
                     'Content-Type': 'application/json',
@@ -130,13 +129,7 @@
                 return response.json()
             }).then((myJson) => {
                 if (myJson.ErrorMessage === undefined) {
-                    let data = myJson.reduce((obj, item) => {
-                        item.Role = item.Role.map(role => role.RoleId);
-                        obj[item.Id] = item;
-                        return obj;
-                    }, {});
-
-                    this.adminData = Object.keys(data).map(key => data[key]);
+                    this.commodityData = myJson;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
                         text: myJson.ErrorMessage,
@@ -197,18 +190,19 @@
         async InsertCommodity() {
 
             const formData = new FormData();
-            formData.append('Name', this.uploadFile);
-            formData.append('Description', this.uploadFile);
-            formData.append('Type', this.uploadFile);
-            formData.append('Price', this.uploadFile);
-            formData.append('Stock', this.uploadFile);
-            formData.append('Open', this.uploadFile);
 
-            await fetch('/api/admin/insertAdminData', {
+            formData.append('Name', this.commodityName);
+            formData.append('Description', this.description);
+            formData.append('Type', this.type);
+            formData.append('Price', this.price);
+            formData.append('Stock', this.stock);
+            formData.append('Open', this.open);
+            formData.append('ImageFile', this.uploadFile);
+
+            await fetch('/api/commodity/insertCommodityData', {
                 method: 'POST',
                 headers: {
                     'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
                 },
                 body: formData
             }).then((response) => {
@@ -329,6 +323,7 @@
             this.type = '';
             this.uploadFile = '';
             this.imagePath = '';
+            this.showImage = false;
             this.price = '';
             this.stock = '';
             this.open = 1;
@@ -336,18 +331,19 @@
             this.actionText = '新 增';
         },
         OpenUpdate(id) {
-            let updateData = this.adminData.find(item => item.Id === id);
+            let updateData = this.commodityData.find(item => item.Id === id);
 
             this.showPopup = true;
             this.commodityId = id;
-            this.commodityName = '';
-            this.description = '';
-            this.type = '';
+            this.commodityName = updateData.Name;
+            this.description = updateData.Description;
+            this.type = updateData.Type;
             this.uploadFile = '';
-            this.imagePath = '';
-            this.price = 0;
-            this.stock = 0;
-            this.open = 1;
+            this.imagePath = updateData.Image;
+            this.showImage = this.imagePath == '' ? false : true;
+            this.price = updateData.Price;
+            this.stock = updateData.Stock;
+            this.open = updateData.Open;
             this.actionType = 'update';
             this.actionText = '編 輯';
         },

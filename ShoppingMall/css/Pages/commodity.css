@@ -48,14 +48,6 @@
     background-color: #64b9d5;
 }
 
-/*.admin .delete {
-    background-color: #f51c29;
-}
-
-.admin .delete:hover {
-    background-color: #db121e;
-}*/
-
 .commodity .submit {
     background-color: #2778c4;
 }
@@ -203,4 +195,9 @@
 
 .commodity .required_mark {
     color: red;
+}
+
+.commodity .preview_img {
+    width: 100px;
+    height: 100px;
 }

@@ -148,6 +148,7 @@
   <ItemGroup>
     <Compile Include="Api\Admin\AdminOption.cs" />
     <Compile Include="Api\Admin\AdminProccess.cs" />
+    <Compile Include="Api\Commodity\CommodityProccess.cs" />
     <Compile Include="Api\Commodity\CommodityOption.cs" />
     <Compile Include="Api\Login\LoginByAcc.cs" />
     <Compile Include="Api\Login\LoginByToken.cs" />
@@ -167,6 +168,7 @@
     </Compile>
     <Compile Include="Models\Admin\AdminOption.cs" />
     <Compile Include="Models\Admin\Admin.cs" />
+    <Compile Include="Models\Commodity\Commodity.cs" />
     <Compile Include="Models\Commodity\CommodityOption.cs" />
     <Compile Include="Models\Common\Exception.cs" />
     <Compile Include="Models\Login\Login.cs" />
@@ -220,6 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="images\commodity\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

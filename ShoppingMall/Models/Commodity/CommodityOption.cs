@@ -1,4 +1,6 @@
-﻿namespace ShoppingMall.Models.Admin
+﻿using System.Collections.Generic;
+
+namespace ShoppingMall.Models.Admin
 {
     public class CommodityOptionDataDtoResponse
     {

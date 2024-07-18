@@ -2,9 +2,11 @@
 using ShoppingMall.Api.Commodity;
 using ShoppingMall.App_Code;
 using ShoppingMall.Models.Admin;
+using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Common;
 using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Http;
 
 namespace ShoppingMall.Controllers
@@ -15,23 +17,25 @@ namespace ShoppingMall.Controllers
         private AdminProccess AdminProccessClass;
         private AdminOption AdminOptionClass;
         private CommodityOption CommodityOptionClass;
+        private CommodityProccess CommodityProccessClass;
 
         public CommodityController()
         {
             AdminProccessClass = new AdminProccess();
             AdminOptionClass = new AdminOption();
             CommodityOptionClass = new CommodityOption();
+            CommodityProccessClass = new CommodityProccess();
         }
 
-        [Route("getAdminData")]
+        [Route("getCommodityData")]
         [HttpGet]
-        public IHttpActionResult GetAdminData()
+        public IHttpActionResult GetCommodityData()
         {
             try
             {
-                List<AdminUserDataDtoResponse> adminUserData = AdminProccessClass.GetAllAdminUserData();
+                List<CommodityDataDtoResponse> commodityData = CommodityProccessClass.GetAllCommodityData();
 
-                return Ok(adminUserData);
+                return Ok(commodityData);
             }
             catch (Exception ex)
             {
@@ -53,19 +57,43 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
-        [Route("insertAdminData")]
+        [Route("insertCommodityData")]
         [HttpPost]
-        public IHttpActionResult InsertAdminData([FromBody] InsertAdminDataDto insertData)
+        public IHttpActionResult InsertCommodityData()
         {
             try
             {
-                bool inputVaild = AdminProccessClass.CheckInsertInputData(insertData);
+                HttpRequest request = HttpContext.Current.Request;
+
+                bool inputVaild = CommodityProccessClass.CheckInsertInputData(request);
 
                 if (inputVaild)
                 {
-                    bool result = AdminProccessClass.InsertAdminData(insertData);
+                    string filePath = "";
+                    List<InsertCommodityDataDto> insertData = new List<InsertCommodityDataDto>();
 
-                    return Ok(result);
+                    if (request.Files.Count > 0)
+                    {
+                        HttpPostedFile files = request.Files[0];
+                        string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        files.SaveAs(HttpContext.Current.Server.MapPath($"~/images/commodity/{timestamp}_" + files.FileName));
+                        filePath = $"/images/commodity/{timestamp}_{files.FileName}";
+                    }
+
+                    insertData.Add(new InsertCommodityDataDto
+                    {
+                        Name = request.Form["Name"],
+                        Description = request.Form["Description"],
+                        Type = Convert.ToInt32(request.Form["Type"]),
+                        Price = Convert.ToInt32(request.Form["Price"]),
+                        Stock = Convert.ToInt32(request.Form["Stock"]),
+                        Open = Convert.ToInt32(request.Form["Open"]),
+                        ImagePath = filePath
+                    });
+
+                    bool result = CommodityProccessClass.InsertCommodityData(insertData[0]);
+
+                    return Ok(true);
                 }
                 else
                 {
