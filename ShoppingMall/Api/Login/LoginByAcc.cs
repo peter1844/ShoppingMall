@@ -51,7 +51,7 @@ namespace ShoppingMall.Api.Login
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString());
+                throw new Exception(StateCode.DbError.ToString(), ex);
             }
             finally
             {

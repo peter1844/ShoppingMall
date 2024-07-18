@@ -14,7 +14,6 @@ namespace ShoppingMall.Base
     {
         private SqlCommand Command;
         private ConnectionMultiplexer Redis;
-        private readonly SqlConnection SQLCONNECTION;
         private readonly byte[] KEY;
         private readonly byte[] IV;
 

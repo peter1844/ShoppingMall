@@ -62,7 +62,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString());
+                throw new Exception(StateCode.DbError.ToString(), ex);
             }
             finally
             {
@@ -103,7 +103,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString());
+                throw new Exception(StateCode.DbError.ToString(), ex);
             }
             finally
             {
@@ -146,7 +146,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString());
+                throw new Exception(StateCode.DbError.ToString(), ex);
             }
             finally
             {
@@ -175,7 +175,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString());
+                throw new Exception(StateCode.DbError.ToString(), ex);
             }
             finally
             {

@@ -41,7 +41,7 @@ namespace ShoppingMall.Api.Commodity
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString());
+                throw new Exception(StateCode.DbError.ToString(), ex);
             }
             finally
             {
