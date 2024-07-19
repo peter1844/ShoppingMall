@@ -11,7 +11,7 @@
                     <option v-for="item in optionData" :key="item.CommodityId" :value="item.CommodityId">{{ item.CommodityName }}</option>
                 </select>
 
-                <input type="button" class="btn search" value="查 詢">
+                <input type="button" class="btn search" value="查 詢" @click="GetCommodityDataByCondition()">
             </div>
             <br/><br/>
 
@@ -23,6 +23,7 @@
                 <thead>
                     <tr>
                         <th class="sort" @click="SortBy('Name')">商品名稱</th>
+                        <th class="sort" @click="SortBy('CommodityName')">商品類型</th>
                         <th class="sort" @click="SortBy('Price')">價格</th>
                         <th class="sort" @click="SortBy('Stock')">庫存量</th>
                         <th>操作</th>
@@ -31,6 +32,7 @@
                 <tbody>
                     <tr v-for="item in sortedItems" :key="item.Id">
                         <td>{{ item.Name }}</td>
+                        <td>{{ item.CommodityName }}</td>
                         <td>{{ item.Price }}</td>
                         <td>{{ item.Stock }}</td>
                         <td>
@@ -122,8 +124,7 @@
         async GetCommodityData() {
             await fetch('/api/commodity/getCommodityData', {
                 headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
+                    'token': localStorage.getItem('token')
                 },
             }).then((response) => {
                 return response.json()
@@ -146,6 +147,51 @@
                     })
                 }
             }).catch((error) => {
+                Swal.fire({
+                    text: '系統異常，請稍後再試',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+            })
+        },
+        async GetCommodityDataByCondition() {
+
+            const params = new URLSearchParams();
+            params.append('Name', this.conditionName);
+            params.append('Type', this.conditionType);
+
+            await fetch(`/api/commodity/getCommodityData?${params.toString()}`, {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                }
+            }).then((response) => {
+                return response.json()
+            }).then((myJson) => {
+                if (myJson.ErrorMessage === undefined) {
+                    Swal.fire({
+                        text: '查詢成功',
+                        icon: "success",
+                        confirmButtonText: '確認'
+                    })
+
+                    this.commodityData = myJson;
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        window.location.href = '/Views/Login.aspx';
+                    });
+                } else {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+                }
+            }).catch((error) => {
+                console.log(error.message);
                 Swal.fire({
                     text: '系統異常，請稍後再試',
                     icon: "error",
@@ -243,42 +289,23 @@
         },
         async UpdateCommodity() {
 
-            if (this.adminName == '' || this.roles.length == 0) {
-                Swal.fire({
-                    text: '尚有必填欄位未填',
-                    icon: "error",
-                    confirmButtonText: '確認'
-                });
+            const formData = new FormData();
 
-                return false;
-            }
+            formData.append('CommodityId', this.commodityId);
+            formData.append('Name', this.commodityName);
+            formData.append('Description', this.description);
+            formData.append('Type', this.type);
+            formData.append('Price', this.price);
+            formData.append('Stock', this.stock);
+            formData.append('Open', this.open);
+            formData.append('ImageFile', this.uploadFile);
 
-            const validCharacters = /^[a-zA-Z0-9]+$/;
-            if (!validCharacters.test(this.acc) || (this.pwd != '' && !validCharacters.test(this.pwd) )) {
-                Swal.fire({
-                    text: '帳號或密碼不得有特殊字元',
-                    icon: "error",
-                    confirmButtonText: '確認'
-                })
-
-                return false;
-            }
-
-            const data = {
-                AdminId: this.adminId,
-                Name: this.adminName,
-                Pwd: this.pwd,
-                Roles: this.roles,
-                Enabled: this.enabled
-            };
-
-            await fetch('/api/admin/updateAdminData', {
+            await fetch('/api/commodity/updateCommodityData', {
                 method: 'PUT',
                 headers: {
                     'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data)
+                body: formData
             }).then((response) => {
                 this.showPopup = false;
 

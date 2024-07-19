@@ -13,7 +13,7 @@ namespace ShoppingMall.Api.Commodity
 {
     public class CommodityProccess : ShoppingMall.Base.Base
     {
-        public List<CommodityDataDtoResponse> GetAllCommodityData()
+        public List<CommodityDataDtoResponse> GetCommodityData(ConditionDataDto conditionData)
         {
             List<CommodityDataDtoResponse> commodityData = new List<CommodityDataDtoResponse>();
 
@@ -23,7 +23,11 @@ namespace ShoppingMall.Api.Commodity
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_getAllCommodityData";
+                command.CommandText = "EXEC pro_bkg_getCommodityData @name,@type";
+
+                command.Parameters.AddWithValue("@name", conditionData.Name);
+                command.Parameters.AddWithValue("@type", conditionData.Type);
+
                 command.Connection.Open();
 
                 da.SelectCommand = command;
@@ -43,6 +47,7 @@ namespace ShoppingMall.Api.Commodity
                             Price = Convert.ToInt32(dt.Rows[i]["f_price"]),
                             Stock = Convert.ToInt32(dt.Rows[i]["f_stock"]),
                             Open = Convert.ToInt32(dt.Rows[i]["f_open"]),
+                            CommodityName = dt.Rows[i]["CommodityName"].ToString()
                         });
                     }
                 }
@@ -89,6 +94,38 @@ namespace ShoppingMall.Api.Commodity
             }
 
         }
+        public bool UpdateCommodityData(UpdateCommodityDataDto updateData)
+        {
+            SqlCommand command = MsSqlConnection();
+
+            try
+            {
+                command.CommandText = "EXEC pro_bkg_updateCommodityData @commodityId,@name,@description,@type,@image,@price,@stock,@open";
+
+                command.Parameters.AddWithValue("@commodityId", updateData.CommodityId);
+                command.Parameters.AddWithValue("@name", updateData.Name);
+                command.Parameters.AddWithValue("@description", updateData.Description);
+                command.Parameters.AddWithValue("@type", updateData.Type);
+                command.Parameters.AddWithValue("@image", updateData.ImagePath);
+                command.Parameters.AddWithValue("@price", updateData.Price);
+                command.Parameters.AddWithValue("@stock", updateData.Stock);
+                command.Parameters.AddWithValue("@open", updateData.Open);
+
+                command.Connection.Open();
+                command.ExecuteNonQuery();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(StateCode.DbError.ToString(), ex);
+            }
+            finally
+            {
+                command.Connection.Close(); //關閉連線
+            }
+
+        }
         public bool CheckInsertInputData(HttpRequest insertData)
         {
             string rule = @"^[1-9]\d*$";
@@ -99,6 +136,19 @@ namespace ShoppingMall.Api.Commodity
             if (insertData.Form["Name"].Length > 50 || insertData.Form["Description"].Length > 200) return false;
             if (!Regex.IsMatch(insertData.Form["Price"], rule) || !Regex.IsMatch(insertData.Form["Stock"], rule)) return false;
             if (insertData.Files.Count > 0 && !allowedExtensions.Contains(insertData.Files[0].ContentType)) return false;
+
+            return true;
+        }
+        public bool CheckUpdateInputData(HttpRequest updateData)
+        {
+            string rule = @"^[1-9]\d*$";
+            string[] allowedExtensions = { "image/jpeg", "image/png", "image/gif" };
+
+            if (string.IsNullOrEmpty(updateData.Form["Name"]) || string.IsNullOrEmpty(updateData.Form["Description"]) || string.IsNullOrEmpty(updateData.Form["Type"]) || string.IsNullOrEmpty(updateData.Form["Price"]) || string.IsNullOrEmpty(updateData.Form["Stock"]) || string.IsNullOrEmpty(updateData.Form["Open"])) return false;
+            if (Convert.ToInt32(updateData.Form["Open"]) < 0 || Convert.ToInt32(updateData.Form["Open"]) > 1) return false;
+            if (updateData.Form["Name"].Length > 50 || updateData.Form["Description"].Length > 200) return false;
+            if (!Regex.IsMatch(updateData.Form["Price"], rule) || !Regex.IsMatch(updateData.Form["Stock"], rule)) return false;
+            if (updateData.Files.Count > 0 && !allowedExtensions.Contains(updateData.Files[0].ContentType)) return false;
 
             return true;
         }
