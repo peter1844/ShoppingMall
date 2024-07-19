@@ -82,5 +82,10 @@
     <Build Include="dbo\Stored Procedures\pro_bkg_getAllAdminData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_deleteAdminData.sql" />
     <Build Include="dbo\User Defined Types\adminUserRoleTempType.sql" />
+    <Build Include="dbo\Tables\t_orderMain.sql" />
+    <Build Include="dbo\Tables\t_orderDetail.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_updateCommodityData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_insertCommodityData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_getCommodityData.sql" />
   </ItemGroup>
 </Project>
