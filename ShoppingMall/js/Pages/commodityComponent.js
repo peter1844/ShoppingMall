@@ -235,6 +235,27 @@
         },
         async InsertCommodity() {
 
+            if (this.commodityName == '' || this.type == '' || this.price == '' || this.stock == '') {
+                Swal.fire({
+                    text: '尚有必填欄位未填',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                });
+
+                return false;
+            }
+
+            const validCharacters = /^[1-9][0-9]*$/;
+            if (!validCharacters.test(this.price) || !validCharacters.test(this.stock)) {
+                Swal.fire({
+                    text: '價格或庫存量格式錯誤',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+
+                return false;
+            }
+
             const formData = new FormData();
 
             formData.append('Name', this.commodityName);
@@ -288,6 +309,27 @@
             })
         },
         async UpdateCommodity() {
+
+            if (this.commodityName == '' || this.type == '' || this.price == '' || this.stock == '') {
+                Swal.fire({
+                    text: '尚有必填欄位未填',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                });
+
+                return false;
+            }
+
+            const validCharacters = /^[1-9][0-9]*$/;
+            if (!validCharacters.test(this.price) || !validCharacters.test(this.stock)) {
+                Swal.fire({
+                    text: '價格或庫存量格式錯誤',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+
+                return false;
+            }
 
             const formData = new FormData();
 

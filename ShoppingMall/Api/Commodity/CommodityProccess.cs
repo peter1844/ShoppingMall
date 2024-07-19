@@ -131,7 +131,7 @@ namespace ShoppingMall.Api.Commodity
             string rule = @"^[1-9]\d*$";
             string[] allowedExtensions = { "image/jpeg", "image/png", "image/gif" };
 
-            if (string.IsNullOrEmpty(insertData.Form["Name"]) || string.IsNullOrEmpty(insertData.Form["Description"]) || string.IsNullOrEmpty(insertData.Form["Type"]) || string.IsNullOrEmpty(insertData.Form["Price"]) || string.IsNullOrEmpty(insertData.Form["Stock"]) || string.IsNullOrEmpty(insertData.Form["Open"])) return false;
+            if (string.IsNullOrEmpty(insertData.Form["Name"]) || string.IsNullOrEmpty(insertData.Form["Type"]) || string.IsNullOrEmpty(insertData.Form["Price"]) || string.IsNullOrEmpty(insertData.Form["Stock"]) || string.IsNullOrEmpty(insertData.Form["Open"])) return false;
             if (Convert.ToInt32(insertData.Form["Open"]) < 0 || Convert.ToInt32(insertData.Form["Open"]) > 1) return false;
             if (insertData.Form["Name"].Length > 50 || insertData.Form["Description"].Length > 200) return false;
             if (!Regex.IsMatch(insertData.Form["Price"], rule) || !Regex.IsMatch(insertData.Form["Stock"], rule)) return false;
@@ -144,7 +144,7 @@ namespace ShoppingMall.Api.Commodity
             string rule = @"^[1-9]\d*$";
             string[] allowedExtensions = { "image/jpeg", "image/png", "image/gif" };
 
-            if (string.IsNullOrEmpty(updateData.Form["Name"]) || string.IsNullOrEmpty(updateData.Form["Description"]) || string.IsNullOrEmpty(updateData.Form["Type"]) || string.IsNullOrEmpty(updateData.Form["Price"]) || string.IsNullOrEmpty(updateData.Form["Stock"]) || string.IsNullOrEmpty(updateData.Form["Open"])) return false;
+            if (string.IsNullOrEmpty(updateData.Form["Name"]) || string.IsNullOrEmpty(updateData.Form["Type"]) || string.IsNullOrEmpty(updateData.Form["Price"]) || string.IsNullOrEmpty(updateData.Form["Stock"]) || string.IsNullOrEmpty(updateData.Form["Open"])) return false;
             if (Convert.ToInt32(updateData.Form["Open"]) < 0 || Convert.ToInt32(updateData.Form["Open"]) > 1) return false;
             if (updateData.Form["Name"].Length > 50 || updateData.Form["Description"].Length > 200) return false;
             if (!Regex.IsMatch(updateData.Form["Price"], rule) || !Regex.IsMatch(updateData.Form["Stock"], rule)) return false;
