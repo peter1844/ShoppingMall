@@ -6,6 +6,7 @@ using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
 using System.Web.Http;
 
@@ -76,6 +77,12 @@ namespace ShoppingMall.Controllers
                     {
                         HttpPostedFile files = request.Files[0];
                         string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+
+                        if (!Directory.Exists(HttpContext.Current.Server.MapPath("~/images/commodity/")))
+                        {
+                            Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~/images/commodity"));
+                        }
+
                         files.SaveAs(HttpContext.Current.Server.MapPath($"~/images/commodity/{timestamp}_" + files.FileName));
                         filePath = $"/images/commodity/{timestamp}_{files.FileName}";
                     }
