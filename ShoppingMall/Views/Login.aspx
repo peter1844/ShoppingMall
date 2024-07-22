@@ -9,11 +9,11 @@
 
     <script src="/js/vue.js" type="text/javascript"></script>
     <script src="/js/vue-i18n.js" type="text/javascript"></script>
-    <script src="/js/Lang/tw.js" type="text/javascript"></script>
-    <script src="/js/Lang/en.js" type="text/javascript"></script>
+    <script src="/js/lang/Tw.js" type="text/javascript"></script>
+    <script src="/js/lang/En.js" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
 
-    <script src="/js/pages/loginComponent.js" type="text/javascript"></script>
+    <script src="/js/pages/LoginComponent.js" type="text/javascript"></script>
 
     <link href="/css/pages/login.css" rel="stylesheet" type="text/css"/>
 </head>
