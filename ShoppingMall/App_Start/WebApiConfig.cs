@@ -14,6 +14,8 @@ namespace ShoppingMall
 
             // Web API 路由
             config.MapHttpAttributeRoutes();
+
+            // Web API攔截
             config.MessageHandlers.Add(new TokenValidationHandler());
 
             config.Routes.MapHttpRoute(

@@ -9,6 +9,9 @@ namespace ShoppingMall.Api.Member
 {
     public class MemberProccess : ShoppingMall.Base.Base
     {
+        /// <summary>
+        /// 取得所有會員資料
+        /// </summary>
         public List<MemberDataDtoResponse> GetAllMemberData()
         {
             List<MemberDataDtoResponse> memberData = new List<MemberDataDtoResponse>();
@@ -51,6 +54,10 @@ namespace ShoppingMall.Api.Member
                 command.Connection.Close(); //關閉連線
             }
         }
+
+        /// <summary>
+        /// 編輯會員資料
+        /// </summary>
         public bool UpdateMemberData(UpdateMemberDataDto updateData)
         {
             SqlCommand command = MsSqlConnection();
@@ -78,10 +85,16 @@ namespace ShoppingMall.Api.Member
             }
 
         }
+
+        /// <summary>
+        /// 檢查編輯會員的傳入參數
+        /// </summary>
         public bool CheckUpdateInputData(UpdateMemberDataDto updateData)
         {
+            // 檢查是否有效的參數是否合法
             if (updateData.Enabled < 0 || updateData.Enabled > 1) return false;
-            if (updateData.Level < 1 || updateData.Enabled > 5) return false;
+            // 檢查會員等級的參數是否合法
+            if (updateData.Level < 1 || updateData.Level > 5) return false;
 
             return true;
         }

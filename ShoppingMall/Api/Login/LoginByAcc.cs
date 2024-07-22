@@ -11,6 +11,9 @@ namespace ShoppingMall.Api.Login
 {
     public class LoginByAcc : ShoppingMall.Base.Base
     {
+        /// <summary>
+        /// 用帳號密碼檢查登入
+        /// </summary>
         public List<AdminUserDataDtoResponse> CheckLoginByAccountPassword(LoginDataDto loginData)
         {
             List<AdminUserDataDtoResponse> adminUserData = new List<AdminUserDataDtoResponse>();
@@ -58,12 +61,19 @@ namespace ShoppingMall.Api.Login
                 command.Connection.Close(); //關閉連線
             }
         }
+
+        /// <summary>
+        /// 檢查登入的傳入參數
+        /// </summary>
         public bool CheckInputData(LoginDataDto loginData)
         {
             string rule = @"^[a-zA-Z0-9]+$";
 
+            // 檢查帳號、密碼是否為空
             if (string.IsNullOrEmpty(loginData.Acc) || string.IsNullOrEmpty(loginData.Pwd)) return false;
+            // 檢查帳號、密碼長度是否合法
             if (loginData.Acc.Length > 16 || loginData.Pwd.Length > 16) return false;
+            // 檢查帳號、密碼是否有非法字元
             if (!Regex.IsMatch(loginData.Acc, rule) || !Regex.IsMatch(loginData.Pwd, rule)) return false;
 
             return true;

@@ -15,15 +15,18 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/commodity")]
     public class CommodityController : ApiController
     {
-        private CommodityProccess CommodityProccessClass;
-        private CommodityOption CommodityOptionClass;
+        private CommodityProccess commodityProccessClass;
+        private CommodityOption commodityOptionClass;
 
         public CommodityController()
         {
-            CommodityProccessClass = new CommodityProccess();
-            CommodityOptionClass = new CommodityOption();
+            commodityProccessClass = new CommodityProccess();
+            commodityOptionClass = new CommodityOption();
         }
 
+        /// <summary>
+        /// 取得商品資料
+        /// </summary>
         [Route("getCommodityData")]
         [HttpGet]
         public IHttpActionResult GetCommodityData()
@@ -39,7 +42,7 @@ namespace ShoppingMall.Controllers
                     Type = string.IsNullOrEmpty(request.QueryString["Type"]) ? 0 : Convert.ToInt32(request.QueryString["Type"])
                 });
 
-                List<CommodityDataDtoResponse> commodityData = CommodityProccessClass.GetCommodityData(conditionData[0]);
+                List<CommodityDataDtoResponse> commodityData = commodityProccessClass.GetCommodityData(conditionData[0]);
 
                 return Ok(commodityData);
             }
@@ -48,13 +51,17 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 取得商品頁面的選項
+        /// </summary>
         [Route("getCommodityOptionData")]
         [HttpGet]
         public IHttpActionResult GetCommodityOptionData()
         {
             try
             {
-                List<CommodityOptionDataDtoResponse> adminOptionData = CommodityOptionClass.GetAllCommodityOptionData();
+                List<CommodityOptionDataDtoResponse> adminOptionData = commodityOptionClass.GetAllCommodityOptionData();
 
                 return Ok(adminOptionData);
             }
@@ -63,6 +70,10 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 新增商品資料
+        /// </summary>
         [Route("insertCommodityData")]
         [HttpPost]
         public IHttpActionResult InsertCommodityData()
@@ -71,7 +82,7 @@ namespace ShoppingMall.Controllers
             {
                 HttpRequest request = HttpContext.Current.Request;
 
-                bool inputVaild = CommodityProccessClass.CheckInsertInputData(request);
+                bool inputVaild = commodityProccessClass.CheckInsertInputData(request);
 
                 if (inputVaild)
                 {
@@ -103,7 +114,7 @@ namespace ShoppingMall.Controllers
                         ImagePath = filePath
                     });
 
-                    bool result = CommodityProccessClass.InsertCommodityData(insertData[0]);
+                    bool result = commodityProccessClass.InsertCommodityData(insertData[0]);
 
                     return Ok(true);
                 }
@@ -117,6 +128,10 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 編輯商品資料
+        /// </summary>
         [Route("updateCommodityData")]
         [HttpPut]
         public IHttpActionResult UpdateCommodityData()
@@ -125,7 +140,7 @@ namespace ShoppingMall.Controllers
             {
                 HttpRequest request = HttpContext.Current.Request;
 
-                bool inputVaild = CommodityProccessClass.CheckUpdateInputData(request);
+                bool inputVaild = commodityProccessClass.CheckUpdateInputData(request);
 
                 if (inputVaild)
                 {
@@ -158,7 +173,7 @@ namespace ShoppingMall.Controllers
                         ImagePath = filePath
                     });
 
-                    bool result = CommodityProccessClass.UpdateCommodityData(updateData[0]);
+                    bool result = commodityProccessClass.UpdateCommodityData(updateData[0]);
 
                     return Ok(result);
                 }

@@ -120,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\Commons\menu.css" />
+    <Content Include="css\Pages\order.css" />
     <Content Include="css\Pages\commodity.css" />
     <Content Include="css\Pages\admin.css" />
     <Content Include="css\Pages\index.css" />
@@ -127,22 +128,12 @@
     <Content Include="css\Pages\member.css" />
     <Content Include="Global.asax" />
     <Content Include="images\Zgmf-X20a.jpg" />
-    <Content Include="js\Commons\menuComponent.js" />
-    <Content Include="js\Lang\tw.js" />
-    <Content Include="js\Lang\en.js" />
-    <Content Include="js\Pages\commodityComponent.js" />
-    <Content Include="js\Pages\adminComponent.js" />
-    <Content Include="js\Pages\indexComponent.js" />
-    <Content Include="js\Pages\loginComponent.js" />
-    <Content Include="js\Pages\memberComponent.js" />
-    <Content Include="js\SweetAlert2.js" />
-    <Content Include="js\vue-i18n.js" />
-    <Content Include="js\vue.js" />
     <Content Include="Views\Admin.aspx" />
     <Content Include="Views\Commodity.aspx" />
     <Content Include="Views\Index.aspx" />
     <Content Include="Views\Login.aspx" />
     <Content Include="Views\Member.aspx" />
+    <Content Include="Views\Order.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -154,10 +145,12 @@
     <Compile Include="Api\Login\LoginByToken.cs" />
     <Compile Include="Api\Logout\Logout.cs" />
     <Compile Include="Api\Member\MemberProccess.cs" />
+    <Compile Include="Api\Order\OrderOption.cs" />
     <Compile Include="App_Code\Tools.cs" />
     <Compile Include="App_Start\TokenValidationHandler.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Base\Base.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\CommodityController.cs" />
     <Compile Include="Controllers\MemberController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
@@ -174,6 +167,7 @@
     <Compile Include="Models\Login\Login.cs" />
     <Compile Include="Models\Login\LoginByAcc.cs" />
     <Compile Include="Models\Member\Member.cs" />
+    <Compile Include="Models\Order\OrderOption.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Admin.aspx.cs">
       <DependentUpon>Admin.aspx</DependentUpon>
@@ -209,6 +203,13 @@
     </Compile>
     <Compile Include="Views\Member.aspx.designer.cs">
       <DependentUpon>Member.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Order.aspx.cs">
+      <DependentUpon>Order.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Order.aspx.designer.cs">
+      <DependentUpon>Order.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

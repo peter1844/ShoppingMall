@@ -9,6 +9,9 @@ namespace ShoppingMall.Api.Admin
 {
     public class AdminOption : ShoppingMall.Base.Base
     {
+        /// <summary>
+        /// 取得管理者帳號頁面所需的選項
+        /// </summary>
         public List<AdminOptionDataDtoResponse> GetAllAdminOptionData()
         {
             List<AdminOptionDataDtoResponse> adminOptionData = new List<AdminOptionDataDtoResponse>();

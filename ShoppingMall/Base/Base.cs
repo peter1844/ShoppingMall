@@ -22,6 +22,10 @@ namespace ShoppingMall.Base
             KEY = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["AesKey"]);
             IV = Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["AesIv"]);
         }
+
+        /// <summary>
+        /// 取得Redis連線
+        /// </summary>
         public ConnectionMultiplexer RedisConnection()
         {
             if (Redis == null || !Redis.IsConnected)
@@ -31,6 +35,10 @@ namespace ShoppingMall.Base
 
             return Redis;
         }
+
+        /// <summary>
+        /// 取得MSSQL連線
+        /// </summary>
         public SqlCommand MsSqlConnection() 
         {
             Command = new SqlCommand(); //宣告SqlCommand物件
@@ -38,6 +46,10 @@ namespace ShoppingMall.Base
 
             return Command;
         }
+
+        /// <summary>
+        /// AES加密
+        /// </summary>
         public string AesEncrypt(string encryptData)
         {
             byte[] encrypted;
@@ -69,6 +81,10 @@ namespace ShoppingMall.Base
 
             return Convert.ToBase64String(encrypted);
         }
+
+        /// <summary>
+        /// AES解密
+        /// </summary>
         public string AesDecrypt(string decryptData)
         {
             byte[] cipherText = Convert.FromBase64String(decryptData);
@@ -100,6 +116,10 @@ namespace ShoppingMall.Base
 
             return plainText;
         }
+
+        /// <summary>
+        /// 隨機產生N位數的字串
+        /// </summary>
         public string GenerateRandomBytes(int length)
         {
             byte[] randomBytes = new byte[length];

@@ -12,26 +12,29 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/login")]
     public class LoginController : ApiController
     {
-        private LoginByAcc LoginByAccClass;
-        private LoginByToken LoginByTokenClass;
+        private LoginByAcc loginByAccClass;
+        private LoginByToken loginByTokenClass;
 
         public LoginController()
         {
-            LoginByAccClass = new LoginByAcc();
-            LoginByTokenClass = new LoginByToken();
+            loginByAccClass = new LoginByAcc();
+            loginByTokenClass = new LoginByToken();
         }
 
+        /// <summary>
+        /// 用帳號密碼檢查登入
+        /// </summary>
         [Route("checkLoginByAccPwd")]
         [HttpPost]
         public IHttpActionResult LoginByAccountPassword([FromBody] LoginDataDto loginData)
         {
             try
             {
-                bool inputVaild = LoginByAccClass.CheckInputData(loginData);
+                bool inputVaild = loginByAccClass.CheckInputData(loginData);
 
                 if (inputVaild)
                 {
-                    List<AdminUserDataDtoResponse> adminUserData = LoginByAccClass.CheckLoginByAccountPassword(loginData);
+                    List<AdminUserDataDtoResponse> adminUserData = loginByAccClass.CheckLoginByAccountPassword(loginData);
 
                     if (adminUserData.Count == 0)
                     {
@@ -53,13 +56,16 @@ namespace ShoppingMall.Controllers
             }
         }
 
+        /// <summary>
+        /// 用Token檢查登入
+        /// </summary>
         [Route("checkLoginByToken")]
         [HttpGet]
         public IHttpActionResult LoginByToken()
         {
             try
             {
-                bool checkResult = LoginByTokenClass.CheckLoginByToken();
+                bool checkResult = loginByTokenClass.CheckLoginByToken();
 
                 if (checkResult)
                 {

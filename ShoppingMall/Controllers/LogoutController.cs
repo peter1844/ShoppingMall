@@ -8,19 +8,23 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/logout")]
     public class LogoutController : ApiController
     {
-        private Logout LogoutClass;
+        private Logout logoutClass;
 
         public LogoutController() {
-            LogoutClass = new Logout();
+            logoutClass = new Logout();
         }
 
+        /// <summary>
+        /// 登出功能
+        /// </summary>
+        /// <returns></returns>
         [Route("logout")]
         [HttpGet]
         public IHttpActionResult LogoutProccess()
         {
             try
             {
-                LogoutClass.LogoutProccess();
+                logoutClass.LogoutProccess();
 
                 return Ok(true);
             }

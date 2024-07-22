@@ -13,6 +13,9 @@ namespace ShoppingMall.Api.Admin
 {
     public class AdminProccess : ShoppingMall.Base.Base
     {
+        /// <summary>
+        /// 取得所有管理者資料
+        /// </summary>
         public List<AdminUserDataDtoResponse> GetAllAdminUserData()
         {
             List<AdminUserDataDtoResponse> adminUserData = new List<AdminUserDataDtoResponse>();
@@ -69,6 +72,10 @@ namespace ShoppingMall.Api.Admin
                 command.Connection.Close(); //關閉連線
             }
         }
+
+        /// <summary>
+        /// 新增管理者資料
+        /// </summary>
         public bool InsertAdminData(InsertAdminDataDto insertData)
         {
             SqlCommand command = MsSqlConnection();
@@ -111,6 +118,10 @@ namespace ShoppingMall.Api.Admin
             }
             
         }
+
+        /// <summary>
+        /// 編輯管理者資料
+        /// </summary>
         public bool UpdateAdminData(UpdateAdminDataDto updateData)
         {
             SqlCommand command = MsSqlConnection();
@@ -154,6 +165,10 @@ namespace ShoppingMall.Api.Admin
             }
 
         }
+
+        /// <summary>
+        /// 刪除管理者資料
+        /// </summary>
         public bool DeleteAdminData(DeleteAdminDataDto deleteData)
         {
             SqlCommand command = MsSqlConnection();
@@ -183,30 +198,51 @@ namespace ShoppingMall.Api.Admin
             }
 
         }
+
+        /// <summary>
+        /// 檢查新增管理者資料的傳入參數
+        /// </summary>
         public bool CheckInsertInputData(InsertAdminDataDto insertData)
         {
             string rule = @"^[a-zA-Z0-9]+$";
 
+            // 檢查帳號、密碼、名字、角色是否為空
             if (string.IsNullOrEmpty(insertData.Acc) || string.IsNullOrEmpty(insertData.Pwd) || string.IsNullOrEmpty(insertData.Name) || insertData.Roles.Count == 0) return false;
+            // 檢查是否有效的參數是否正確
             if (insertData.Enabled < 0 || insertData.Enabled > 1) return false;
+            // 檢查帳號、密碼、名字的長度是否正確
             if (insertData.Acc.Length > 16 || insertData.Pwd.Length > 16 || insertData.Name.Length > 20) return false;
+            // 檢查帳號、密碼是否有非法字元
             if (!Regex.IsMatch(insertData.Acc, rule) || !Regex.IsMatch(insertData.Pwd, rule)) return false;
 
             return true;
         }
+
+        /// <summary>
+        /// 檢查編輯管理者資料的傳入參數
+        /// </summary>
         public bool CheckUpdateInputData(UpdateAdminDataDto updateData)
         {
             string rule = @"^[a-zA-Z0-9]+$";
 
+            // 檢查名字、角色是否為空
             if (string.IsNullOrEmpty(updateData.Name) || updateData.Roles.Count == 0) return false;
+            // 檢查是否有效的參數是否正確
             if (updateData.Enabled < 0 || updateData.Enabled > 1) return false;
+            // 檢查密碼、名字的長度是否正確
             if (updateData.Pwd.Length > 16 || updateData.Name.Length > 20) return false;
+            // 檢查密碼是否有非法字元
             if (!string.IsNullOrEmpty(updateData.Pwd) && !Regex.IsMatch(updateData.Pwd, rule)) return false;
 
             return true;
         }
+
+        /// <summary>
+        /// 檢查刪除管理者資料的傳入參數
+        /// </summary>
         public bool CheckDeleteInputData(DeleteAdminDataDto deleteData)
         {
+            // 檢查管理者編號是否合法
             if (deleteData.AdminId <= 0) return false;
 
             return true;

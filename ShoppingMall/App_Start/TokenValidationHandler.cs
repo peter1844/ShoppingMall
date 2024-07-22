@@ -27,8 +27,10 @@ public class TokenValidationHandler : DelegatingHandler
         IEnumerable<string> authHeaders;
         HttpContext context = HttpContext.Current;
 
+        // 檢查請求來源是否忽略不需檢查
         if (!IsIgnorePath(request.RequestUri))
         {
+            // 檢查Header有沒有帶Token
             if (request.Headers.TryGetValues("token", out authHeaders))
             {
                 string token = authHeaders.FirstOrDefault();

@@ -4,6 +4,9 @@ namespace ShoppingMall.Api.Logout
 {
     public class Logout : ShoppingMall.Base.Base
     {
+        /// <summary>
+        /// 登出功能
+        /// </summary>
         public void LogoutProccess() {
             
             HttpContext context = HttpContext.Current;

@@ -11,20 +11,23 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/member")]
     public class MemberController : ApiController
     {
-        private MemberProccess MemberProccessClass;
+        private MemberProccess memberProccessClass;
 
         public MemberController()
         {
-            MemberProccessClass = new MemberProccess();
+            memberProccessClass = new MemberProccess();
         }
 
+        /// <summary>
+        /// 取得會員資料
+        /// </summary>
         [Route("getMemberData")]
         [HttpGet]
         public IHttpActionResult GetMemberData()
         {
             try
             {
-                List<MemberDataDtoResponse> memberData = MemberProccessClass.GetAllMemberData();
+                List<MemberDataDtoResponse> memberData = memberProccessClass.GetAllMemberData();
 
                 return Ok(memberData);
             }
@@ -33,17 +36,21 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 編輯會員資料
+        /// </summary>
         [Route("updateMemberData")]
         [HttpPut]
         public IHttpActionResult UpdateMemberData([FromBody] UpdateMemberDataDto updateData)
         {
             try
             {
-                bool inputVaild = MemberProccessClass.CheckUpdateInputData(updateData);
+                bool inputVaild = memberProccessClass.CheckUpdateInputData(updateData);
 
                 if (inputVaild)
                 {
-                    bool result = MemberProccessClass.UpdateMemberData(updateData);
+                    bool result = memberProccessClass.UpdateMemberData(updateData);
 
                     return Ok(result);
                 }

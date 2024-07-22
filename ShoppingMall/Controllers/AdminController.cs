@@ -11,22 +11,25 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/admin")]
     public class AdminController : ApiController
     {
-        private AdminProccess AdminProccessClass;
-        private AdminOption AdminOptionClass;
+        private AdminProccess adminProccessClass;
+        private AdminOption adminOptionClass;
 
         public AdminController()
         {
-            AdminProccessClass = new AdminProccess();
-            AdminOptionClass = new AdminOption();
+            adminProccessClass = new AdminProccess();
+            adminOptionClass = new AdminOption();
         }
 
+        /// <summary>
+        /// 取得管理者資料
+        /// </summary>
         [Route("getAdminData")]
         [HttpGet]
         public IHttpActionResult GetAdminData()
         {
             try
             {
-                List<AdminUserDataDtoResponse> adminUserData = AdminProccessClass.GetAllAdminUserData();
+                List<AdminUserDataDtoResponse> adminUserData = adminProccessClass.GetAllAdminUserData();
 
                 return Ok(adminUserData);
             }
@@ -35,13 +38,18 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 取得管理者頁面所需的選項
+        /// </summary>
+        /// <returns></returns>
         [Route("getAdminOptionData")]
         [HttpGet]
         public IHttpActionResult GetAdminOptionData()
         {
             try
             {
-                List<AdminOptionDataDtoResponse> adminOptionData = AdminOptionClass.GetAllAdminOptionData();
+                List<AdminOptionDataDtoResponse> adminOptionData = adminOptionClass.GetAllAdminOptionData();
 
                 return Ok(adminOptionData);
             }
@@ -50,17 +58,21 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 新增管理者資料
+        /// </summary>
         [Route("insertAdminData")]
         [HttpPost]
         public IHttpActionResult InsertAdminData([FromBody] InsertAdminDataDto insertData)
         {
             try
             {
-                bool inputVaild = AdminProccessClass.CheckInsertInputData(insertData);
+                bool inputVaild = adminProccessClass.CheckInsertInputData(insertData);
 
                 if (inputVaild)
                 {
-                    bool result = AdminProccessClass.InsertAdminData(insertData);
+                    bool result = adminProccessClass.InsertAdminData(insertData);
 
                     return Ok(result);
                 }
@@ -74,17 +86,21 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 編輯管理者資料
+        /// </summary>
         [Route("updateAdminData")]
         [HttpPut]
         public IHttpActionResult UpdateAdminData([FromBody] UpdateAdminDataDto updateData)
         {
             try
             {
-                bool inputVaild = AdminProccessClass.CheckUpdateInputData(updateData);
+                bool inputVaild = adminProccessClass.CheckUpdateInputData(updateData);
 
                 if (inputVaild)
                 {
-                    bool result = AdminProccessClass.UpdateAdminData(updateData);
+                    bool result = adminProccessClass.UpdateAdminData(updateData);
 
                     return Ok(result);
                 }
@@ -98,17 +114,21 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 刪除管理者資料
+        /// </summary>
         [Route("deleteAdminData")]
         [HttpDelete]
         public IHttpActionResult DeleteAdminData([FromBody] DeleteAdminDataDto deleteData)
         {
             try
             {
-                bool inputVaild = AdminProccessClass.CheckDeleteInputData(deleteData);
+                bool inputVaild = adminProccessClass.CheckDeleteInputData(deleteData);
 
                 if (inputVaild)
                 {
-                    bool result = AdminProccessClass.DeleteAdminData(deleteData);
+                    bool result = adminProccessClass.DeleteAdminData(deleteData);
 
                     return Ok(result);
                 }

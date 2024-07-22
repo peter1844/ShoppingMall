@@ -9,6 +9,9 @@ namespace ShoppingMall.Api.Commodity
 {
     public class CommodityOption : ShoppingMall.Base.Base
     {
+        /// <summary>
+        /// 取得商品管理頁面所需的選項
+        /// </summary>
         public List<CommodityOptionDataDtoResponse> GetAllCommodityOptionData()
         {
             List<CommodityOptionDataDtoResponse> commodityOptionData = new List<CommodityOptionDataDtoResponse>();
