@@ -418,7 +418,7 @@
             this.type = updateData.Type;
             this.uploadFile = '';
             this.imagePath = updateData.Image;
-            this.showImage = this.imagePath == '/images/commodity/' ? false : true;
+            this.showImage = this.imagePath == '' ? false : true;
             this.price = updateData.Price;
             this.stock = updateData.Stock;
             this.open = updateData.Open;

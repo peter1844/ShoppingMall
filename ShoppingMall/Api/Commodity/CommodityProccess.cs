@@ -48,7 +48,7 @@ namespace ShoppingMall.Api.Commodity
                             Name = dt.Rows[i]["f_name"].ToString(),
                             Description = dt.Rows[i]["f_description"].ToString(),
                             Type = Convert.ToInt32(dt.Rows[i]["f_typeId"]),
-                            Image = $"/images/commodity/{dt.Rows[i]["f_image"].ToString()}",
+                            Image = string.IsNullOrEmpty(dt.Rows[i]["f_image"].ToString()) ? "" : $"/images/commodity/{dt.Rows[i]["f_image"].ToString()}",
                             Price = Convert.ToInt32(dt.Rows[i]["f_price"]),
                             Stock = Convert.ToInt32(dt.Rows[i]["f_stock"]),
                             Open = Convert.ToInt32(dt.Rows[i]["f_open"]),
