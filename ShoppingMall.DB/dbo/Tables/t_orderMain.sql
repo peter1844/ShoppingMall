@@ -2,11 +2,15 @@
     [f_id]           VARCHAR (40) NOT NULL,
     [f_memberId]     INT          NOT NULL,
     [f_date]         DATE         NOT NULL,
+    [f_payType]      SMALLINT     NOT NULL,
+    [f_payState]     TINYINT      NOT NULL,
     [f_deliverType]  SMALLINT     NOT NULL,
     [f_deliverState] TINYINT      NOT NULL,
     [f_totalMoney]   INT          NOT NULL,
     CONSTRAINT [PK_t_orderMain] PRIMARY KEY CLUSTERED ([f_id] ASC)
 );
+
+
 
 
 GO
@@ -31,4 +35,12 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'會員-關�
 
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'訂單編號', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_orderMain', @level2type = N'COLUMN', @level2name = N'f_id';
+
+
+GO
+EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'付款方式', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_orderMain', @level2type = N'COLUMN', @level2name = N'f_payType';
+
+
+GO
+EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'付款狀態', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_orderMain', @level2type = N'COLUMN', @level2name = N'f_payState';
 

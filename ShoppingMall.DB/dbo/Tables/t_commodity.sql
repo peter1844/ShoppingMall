@@ -3,12 +3,14 @@
     [f_name]        NVARCHAR (50)  NOT NULL,
     [f_description] NVARCHAR (200) NOT NULL,
     [f_typeId]      INT            NOT NULL,
-    [f_image]       NVARCHAR (60)  NOT NULL,
+    [f_image]       VARCHAR (30)   NOT NULL,
     [f_price]       INT            NOT NULL,
     [f_stock]       INT            NOT NULL,
     [f_open]        BIT            CONSTRAINT [DF_t_commodity_f_open] DEFAULT ((1)) NOT NULL,
     CONSTRAINT [PK_t_commodity] PRIMARY KEY CLUSTERED ([f_id] ASC)
 );
+
+
 
 
 

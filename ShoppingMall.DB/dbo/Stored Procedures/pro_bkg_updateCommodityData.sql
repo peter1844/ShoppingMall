@@ -19,6 +19,13 @@ BEGIN
 		
 	IF @image <> ''
 	BEGIN
-		UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_image = @image WHERE f_id = @commodityId;
+		IF @image = 'delete'
+		BEGIN
+			UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_image = '' WHERE f_id = @commodityId;
+		END
+		ELSE
+		BEGIN
+			UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_image = @image WHERE f_id = @commodityId;
+		END
 	END
 END
