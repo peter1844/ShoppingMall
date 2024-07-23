@@ -201,3 +201,9 @@
     width: 100px;
     height: 100px;
 }
+
+.commodity .img_delete {
+    vertical-align: top;
+    color: red;
+    cursor: pointer;
+}

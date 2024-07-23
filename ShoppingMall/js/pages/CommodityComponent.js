@@ -64,7 +64,9 @@
                         <label>商品圖示</label><br/><br/>
                         <input type="file" accept="image/jpeg, image/png, image/gif" @change="CheckFileType($event)"><br/><br/>
 
-                        <img :src="imagePath" class="preview_img" v-if="showImage"/><br/><br/>
+                        <img :src="imagePath" class="preview_img" v-if="showImage"/>
+                        <span class="img_delete" v-if="showImage" @click="DeleteImage()">x</span>
+                        <br/><br/>
 
                         <label><label class="required_mark">*</label>價格</label><br><br>
                         <input type="number" class="text" v-model="price"><br><br>
@@ -110,7 +112,8 @@
             sortDesc: false,
             actionText: '',
             conditionName: '',
-            conditionType: ''
+            conditionType: '',
+            deleteImgFlag: false
         }
     },
     created: function () {
@@ -341,6 +344,11 @@
             formData.append('Stock', this.stock);
             formData.append('Open', this.open);
             formData.append('ImageFile', this.uploadFile);
+            formData.append('OldImage', this.imagePath);
+
+            if (this.deleteImgFlag) {
+                formData.append('DeleteFlag', "1");
+            }
 
             await fetch('/api/commodity/updateCommodityData', {
                 method: 'PUT',
@@ -398,6 +406,7 @@
             this.open = 1;
             this.actionType = 'insert';
             this.actionText = '新 增';
+            this.deleteImgFlag = false;
         },
         OpenUpdate(id) {
             let updateData = this.commodityData.find(item => item.Id === id);
@@ -409,12 +418,13 @@
             this.type = updateData.Type;
             this.uploadFile = '';
             this.imagePath = updateData.Image;
-            this.showImage = this.imagePath == '' ? false : true;
+            this.showImage = this.imagePath == '/images/commodity/' ? false : true;
             this.price = updateData.Price;
             this.stock = updateData.Stock;
             this.open = updateData.Open;
             this.actionType = 'update';
             this.actionText = '編 輯';
+            this.deleteImgFlag = false;
         },
         CheckAction() {
             this.actionType == 'insert' ? this.InsertCommodity() : this.UpdateCommodity();
@@ -433,12 +443,28 @@
 
                     event.target.value = '';
                 } else {
-                    this.uploadFile = event.target.files[0];
+                    
+                    // 檔案大小不得超過300KB
+                    if (event.target.files[0].size > 1024 * 300) {
+                        Swal.fire({
+                            text: '上傳檔案大小超過300KB',
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        });
+
+                        event.target.value = '';
+                    } else {
+                        this.uploadFile = event.target.files[0];
+                    }
                 }
             } else {
                 this.uploadFile = '';
             }
 
+        },
+        DeleteImage() {
+            this.deleteImgFlag = true;
+            this.showImage = false;
         },
         ClosePopup() {
             this.showPopup = false;

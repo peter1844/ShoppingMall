@@ -141,28 +141,6 @@ namespace ShoppingMall.Api.Commodity
         }
 
         /// <summary>
-        /// 檢查新增商品資料的傳入參數
-        /// </summary>
-        public bool CheckInsertInputData(HttpRequest insertData)
-        {
-            string rule = @"^[1-9]\d*$";
-            string[] allowedExtensions = { "image/jpeg", "image/png", "image/gif" };
-
-            // 檢查商品名稱、類型、價格、庫存量、開放狀態是否為空
-            if (string.IsNullOrEmpty(insertData.Form["Name"]) || string.IsNullOrEmpty(insertData.Form["Type"]) || string.IsNullOrEmpty(insertData.Form["Price"]) || string.IsNullOrEmpty(insertData.Form["Stock"]) || string.IsNullOrEmpty(insertData.Form["Open"])) return false;
-            // 檢查開放狀態的參數是否合法
-            if (Convert.ToInt32(insertData.Form["Open"]) < 0 || Convert.ToInt32(insertData.Form["Open"]) > 1) return false;
-            // 檢查商品名稱、描述的長度是否正確
-            if (insertData.Form["Name"].Length > 50 || insertData.Form["Description"].Length > 200) return false;
-            // 檢查價格、庫存量格式是否合法
-            if (!Regex.IsMatch(insertData.Form["Price"], rule) || !Regex.IsMatch(insertData.Form["Stock"], rule)) return false;
-            // 檢查檔案上傳類型是否合法
-            if (insertData.Files.Count > 0 && !allowedExtensions.Contains(insertData.Files[0].ContentType)) return false;
-
-            return true;
-        }
-
-        /// <summary>
         /// 上傳商品圖片
         /// </summary>
         public string UploadCommodityFile(HttpPostedFile files)
@@ -183,6 +161,40 @@ namespace ShoppingMall.Api.Commodity
             return filePath;
         }
 
+        public void DeleteCommodityFile(string filePath)
+        {
+            string realPath = HttpContext.Current.Server.MapPath($"~{filePath}");
+
+            if (File.Exists(realPath))
+            {
+                File.Delete(realPath);
+            }
+        }
+
+        /// <summary>
+        /// 檢查新增商品資料的傳入參數
+        /// </summary>
+        public bool CheckInsertInputData(HttpRequest insertData)
+        {
+            string rule = @"^[1-9]\d*$";
+            string[] allowedExtensions = { "image/jpeg", "image/png", "image/gif" };
+
+            // 檢查商品名稱、類型、價格、庫存量、開放狀態是否為空
+            if (string.IsNullOrEmpty(insertData.Form["Name"]) || string.IsNullOrEmpty(insertData.Form["Type"]) || string.IsNullOrEmpty(insertData.Form["Price"]) || string.IsNullOrEmpty(insertData.Form["Stock"]) || string.IsNullOrEmpty(insertData.Form["Open"])) return false;
+            // 檢查開放狀態的參數是否合法
+            if (Convert.ToInt32(insertData.Form["Open"]) < 0 || Convert.ToInt32(insertData.Form["Open"]) > 1) return false;
+            // 檢查商品名稱、描述的長度是否正確
+            if (insertData.Form["Name"].Length > 50 || insertData.Form["Description"].Length > 200) return false;
+            // 檢查價格、庫存量格式是否合法
+            if (!Regex.IsMatch(insertData.Form["Price"], rule) || !Regex.IsMatch(insertData.Form["Stock"], rule)) return false;
+            // 檢查檔案上傳類型是否合法
+            if (insertData.Files.Count > 0 && !allowedExtensions.Contains(insertData.Files[0].ContentType)) return false;
+            // 檢查檔案大小是否超過300KB
+            if (insertData.Files.Count > 0 && insertData.Files[0].ContentLength > 1024 * 300) return false;
+
+            return true;
+        }
+
         /// <summary>
         /// 檢查編輯商品資料的傳入參數
         /// </summary>
@@ -201,6 +213,8 @@ namespace ShoppingMall.Api.Commodity
             if (!Regex.IsMatch(updateData.Form["Price"], rule) || !Regex.IsMatch(updateData.Form["Stock"], rule)) return false;
             // 檢查檔案上傳類型是否合法
             if (updateData.Files.Count > 0 && !allowedExtensions.Contains(updateData.Files[0].ContentType)) return false;
+            // 檢查檔案大小是否超過300KB
+            if (updateData.Files.Count > 0 && updateData.Files[0].ContentLength > 1024 * 300) return false;
 
             return true;
         }

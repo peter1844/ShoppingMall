@@ -141,6 +141,14 @@ namespace ShoppingMall.Controllers
                     string filePath = "";
                     List<UpdateCommodityDataDto> updateData = new List<UpdateCommodityDataDto>();
 
+                    // 如果有手動按下刪除圖片或是上傳新圖片，把舊的圖片刪除
+                    if (!string.IsNullOrEmpty(request.Form["DeleteFlag"]) || (request.Files.Count > 0 && !string.IsNullOrEmpty(request.Form["OldImage"])))
+                    {
+                        commodityProccessClass.DeleteCommodityFile(request.Form["OldImage"]);
+                        filePath = "delete";
+                    }
+
+                    // 如果有上傳新圖片，執行檔案上傳
                     if (request.Files.Count > 0)
                     {
                         HttpPostedFile files = request.Files[0];
