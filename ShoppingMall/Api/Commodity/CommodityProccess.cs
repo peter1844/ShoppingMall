@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -46,7 +48,7 @@ namespace ShoppingMall.Api.Commodity
                             Name = dt.Rows[i]["f_name"].ToString(),
                             Description = dt.Rows[i]["f_description"].ToString(),
                             Type = Convert.ToInt32(dt.Rows[i]["f_typeId"]),
-                            Image = dt.Rows[i]["f_image"].ToString(),
+                            Image = $"/images/commodity/{dt.Rows[i]["f_image"].ToString()}",
                             Price = Convert.ToInt32(dt.Rows[i]["f_price"]),
                             Stock = Convert.ToInt32(dt.Rows[i]["f_stock"]),
                             Open = Convert.ToInt32(dt.Rows[i]["f_open"]),
@@ -158,6 +160,27 @@ namespace ShoppingMall.Api.Commodity
             if (insertData.Files.Count > 0 && !allowedExtensions.Contains(insertData.Files[0].ContentType)) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 上傳商品圖片
+        /// </summary>
+        public string UploadCommodityFile(HttpPostedFile files)
+        {
+            HttpContext context = HttpContext.Current;
+            string filePath = "";
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string[] filesInfo = files.FileName.Split('.');
+
+            if (!Directory.Exists(HttpContext.Current.Server.MapPath("~/images/commodity/")))
+            {
+                Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~/images/commodity"));
+            }
+
+            files.SaveAs(HttpContext.Current.Server.MapPath($"~/images/commodity/{timestamp}_{context.Session["id"]}.{filesInfo[filesInfo.Length - 1]}"));
+            filePath = $"{timestamp}_{context.Session["id"]}.{filesInfo[filesInfo.Length - 1]}";
+
+            return filePath;
         }
 
         /// <summary>

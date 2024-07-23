@@ -36,7 +36,7 @@
                         <input type="text" class="text" maxlength="20" v-model="adminName"><br><br>
 
                         <label><label class="required_mark">*</label>帳號</label><br><br>
-                        <input type="text" class="text" maxlength="16" :readonly="accReadonly" v-model="acc"><br><br>
+                        <input type="text" class="text" maxlength="16" :disabled="accDisabled" v-model="acc"><br><br>
 
                         <label><label class="required_mark" v-if="pwdRequired">*</label>密碼</label><br><br>
                         <input type="text" class="text" maxlength="16" :placeholder="showPlaceholder ? '未輸入則不修改密碼' : ''" v-model="pwd"><br><br>
@@ -77,7 +77,7 @@
             pwd: '',
             roles: [],
             enabled: 1,
-            accReadonly: false,
+            accDisabled: false,
             pwdRequired: true,
             actionType: '',
             sortKey: '',
@@ -377,7 +377,7 @@
         },
         OpenInsert() {
             this.showPopup = true;
-            this.accReadonly = false;
+            this.accDisabled = false;
             this.adminId = 0;
             this.adminName = '';
             this.acc = '';
@@ -393,7 +393,7 @@
             let updateData = this.adminData.find(item => item.Id === id);
 
             this.showPopup = true;
-            this.accReadonly = true;
+            this.accDisabled = true;
             this.adminId = id;
             this.adminName = updateData.Name;
             this.acc = updateData.Acc;

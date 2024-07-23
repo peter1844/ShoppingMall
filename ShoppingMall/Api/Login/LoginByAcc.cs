@@ -47,6 +47,7 @@ namespace ShoppingMall.Api.Login
                     });
 
                     RedisConnection().GetDatabase().StringSet($"{dt.Rows[0]["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(20));
+                    context.Session["id"] = dt.Rows[0]["f_id"].ToString();
                     context.Session["token"] = token;
                 }
 

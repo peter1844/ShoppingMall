@@ -28,7 +28,7 @@
                 <div class="popup_data">
                     <div>
                         <label>帳號</label><br><br>
-                        <input type="text" class="text" maxlength="16" v-model="acc" readonly><br><br>
+                        <input type="text" class="text" maxlength="16" v-model="acc" disabled><br><br>
 
                         <label><label class="required_mark">*</label>會員等級</label><br/>
                         <select class="select" v-model="level">

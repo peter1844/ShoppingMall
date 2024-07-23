@@ -81,6 +81,7 @@ namespace ShoppingMall.Controllers
             try
             {
                 HttpRequest request = HttpContext.Current.Request;
+                HttpContext context = HttpContext.Current;
 
                 bool inputVaild = commodityProccessClass.CheckInsertInputData(request);
 
@@ -92,15 +93,8 @@ namespace ShoppingMall.Controllers
                     if (request.Files.Count > 0)
                     {
                         HttpPostedFile files = request.Files[0];
-                        string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                        if (!Directory.Exists(HttpContext.Current.Server.MapPath("~/images/commodity/")))
-                        {
-                            Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~/images/commodity"));
-                        }
-
-                        files.SaveAs(HttpContext.Current.Server.MapPath($"~/images/commodity/{timestamp}_" + files.FileName));
-                        filePath = $"/images/commodity/{timestamp}_{files.FileName}";
+                        filePath = commodityProccessClass.UploadCommodityFile(files);
                     }
 
                     insertData.Add(new InsertCommodityDataDto
@@ -150,15 +144,8 @@ namespace ShoppingMall.Controllers
                     if (request.Files.Count > 0)
                     {
                         HttpPostedFile files = request.Files[0];
-                        string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                        if (!Directory.Exists(HttpContext.Current.Server.MapPath("~/images/commodity/")))
-                        {
-                            Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~/images/commodity"));
-                        }
-
-                        files.SaveAs(HttpContext.Current.Server.MapPath($"~/images/commodity/{timestamp}_" + files.FileName));
-                        filePath = $"/images/commodity/{timestamp}_{files.FileName}";
+                        filePath = commodityProccessClass.UploadCommodityFile(files);
                     }
 
                     updateData.Add(new UpdateCommodityDataDto
