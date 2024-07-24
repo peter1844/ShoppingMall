@@ -14,7 +14,7 @@
                 <b>配送狀態</b>
                 <select class="search_select" v-model="conditionType">
                     <option value="">請選擇</option>
-                    <option v-for="item in optionData" :key="item.CommodityId" :value="item.CommodityId">{{ item.CommodityName }}</option>
+                    <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
                 </select>
 
                 <input type="button" class="btn search" value="查 詢" @click="GetCommodityDataByCondition()">
@@ -215,8 +215,7 @@
                 return response.json()
             }).then((myJson) => {
                 if (myJson.ErrorMessage === undefined) {
-                    //this.optionData = myJson;
-                    console.log(myJson);
+                    this.optionData = myJson[0];
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
                         text: myJson.ErrorMessage,

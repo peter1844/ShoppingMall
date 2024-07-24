@@ -38,6 +38,44 @@ namespace ShoppingMall.App_Code
     }
     
     /// <summary>
+    /// 付款方式
+    /// </summary>
+    public enum PayTypeCode
+    {
+        /// <summary>
+        /// 線上刷卡
+        /// </summary>
+        Credit = 1,
+        /// <summary>
+        /// 匯款
+        /// </summary>
+        Remittance = 2,
+        /// <summary>
+        /// LinePay
+        /// </summary>
+        LinePay = 3,
+        /// <summary>
+        /// 貨到付款
+        /// </summary>
+        CashOnDelivery = 4
+    }
+
+    /// <summary>
+    /// 付款狀態
+    /// </summary>
+    public enum PayStateCode
+    {
+        /// <summary>
+        /// 未付款
+        /// </summary>
+        UnPaid = 0,
+        /// <summary>
+        /// 已付款
+        /// </summary>
+        AlreadyPaid = 1
+    }
+
+    /// <summary>
     /// 配送方式
     /// </summary>
     public enum DeliveryTypeCode
@@ -64,15 +102,15 @@ namespace ShoppingMall.App_Code
         /// <summary>
         /// 未出貨
         /// </summary>
-        NotShipped = 1,
+        NotShipped = 0,
         /// <summary>
         /// 已出貨
         /// </summary>
-        Shipped = 2,
+        Shipped = 1,
         /// <summary>
         /// 退貨
         /// </summary>
-        Return = 3,
+        Return = 2,
     }
 
     public class Tools

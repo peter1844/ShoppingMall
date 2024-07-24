@@ -16,13 +16,35 @@ namespace ShoppingMall.Api.Commodity
         public List<OrderOptionDataDtoResponse> GetOrderOptionData()
         {
             List<OrderOptionDataDtoResponse> orderOptionData = new List<OrderOptionDataDtoResponse>();
+            List<PayType> payTypeData = new List<PayType>();
+            List<PayState> payStateData = new List<PayState>();
             List<DeliveryType> deliveryTypeData = new List<DeliveryType>();
             List<DeliveryState> deliveryStateData = new List<DeliveryState>();
 
             try
             {
+                Array payTypeArray = Enum.GetValues(typeof(PayTypeCode));
+                Array payStateArray = Enum.GetValues(typeof(PayStateCode));
                 Array deliveryTypeArray = Enum.GetValues(typeof(DeliveryTypeCode));
                 Array deliveryStateArray = Enum.GetValues(typeof(DeliveryStateCode));
+
+                foreach (PayTypeCode value in payTypeArray)
+                {
+                    payTypeData.Add(new PayType
+                    {
+                        TypeId = (int)value,
+                        TypeName = value.ToString()
+                    });
+                }
+
+                foreach (PayStateCode value in payStateArray)
+                {
+                    payStateData.Add(new PayState
+                    {
+                        StateId = (int)value,
+                        StateName = value.ToString()
+                    });
+                }
 
                 foreach (DeliveryTypeCode value in deliveryTypeArray)
                 {
@@ -43,6 +65,8 @@ namespace ShoppingMall.Api.Commodity
                 }
 
                 orderOptionData.Add(new OrderOptionDataDtoResponse{
+                    PayTypes = payTypeData,
+                    PayStates = payStateData,
                     DeliveryTypes = deliveryTypeData,
                     DeliveryStates = deliveryStateData
                 });

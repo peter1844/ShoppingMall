@@ -8,7 +8,11 @@
     <title>訂單管理</title>
 
     <script src="/js/vue.js" type="text/javascript"></script>
+    <script src="/js/vue-i18n.js" type="text/javascript"></script>
+    <script src="/js/lang/Tw.js" type="text/javascript"></script>
+    <script src="/js/lang/En.js" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
+
     <script src="/js/commons/MenuComponent.js" type="text/javascript"></script>
     <script src="/js/pages/OrderComponent.js" type="text/javascript"></script>
 
@@ -27,7 +31,16 @@
 </html>
 
 <script>
+    const i18n = new VueI18n({
+        locale: localStorage.getItem("lang") ?? 'tw',
+        messages: {
+            en: en,
+            tw: tw
+        }
+    });
+
     new Vue({
         el: '#app',
+        i18n
     });
 </script>
