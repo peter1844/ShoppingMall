@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ShoppingMall.Api.Commodity
+namespace ShoppingMall.Api.Order
 {
     public class OrderOption : ShoppingMall.Base.Base
     {

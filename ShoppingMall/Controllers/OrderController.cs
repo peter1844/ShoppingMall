@@ -1,14 +1,8 @@
-﻿using ShoppingMall.Api.Admin;
-using ShoppingMall.Api.Commodity;
-using ShoppingMall.App_Code;
-using ShoppingMall.Models.Admin;
-using ShoppingMall.Models.Commodity;
+﻿using ShoppingMall.Api.Order;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Web;
 using System.Web.Http;
 
 namespace ShoppingMall.Controllers
@@ -16,11 +10,32 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/order")]
     public class OrderController : ApiController
     {
+        private OrderProccess orderProccessClass;
         private OrderOption orderOptionClass;
 
         public OrderController()
         {
+            orderProccessClass = new OrderProccess();
             orderOptionClass = new OrderOption();
+        }
+
+        /// <summary>
+        /// 取得訂單資料
+        /// </summary>
+        [Route("getOrderData")]
+        [HttpGet]
+        public IHttpActionResult GetOrderData()
+        {
+            try
+            {
+                List<OrderDataDtoResponse> orderData = orderProccessClass.GetOrderData();
+
+                return Ok(orderData);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
         }
 
         /// <summary>

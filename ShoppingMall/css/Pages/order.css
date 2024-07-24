@@ -40,12 +40,28 @@
     background-color: #369750;
 }
 
+.order .detail {
+    background-color: #7edfa4;
+}
+
+.order .detail:hover {
+    background-color: #6ccf93;
+}
+
 .order .update {
     background-color: #7ec7df;
 }
 
 .order .update:hover {
     background-color: #64b9d5;
+}
+
+.order .delete {
+    background-color: #f51c29;
+}
+
+.order .delete:hover {
+    background-color: #db121e;
 }
 
 .order .submit {
@@ -198,4 +214,29 @@
 
 .order .required_mark {
     color: red;
+}
+
+.order .popupDetail {
+    height: 400px;
+    width: 50%;
+    position: fixed;
+    top: 10%;
+    left: 30%;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 2;
+    overflow: auto;
+}
+
+.order .popupDetail_head {
+    width: 100%;
+    height: 9%;
+    padding-top: 3px;
+    padding-left: 10px;
+    font-size: 25px;
+}
+
+.order .popupDetail_data {
+    margin: 10px;
 }

@@ -157,6 +157,7 @@
     <Compile Include="Api\Login\LoginByToken.cs" />
     <Compile Include="Api\Logout\Logout.cs" />
     <Compile Include="Api\Member\MemberProccess.cs" />
+    <Compile Include="Api\Order\OrderProccess.cs" />
     <Compile Include="Api\Order\OrderOption.cs" />
     <Compile Include="App_Code\Tools.cs" />
     <Compile Include="App_Start\TokenValidationHandler.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Models\Login\Login.cs" />
     <Compile Include="Models\Login\LoginByAcc.cs" />
     <Compile Include="Models\Member\Member.cs" />
+    <Compile Include="Models\Order\Order.cs" />
     <Compile Include="Models\Order\OrderOption.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Admin.aspx.cs">

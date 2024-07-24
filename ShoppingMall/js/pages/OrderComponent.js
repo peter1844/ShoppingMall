@@ -12,7 +12,7 @@
                 <input type="date" class="search_date">
 
                 <b>配送狀態</b>
-                <select class="search_select" v-model="conditionType">
+                <select class="search_select">
                     <option value="">請選擇</option>
                     <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
                 </select>
@@ -28,21 +28,23 @@
             <table>
                 <thead>
                     <tr>
-                        <th class="sort" @click="SortBy('Name')">訂單編號</th>
-                        <th class="sort" @click="SortBy('CommodityName')">會員名字</th>
-                        <th class="sort" @click="SortBy('Price')">訂單日期</th>
-                        <th class="sort" @click="SortBy('Stock')">配送狀態</th>
+                        <th class="sort" @click="SortBy('Id')">訂單編號</th>
+                        <th class="sort" @click="SortBy('MemberName')">會員名字</th>
+                        <th class="sort" @click="SortBy('OrderDate')">訂單日期</th>
+                        <th class="sort" @click="SortBy('DeliverStateName')">配送狀態</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in sortedItems" :key="item.Id">
-                        <td>{{ item.Name }}</td>
-                        <td>{{ item.CommodityName }}</td>
-                        <td>{{ item.Price }}</td>
-                        <td>{{ item.Stock }}</td>
+                        <td>{{ item.Id }}</td>
+                        <td>{{ item.MemberName }}</td>
+                        <td>{{ FormatDate(item.OrderDate) }}</td>
+                        <td>{{ $t('orderPage.option.' + item.DeliverStateName) }}</td>
                         <td>
+                            <input type="button" class="btn detail" value="明 細" @click="OpenDetail(item.Id)"/>
                             <input type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
+                            <input type="button" class="btn delete" value="刪 除" @click="OpenUpdate(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -93,14 +95,50 @@
                 </div>
             </div>
 
-            <div class="overlay" v-if="showPopup"></div>
+            <div class="popupDetail" v-if="showPopupDetail">
+                
+                <div class="popupDetail_head">
+                    <h5>訂單明細</h5>
+                </div>
+                <hr>
+
+                <div class="popupDetail_data">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>商品名稱</th>
+                                <th>單價</th>
+                                <th>數量</th>
+                                <th>小計</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in orderDetailData">
+                                <td>{{ item.CommodityName }}</td>
+                                <td>{{ item.Price }}</td>
+                                <td>{{ item.Quantity }}</td>
+                                <td>{{ item.Price * item.Quantity }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div align="right">
+                        <input type="button" class="btn cancel" value="關 閉" @click="ClosePopup()"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overlay" v-if="showOverlay"></div>
         </div>
     `,
     data() {
         return {
             orderData: {},
+            orderDetailData: {},
             optionData: {},
             showPopup: false,
+            showOverlay: false,
+            showPopupDetail: false,
             commodityId: 0,
             commodityName: '',
             description: '',
@@ -120,15 +158,15 @@
         }
     },
     created: function () {
-        //this.GetCommodityData();
+        this.GetOrderData();
         this.GetOptionData();
     },
     mounted() {
         window.addEventListener('keydown', this.HandleKeyDown);
     },
     methods: {
-        async GetCommodityData() {
-            await fetch('/api/commodity/getCommodityData', {
+        async GetOrderData() {
+            await fetch('/api/order/getOrderData', {
                 headers: {
                     'token': localStorage.getItem('token')
                 },
@@ -136,7 +174,7 @@
                 return response.json()
             }).then((myJson) => {
                 if (myJson.ErrorMessage === undefined) {
-                    this.commodityData = myJson;
+                    this.orderData = myJson;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
                         text: myJson.ErrorMessage,
@@ -280,6 +318,7 @@
                 body: formData
             }).then((response) => {
                 this.showPopup = false;
+                this.showOverlay = false;
 
                 return response.json()
             }).then((myJson) => {
@@ -356,6 +395,7 @@
                 body: formData
             }).then((response) => {
                 this.showPopup = false;
+                this.showOverlay = false;
 
                 return response.json()
             }).then((myJson) => {
@@ -390,8 +430,16 @@
                 })
             })
         },
+        OpenDetail(id) {
+            let detailData = this.orderData.find(item => item.Id === id);
+
+            this.orderDetailData = detailData.DetailDatas;
+            this.showPopupDetail = true;
+            this.showOverlay = true;
+        },
         OpenInsert() {
             this.showPopup = true;
+            this.showOverlay = true;
             this.commodityId = 0;
             this.commodityName = '';
             this.description = '';
@@ -409,6 +457,7 @@
             let updateData = this.commodityData.find(item => item.Id === id);
 
             this.showPopup = true;
+            this.showOverlay = true;
             this.commodityId = id;
             this.commodityName = updateData.Name;
             this.description = updateData.Description;
@@ -448,6 +497,8 @@
         },
         ClosePopup() {
             this.showPopup = false;
+            this.showPopupDetail = false;
+            this.showOverlay = false;
         },
         HandleKeyDown(event) {
             if (event.keyCode === 27) {
@@ -461,6 +512,11 @@
                 this.sortKey = key;
                 this.sortDesc = false;
             }
+        },
+        FormatDate(dateData) {
+            const date = new Date(dateData);
+
+            return date.toISOString().split('T')[0];
         }
     },
     computed: {
