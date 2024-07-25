@@ -1,5 +1,6 @@
 ﻿using ShoppingMall.Api.Order;
 using ShoppingMall.App_Code;
+using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Order;
 using System;
@@ -92,6 +93,34 @@ namespace ShoppingMall.Controllers
                 if (inputVaild)
                 {
                     bool result = orderProccessClass.UpdateOrderData(updateData);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// 刪除訂單資料
+        /// </summary>
+        [Route("deleteOrderData")]
+        [HttpDelete]
+        public IHttpActionResult DeleteOrderData([FromBody] DeleteOrderDataDto deleteData)
+        {
+            try
+            {
+                bool inputVaild = orderProccessClass.CheckDeleteInputData(deleteData);
+
+                if (inputVaild)
+                {
+                    bool result = orderProccessClass.DeleteOrderData(deleteData);
 
                     return Ok(result);
                 }

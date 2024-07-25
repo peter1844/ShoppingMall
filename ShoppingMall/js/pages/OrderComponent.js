@@ -410,6 +410,65 @@
                 })
             })
         },
+        DeleteOrder(id) {
+            let deleteData = this.orderData.find(item => item.Id === id);
+
+            Swal.fire({
+                html: '確定要刪除訂單 <label style="color:red;">' + deleteData.Id + '</label> 嗎？',
+                icon: "question",
+                confirmButtonText: '確認',
+                showCancelButton: true,
+                cancelButtonText: '取消',
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    const data = {
+                        OrderId: id
+                    };
+
+                    fetch('/api/order/deleteOrderData', {
+                        method: 'DELETE',
+                        headers: {
+                            'token': localStorage.getItem('token'),
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    }).then((response) => {
+                        return response.json()
+                    }).then((myJson) => {
+                        if (myJson.ErrorMessage === undefined) {
+                            Swal.fire({
+                                text: '刪除完成',
+                                icon: "success",
+                                confirmButtonText: '確認'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        } else if (myJson.ErrorMessage == 'InvaildToken') {
+                            Swal.fire({
+                                text: myJson.ErrorMessage,
+                                icon: "error",
+                                confirmButtonText: '確認'
+                            }).then((result) => {
+                                window.location.href = '/Views/Login.aspx';
+                            });
+                        } else {
+                            Swal.fire({
+                                text: myJson.ErrorMessage,
+                                icon: "error",
+                                confirmButtonText: '確認'
+                            })
+                        }
+                    }).catch((error) => {
+                        Swal.fire({
+                            text: '系統異常，請稍後再試',
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        })
+                    })
+                }
+            });
+        },
         OpenDetail(id) {
             let detailData = this.orderData.find(item => item.Id === id);
 

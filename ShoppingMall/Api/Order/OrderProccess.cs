@@ -187,22 +187,21 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 刪除管理者資料
         /// </summary>
-        public bool DeleteAdminData(DeleteAdminDataDto deleteData)
+        public bool DeleteOrderData(DeleteOrderDataDto deleteData)
         {
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_deleteAdminData @adminId";
+                command.CommandText = "EXEC pro_bkg_deleteOrderData @orderId";
 
-                command.Parameters.AddWithValue("@adminId", deleteData.AdminId);
+                command.Parameters.AddWithValue("@orderId", deleteData.OrderId);
 
                 command.Connection.Open();
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
-                RedisConnection().GetDatabase().KeyDelete($"{deleteData.AdminId}_token");
 
                 return true;
             }
@@ -271,10 +270,10 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 檢查刪除管理者資料的傳入參數
         /// </summary>
-        public bool CheckDeleteInputData(DeleteAdminDataDto deleteData)
+        public bool CheckDeleteInputData(DeleteOrderDataDto deleteData)
         {
-            // 檢查管理者編號是否合法
-            if (deleteData.AdminId <= 0) return false;
+            // 檢查訂單編號是否有T及M
+            if (!deleteData.OrderId.Contains('T') && !deleteData.OrderId.Contains('M')) return false;
 
             return true;
         }

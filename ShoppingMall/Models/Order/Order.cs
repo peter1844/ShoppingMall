@@ -119,4 +119,15 @@ namespace ShoppingMall.Models.Order
         /// </summary>
         public int DeliverStateId { get; set; }
     }
+
+    /// <summary>
+    /// 刪除訂單傳入資料
+    /// </summary>
+    public class DeleteOrderDataDto
+    {
+        /// <summary>
+        /// 訂單編號
+        /// </summary>
+        public string OrderId { set; get; }
+    }
 }
