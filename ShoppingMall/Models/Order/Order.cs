@@ -51,6 +51,29 @@ namespace ShoppingMall.Models.Order
     }
 
     /// <summary>
+    /// 篩選條件
+    /// </summary>
+    public class ConditionDataDto
+    {
+        /// <summary>
+        /// 訂單編號
+        /// </summary>
+        public string Id { get; set; }
+        /// <summary>
+        /// 訂單日期-起
+        /// </summary>
+        public DateTime? StartDate { set; get; }
+        /// <summary>
+        /// 訂單日期-迄
+        /// </summary>
+        public DateTime? EndDate { set; get; }
+        /// <summary>
+        /// 配送狀態
+        /// </summary>
+        public int DeliveryState { get; set; }
+    }
+
+    /// <summary>
     /// 訂單詳細資料
     /// </summary>
     public class OrderDetailData
@@ -67,6 +90,7 @@ namespace ShoppingMall.Models.Order
         /// 購買單價
         /// </summary>
         public int Price { get; set; }
+        public string Image { get; set; }
     }
 
 }

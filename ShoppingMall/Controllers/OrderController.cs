@@ -1,8 +1,10 @@
 ﻿using ShoppingMall.Api.Order;
+using ShoppingMall.App_Code;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Http;
 
 namespace ShoppingMall.Controllers
@@ -28,7 +30,25 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<OrderDataDtoResponse> orderData = orderProccessClass.GetOrderData();
+                List<ConditionDataDto> conditionData = new List<ConditionDataDto>();
+                HttpRequest request = HttpContext.Current.Request;
+
+                conditionData.Add(new ConditionDataDto
+                {
+                    Id = string.IsNullOrEmpty(request.QueryString["Id"]) ? "" : request.QueryString["Id"],
+                    StartDate = string.IsNullOrEmpty(request.QueryString["StartDate"]) ? (DateTime?)null : Convert.ToDateTime(request.QueryString["StartDate"]),
+                    EndDate = string.IsNullOrEmpty(request.QueryString["EndDate"]) ? (DateTime?)null : Convert.ToDateTime(request.QueryString["EndDate"]),
+                    DeliveryState = string.IsNullOrEmpty(request.QueryString["DeliveryState"]) ? -1 : Convert.ToInt32(request.QueryString["DeliveryState"])
+                });
+
+                bool inputVaild = orderProccessClass.CheckConditionInputData(conditionData[0]);
+
+                if (!inputVaild)
+                {
+                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
+                }
+                
+                List<OrderDataDtoResponse> orderData = orderProccessClass.GetOrderData(conditionData[0]);
 
                 return Ok(orderData);
             }

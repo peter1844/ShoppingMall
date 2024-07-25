@@ -3,21 +3,21 @@
         <div class="order">
             <div class="search_area">
                 <b>訂單編號</b>
-                <input type="text" class="search_text">
+                <input type="text" class="search_text" v-model="conditionId">
 
                 <b>訂單日期-起</b>
-                <input type="date" class="search_date">
+                <input type="date" class="search_date" v-model="conditionStartDate">
 
                 <b>訂單日期-迄</b>
-                <input type="date" class="search_date">
+                <input type="date" class="search_date" v-model="conditionEndDate">
 
                 <b>配送狀態</b>
-                <select class="search_select">
+                <select class="search_select" v-model="conditionDeliveryState">
                     <option value="">請選擇</option>
                     <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
                 </select>
 
-                <input type="button" class="btn search" value="查 詢" @click="GetCommodityDataByCondition()">
+                <input type="button" class="btn search" value="查 詢" @click="GetOrderDataByCondition()">
             </div>
             <br/><br/>
 
@@ -31,6 +31,7 @@
                         <th class="sort" @click="SortBy('Id')">訂單編號</th>
                         <th class="sort" @click="SortBy('MemberName')">會員名字</th>
                         <th class="sort" @click="SortBy('OrderDate')">訂單日期</th>
+                        <th class="sort" @click="SortBy('TotalMoney')">總金額</th>
                         <th class="sort" @click="SortBy('DeliverStateName')">配送狀態</th>
                         <th>操作</th>
                     </tr>
@@ -40,11 +41,12 @@
                         <td>{{ item.Id }}</td>
                         <td>{{ item.MemberName }}</td>
                         <td>{{ FormatDate(item.OrderDate) }}</td>
+                        <td>{{ item.TotalMoney }}</td>
                         <td>{{ $t('orderPage.option.' + item.DeliverStateName) }}</td>
                         <td>
                             <input type="button" class="btn detail" value="明 細" @click="OpenDetail(item.Id)"/>
                             <input type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
-                            <input type="button" class="btn delete" value="刪 除" @click="OpenUpdate(item.Id)"/>
+                            <input type="button" class="btn delete" value="刪 除" @click="DeleteOrder(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -58,30 +60,25 @@
                 <div class="popup_data">
                     <div>
                         <label><label class="required_mark">*</label>商品名稱</label><br><br>
-                        <input type="text" class="text" maxlength="50" v-model="commodityName"><br><br>
+                        <input type="text" class="text" maxlength="50"><br><br>
 
                         <label>商品描述</label><br><br>
-                        <textarea class="textarea" maxlength="200" rows="4" v-model="description"></textarea><br><br>
+                        <textarea class="textarea" maxlength="200" rows="4"></textarea><br><br>
 
                         <label><label class="required_mark">*</label>商品類型</label><br/>
-                        <select class="select" v-model="type">
+                        <select class="select">
                             <option value="">請選擇</option>
                             <option v-for="item in optionData" :key="item.CommodityId" :value="item.CommodityId">{{ item.CommodityName }}</option>
                         </select><br/><br/>
 
-                        <label>商品圖示</label><br/><br/>
-                        <input type="file" accept="image/jpeg, image/png, image/gif" @change="CheckFileType($event)"><br/><br/>
-
-                        <img :src="imagePath" class="preview_img" v-if="showImage"/><br/><br/>
-
                         <label><label class="required_mark">*</label>價格</label><br><br>
-                        <input type="number" class="text" v-model="price"><br><br>
+                        <input type="number" class="text"><br><br>
 
                         <label><label class="required_mark">*</label>庫存量</label><br><br>
-                        <input type="number" class="text" v-model="stock"><br><br>
+                        <input type="number" class="text"><br><br>
 
                         <label><label class="required_mark">*</label>開啟狀態</label><br/>
-                        <select class="select" v-model="open">
+                        <select class="select">
                             <option value="1">開啟</option>
                             <option value="0">關閉</option>
                         </select>
@@ -107,6 +104,7 @@
                         <thead>
                             <tr>
                                 <th>商品名稱</th>
+                                <th>商品圖片</th>
                                 <th>單價</th>
                                 <th>數量</th>
                                 <th>小計</th>
@@ -115,6 +113,7 @@
                         <tbody>
                             <tr v-for="item in orderDetailData">
                                 <td>{{ item.CommodityName }}</td>
+                                <td><img :src="item.Image" style="width:80px;height:80px;"></td>
                                 <td>{{ item.Price }}</td>
                                 <td>{{ item.Quantity }}</td>
                                 <td>{{ item.Price * item.Quantity }}</td>
@@ -139,22 +138,15 @@
             showPopup: false,
             showOverlay: false,
             showPopupDetail: false,
-            commodityId: 0,
-            commodityName: '',
-            description: '',
-            type: '',
-            uploadFile: '',
-            imagePath: '',
-            showImage: false,
-            price: '',
-            stock: '',
-            open: 1,
+
             actionType: '',
             sortKey: '',
             sortDesc: false,
             actionText: '',
-            conditionName: '',
-            conditionType: ''
+            conditionId: '',
+            conditionStartDate: '',
+            conditionEndDate: '',
+            conditionDeliveryState: ''
         }
     },
     created: function () {
@@ -166,6 +158,14 @@
     },
     methods: {
         async GetOrderData() {
+
+            const params = new URLSearchParams();
+
+            params.append('Id', this.conditionId);
+            params.append('StartDate', this.conditionStartDate);
+            params.append('EndDate', this.conditionEndDate);
+            params.append('DeliveryState', this.conditionDeliveryState);
+
             await fetch('/api/order/getOrderData', {
                 headers: {
                     'token': localStorage.getItem('token')
@@ -198,13 +198,16 @@
                 })
             })
         },
-        async GetCommodityDataByCondition() {
+        async GetOrderDataByCondition() {
 
             const params = new URLSearchParams();
-            params.append('Name', this.conditionName);
-            params.append('Type', this.conditionType);
 
-            await fetch(`/api/commodity/getCommodityData?${params.toString()}`, {
+            params.append('Id', this.conditionId);
+            params.append('StartDate', this.conditionStartDate);
+            params.append('EndDate', this.conditionEndDate);
+            params.append('DeliveryState', this.conditionDeliveryState);
+
+            await fetch(`/api/order/getOrderData?${params.toString()}`, {
                 headers: {
                     'token': localStorage.getItem('token'),
                 }
@@ -218,7 +221,7 @@
                         confirmButtonText: '確認'
                     })
 
-                    this.commodityData = myJson;
+                    this.orderData = myJson;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
                         text: myJson.ErrorMessage,
@@ -514,9 +517,7 @@
             }
         },
         FormatDate(dateData) {
-            const date = new Date(dateData);
-
-            return date.toISOString().split('T')[0];
+            return dateData.split('T')[0];
         }
     },
     computed: {

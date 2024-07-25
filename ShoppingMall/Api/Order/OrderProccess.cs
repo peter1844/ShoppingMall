@@ -17,7 +17,7 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 取得訂單資料
         /// </summary>
-        public List<OrderDataDtoResponse> GetOrderData()
+        public List<OrderDataDtoResponse> GetOrderData(ConditionDataDto conditionData)
         {
             List<OrderDataDtoResponse> orderData = new List<OrderDataDtoResponse>();
             List<OrderDataDtoResponse> groupOrderData = new List<OrderDataDtoResponse>();
@@ -28,10 +28,21 @@ namespace ShoppingMall.Api.Order
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_getOrderData";
+                command.CommandText = "EXEC pro_bkg_getOrderData @id,@startDate,@endDate,@deliveryState";
 
-                //command.Parameters.AddWithValue("@name", conditionData.Name);
-                //command.Parameters.AddWithValue("@type", conditionData.Type);
+                command.Parameters.AddWithValue("@id", conditionData.Id);
+                command.Parameters.AddWithValue("@deliveryState", conditionData.DeliveryState);
+
+                if (conditionData.StartDate.HasValue && conditionData.EndDate.HasValue)
+                {
+                    command.Parameters.AddWithValue("@startDate", conditionData.StartDate);
+                    command.Parameters.AddWithValue("@endDate", conditionData.EndDate);
+                }
+                else 
+                {
+                    command.Parameters.AddWithValue("@startDate", DBNull.Value);
+                    command.Parameters.AddWithValue("@endDate", DBNull.Value);
+                }
 
                 command.Connection.Open();
 
@@ -57,7 +68,8 @@ namespace ShoppingMall.Api.Order
                                 {
                                     CommodityName = dt.Rows[i]["CommodityName"].ToString(),
                                     Quantity = Convert.ToInt32(dt.Rows[i]["f_quantity"]),
-                                    Price = Convert.ToInt32(dt.Rows[i]["f_price"])
+                                    Price = Convert.ToInt32(dt.Rows[i]["f_price"]),
+                                    Image = string.IsNullOrEmpty(dt.Rows[i]["f_image"].ToString()) ? "" : $"/images/commodity/{dt.Rows[i]["f_image"].ToString()}",
                                 }
                             }
                         });
@@ -84,7 +96,8 @@ namespace ShoppingMall.Api.Order
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                //throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -108,9 +121,9 @@ namespace ShoppingMall.Api.Order
                 {
                     tempTable.Rows.Add(roleId);
                 }
-                
+
                 command.CommandText = "EXEC pro_bkg_insertAdminData @name,@acc,@pwd,@enabled,@roleId";
-                
+
                 command.Parameters.AddWithValue("@name", insertData.Name);
                 command.Parameters.AddWithValue("@acc", insertData.Acc);
                 command.Parameters.AddWithValue("@pwd", insertData.Pwd);
@@ -123,7 +136,7 @@ namespace ShoppingMall.Api.Order
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
-                if(statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
+                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
             }
@@ -135,7 +148,7 @@ namespace ShoppingMall.Api.Order
             {
                 command.Connection.Close(); //關閉連線
             }
-            
+
         }
 
         /// <summary>
@@ -144,7 +157,7 @@ namespace ShoppingMall.Api.Order
         public bool UpdateAdminData(UpdateAdminDataDto updateData)
         {
             SqlCommand command = MsSqlConnection();
-            
+
             try
             {
                 DataTable tempTable = new DataTable();
@@ -168,7 +181,7 @@ namespace ShoppingMall.Api.Order
                 command.Connection.Open();
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
-                
+
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
                 if (!string.IsNullOrEmpty(updateData.Pwd)) RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
 
@@ -216,6 +229,19 @@ namespace ShoppingMall.Api.Order
                 command.Connection.Close(); //關閉連線
             }
 
+        }
+
+        /// <summary>
+        /// 檢查搜尋條件的傳入參數
+        /// </summary>
+        public bool CheckConditionInputData(ConditionDataDto conditionData)
+        {
+            // 檢查訂單日期起迄是否只有一邊有值
+            if ((conditionData.StartDate.HasValue && !conditionData.EndDate.HasValue) || (conditionData.EndDate.HasValue && !conditionData.StartDate.HasValue)) return false;
+            // 檢查結束日是否比開始日小
+            if (conditionData.EndDate < conditionData.StartDate) return false;
+
+            return true;
         }
 
         /// <summary>
