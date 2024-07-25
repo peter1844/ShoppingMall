@@ -52,41 +52,39 @@
                 </tbody>
             </table>
 
-            <div class="popup" v-if="showPopup">
-                <div class="popup_head">
-                    <h5>{{ actionText }}</h5>
+            <div class="popupUpdate" v-if="showPopupUpdate">
+                <div class="popupUpdate_head">
+                    <h5>編 輯</h5>
                 </div>
 
-                <div class="popup_data">
+                <div class="popupUpdate_data">
                     <div>
-                        <label><label class="required_mark">*</label>商品名稱</label><br><br>
-                        <input type="text" class="text" maxlength="50"><br><br>
+                        <label><label class="required_mark">*</label>訂單編號</label><br><br>
+                        <input type="text" class="text" v-model="orderId" disabled><br><br>
 
-                        <label>商品描述</label><br><br>
-                        <textarea class="textarea" maxlength="200" rows="4"></textarea><br><br>
-
-                        <label><label class="required_mark">*</label>商品類型</label><br/>
-                        <select class="select">
-                            <option value="">請選擇</option>
-                            <option v-for="item in optionData" :key="item.CommodityId" :value="item.CommodityId">{{ item.CommodityName }}</option>
+                        <label><label class="required_mark">*</label>付款方式</label><br/>
+                        <select class="select" v-model="payType">
+                            <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
                         </select><br/><br/>
 
-                        <label><label class="required_mark">*</label>價格</label><br><br>
-                        <input type="number" class="text"><br><br>
+                        <label><label class="required_mark">*</label>付款狀態</label><br/>
+                        <select class="select" v-model="payState">
+                            <option v-for="item in optionData.PayStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
+                        </select><br/><br/>
 
-                        <label><label class="required_mark">*</label>庫存量</label><br><br>
-                        <input type="number" class="text"><br><br>
+                        <label><label class="required_mark">*</label>配送方式</label><br/>
+                        <select class="select" v-model="deliverType">
+                            <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                        </select><br/><br/>
 
-                        <label><label class="required_mark">*</label>開啟狀態</label><br/>
-                        <select class="select">
-                            <option value="1">開啟</option>
-                            <option value="0">關閉</option>
-                        </select>
-                        <br/><br/>
+                        <label><label class="required_mark">*</label>配送狀態</label><br/>
+                        <select class="select" v-model="deliverState">
+                            <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
+                        </select><br/><br/>
                     </div>
                     
                     <div align="right">
-                        <input type="button" class="btn submit" value="送 出" @click="CheckAction()"/>
+                        <input type="button" class="btn submit" value="送 出" @click="UpdateOrder()"/>
                         <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
                     </div>
                 </div>
@@ -113,7 +111,7 @@
                         <tbody>
                             <tr v-for="item in orderDetailData">
                                 <td>{{ item.CommodityName }}</td>
-                                <td><img :src="item.Image" style="width:80px;height:80px;"></td>
+                                <td><img :src="item.Image" class="commodityImage"></td>
                                 <td>{{ item.Price }}</td>
                                 <td>{{ item.Quantity }}</td>
                                 <td>{{ item.Price * item.Quantity }}</td>
@@ -135,14 +133,16 @@
             orderData: {},
             orderDetailData: {},
             optionData: {},
-            showPopup: false,
-            showOverlay: false,
             showPopupDetail: false,
-
-            actionType: '',
+            showPopupUpdate: false,
+            showOverlay: false,
+            orderId: '',
+            payType: '',
+            payState: '',
+            deliverType: '',
+            deliverState: '',
             sortKey: '',
             sortDesc: false,
-            actionText: '',
             conditionId: '',
             conditionStartDate: '',
             conditionEndDate: '',
@@ -356,48 +356,25 @@
                 })
             })
         },
-        async UpdateCommodity() {
+        async UpdateOrder() {
 
-            if (this.commodityName == '' || this.type == '' || this.price == '' || this.stock == '') {
-                Swal.fire({
-                    text: '尚有必填欄位未填',
-                    icon: "error",
-                    confirmButtonText: '確認'
-                });
+            const data = {
+                OrderId: this.orderId,
+                PayTypeId: this.payType,
+                PayStateId: this.payState,
+                DeliverTypeId: this.deliverType,
+                DeliverStateId: this.deliverState
+            };
 
-                return false;
-            }
-
-            const validCharacters = /^[1-9][0-9]*$/;
-            if (!validCharacters.test(this.price) || !validCharacters.test(this.stock)) {
-                Swal.fire({
-                    text: '價格或庫存量格式錯誤',
-                    icon: "error",
-                    confirmButtonText: '確認'
-                })
-
-                return false;
-            }
-
-            const formData = new FormData();
-
-            formData.append('CommodityId', this.commodityId);
-            formData.append('Name', this.commodityName);
-            formData.append('Description', this.description);
-            formData.append('Type', this.type);
-            formData.append('Price', this.price);
-            formData.append('Stock', this.stock);
-            formData.append('Open', this.open);
-            formData.append('ImageFile', this.uploadFile);
-
-            await fetch('/api/commodity/updateCommodityData', {
+            await fetch('/api/order/updateOrderData', {
                 method: 'PUT',
                 headers: {
                     'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
                 },
-                body: formData
+                body: JSON.stringify(data)
             }).then((response) => {
-                this.showPopup = false;
+                this.showPopupUpdate = false;
                 this.showOverlay = false;
 
                 return response.json()
@@ -441,7 +418,7 @@
             this.showOverlay = true;
         },
         OpenInsert() {
-            this.showPopup = true;
+            //this.showPopup = true;
             this.showOverlay = true;
             this.commodityId = 0;
             this.commodityName = '';
@@ -457,49 +434,18 @@
             this.actionText = '新 增';
         },
         OpenUpdate(id) {
-            let updateData = this.commodityData.find(item => item.Id === id);
+            let updateData = this.orderData.find(item => item.Id === id);
 
-            this.showPopup = true;
+            this.showPopupUpdate = true;
             this.showOverlay = true;
-            this.commodityId = id;
-            this.commodityName = updateData.Name;
-            this.description = updateData.Description;
-            this.type = updateData.Type;
-            this.uploadFile = '';
-            this.imagePath = updateData.Image;
-            this.showImage = this.imagePath == '' ? false : true;
-            this.price = updateData.Price;
-            this.stock = updateData.Stock;
-            this.open = updateData.Open;
-            this.actionType = 'update';
-            this.actionText = '編 輯';
-        },
-        CheckAction() {
-            this.actionType == 'insert' ? this.InsertCommodity() : this.UpdateCommodity();
-        },
-        CheckFileType(event) {
-            if (event.target.files.length > 0) {
-                const file = event.target.files[0];
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-
-                if (!allowedTypes.includes(file.type)) {
-                    Swal.fire({
-                        text: '上傳類型只允許JPEG, PNG, GIF',
-                        icon: "error",
-                        confirmButtonText: '確認'
-                    });
-
-                    event.target.value = '';
-                } else {
-                    this.uploadFile = event.target.files[0];
-                }
-            } else {
-                this.uploadFile = '';
-            }
-
+            this.orderId = id;
+            this.payType = updateData.PayTypeId;
+            this.payState = updateData.PayStateId;
+            this.deliverType = updateData.DeliverTypeId;
+            this.deliverState = updateData.DeliverStateId;
         },
         ClosePopup() {
-            this.showPopup = false;
+            this.showPopupUpdate = false;
             this.showPopupDetail = false;
             this.showOverlay = false;
         },

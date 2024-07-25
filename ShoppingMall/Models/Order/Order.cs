@@ -93,4 +93,30 @@ namespace ShoppingMall.Models.Order
         public string Image { get; set; }
     }
 
+    /// <summary>
+    /// 編輯訂單傳入資料
+    /// </summary>
+    public class UpdateOrderDataDto
+    {
+        /// <summary>
+        /// 訂單編號
+        /// </summary>
+        public string OrderId { get; set; }
+        /// <summary>
+        /// 付款方式ID
+        /// </summary>
+        public int PayTypeId { get; set; }
+        /// <summary>
+        /// 付款狀態ID
+        /// </summary>
+        public int PayStateId { get; set; }
+        /// <summary>
+        /// 配送方式ID
+        /// </summary>
+        public int DeliverTypeId { get; set; }
+        /// <summary>
+        /// 配送狀態ID
+        /// </summary>
+        public int DeliverStateId { get; set; }
+    }
 }

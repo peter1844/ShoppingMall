@@ -77,5 +77,33 @@ namespace ShoppingMall.Controllers
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
+
+        /// <summary>
+        /// 編輯訂單資料
+        /// </summary>
+        [Route("updateOrderData")]
+        [HttpPut]
+        public IHttpActionResult UpdateOrderData([FromBody] UpdateOrderDataDto updateData)
+        {
+            try
+            {
+                bool inputVaild = orderProccessClass.CheckUpdateInputData(updateData);
+
+                if (inputVaild)
+                {
+                    bool result = orderProccessClass.UpdateOrderData(updateData);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
+        }
     }
 }

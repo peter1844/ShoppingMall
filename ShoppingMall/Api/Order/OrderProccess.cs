@@ -154,36 +154,22 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 編輯管理者資料
         /// </summary>
-        public bool UpdateAdminData(UpdateAdminDataDto updateData)
+        public bool UpdateOrderData(UpdateOrderDataDto updateData)
         {
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                DataTable tempTable = new DataTable();
-                tempTable.Columns.Add("roleId", typeof(int));
+                command.CommandText = "EXEC pro_bkg_updateOrderData @orderId,@payTypeId,@payStateId,@deliverTypeId,@deliverStateId";
 
-                foreach (int roleId in updateData.Roles)
-                {
-                    tempTable.Rows.Add(roleId);
-                }
-
-                command.CommandText = "EXEC pro_bkg_updateAdminData @adminId,@name,@pwd,@enabled,@roleId";
-
-                command.Parameters.AddWithValue("@adminId", updateData.AdminId);
-                command.Parameters.AddWithValue("@name", updateData.Name);
-                command.Parameters.AddWithValue("@pwd", updateData.Pwd);
-                command.Parameters.AddWithValue("@enabled", updateData.Enabled);
-                SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
-                parameter.SqlDbType = SqlDbType.Structured;
-                parameter.TypeName = "dbo.adminUserRoleTempType";
+                command.Parameters.AddWithValue("@orderId", updateData.OrderId);
+                command.Parameters.AddWithValue("@payTypeId", updateData.PayTypeId);
+                command.Parameters.AddWithValue("@payStateId", updateData.PayStateId);
+                command.Parameters.AddWithValue("@deliverTypeId", updateData.DeliverTypeId);
+                command.Parameters.AddWithValue("@deliverStateId", updateData.DeliverStateId);
 
                 command.Connection.Open();
-
-                int statusMessage = Convert.ToInt32(command.ExecuteScalar());
-
-                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
-                if (!string.IsNullOrEmpty(updateData.Pwd)) RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
+                command.ExecuteNonQuery();
 
                 return true;
             }
@@ -266,18 +252,18 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 檢查編輯管理者資料的傳入參數
         /// </summary>
-        public bool CheckUpdateInputData(UpdateAdminDataDto updateData)
+        public bool CheckUpdateInputData(UpdateOrderDataDto updateData)
         {
-            string rule = @"^[a-zA-Z0-9]+$";
-
-            // 檢查名字、角色是否為空
-            if (string.IsNullOrEmpty(updateData.Name) || updateData.Roles.Count == 0) return false;
-            // 檢查是否有效的參數是否正確
-            if (updateData.Enabled < 0 || updateData.Enabled > 1) return false;
-            // 檢查密碼、名字的長度是否正確
-            if (updateData.Pwd.Length > 16 || updateData.Name.Length > 20) return false;
-            // 檢查密碼是否有非法字元
-            if (!string.IsNullOrEmpty(updateData.Pwd) && !Regex.IsMatch(updateData.Pwd, rule)) return false;
+            // 檢查訂單編號是否有T及M
+            if (!updateData.OrderId.Contains('T') && !updateData.OrderId.Contains('M')) return false;
+            // 檢查是否有該付款方式
+            if (!Enum.IsDefined(typeof(PayTypeCode), updateData.PayTypeId)) return false;
+            // 檢查是否有該付款狀態
+            if (!Enum.IsDefined(typeof(PayStateCode), updateData.PayStateId)) return false;
+            // 檢查是否有該配送方式
+            if (!Enum.IsDefined(typeof(DeliveryTypeCode), updateData.DeliverTypeId)) return false;
+            // 檢查是否有該配送狀態
+            if (!Enum.IsDefined(typeof(DeliveryStateCode), updateData.DeliverStateId)) return false;
 
             return true;
         }

@@ -87,5 +87,7 @@
     <Build Include="dbo\Stored Procedures\pro_bkg_updateCommodityData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_insertCommodityData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getCommodityData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_updateOrderData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_getOrderData.sql" />
   </ItemGroup>
 </Project>
