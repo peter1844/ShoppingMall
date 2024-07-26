@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ShoppingMall.Models.Admin
+namespace ShoppingMall.Models.Commodity
 {
     public class CommodityOptionDataDtoResponse
     {

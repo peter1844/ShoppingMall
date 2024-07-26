@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ShoppingMall.Models.Commodity;
 
 namespace ShoppingMall.Models.Order
 {
@@ -23,6 +24,11 @@ namespace ShoppingMall.Models.Order
         /// 配送狀態
         /// </summary>
         public List<DeliveryState> DeliveryStates { get; set; }
+
+        /// <summary>
+        /// 狀態開啟的商品
+        /// </summary>
+        public List<OpenCommodityData> OpenCommodityDatas { get; set; }
     }
 
     /// <summary>

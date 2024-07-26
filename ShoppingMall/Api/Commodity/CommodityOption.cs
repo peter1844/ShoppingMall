@@ -1,5 +1,5 @@
 ﻿using ShoppingMall.App_Code;
-using ShoppingMall.Models.Admin;
+using ShoppingMall.Models.Commodity;
 using System;
 using System.Collections.Generic;
 using System.Data;

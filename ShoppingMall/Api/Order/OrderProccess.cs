@@ -1,5 +1,4 @@
 ﻿using ShoppingMall.App_Code;
-using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
@@ -108,30 +107,40 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 新增管理者資料
         /// </summary>
-        public bool InsertAdminData(InsertAdminDataDto insertData)
+        public bool InsertOrderData(InsertOrderDataDto insertData)
         {
             SqlCommand command = MsSqlConnection();
 
             try
             {
                 DataTable tempTable = new DataTable();
-                tempTable.Columns.Add("roleId", typeof(int));
+                DateTime now = DateTime.Now;
+                string orderId = $"T{now.ToString("yyyyMMddHHmmss")}M{insertData.MemberId.ToString()}";
+                
+                tempTable.Columns.Add("commodityId", typeof(int));
+                tempTable.Columns.Add("quantity", typeof(int));
+                tempTable.Columns.Add("price", typeof(int));
 
-                foreach (int roleId in insertData.Roles)
+                foreach (CommodityInsertData data in insertData.CommodityDatas)
                 {
-                    tempTable.Rows.Add(roleId);
+                    tempTable.Rows.Add(data.CommodityId, data.Quantity, data.Price);
                 }
 
-                command.CommandText = "EXEC pro_bkg_insertAdminData @name,@acc,@pwd,@enabled,@roleId";
+                command.CommandText = "EXEC pro_bkg_insertOrderData @orderId,@memberId,@nowDate,@payType,@payState,@deliverType,@deliverState,@totalMoney,@commoditys";
 
-                command.Parameters.AddWithValue("@name", insertData.Name);
-                command.Parameters.AddWithValue("@acc", insertData.Acc);
-                command.Parameters.AddWithValue("@pwd", insertData.Pwd);
-                command.Parameters.AddWithValue("@enabled", insertData.Enabled);
-                SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
+                command.Parameters.AddWithValue("@orderId", orderId);
+                command.Parameters.AddWithValue("@memberId", insertData.MemberId);
+                command.Parameters.AddWithValue("@nowDate", now);
+                command.Parameters.AddWithValue("@payType", insertData.PayType);
+                command.Parameters.AddWithValue("@payState", 0);
+                command.Parameters.AddWithValue("@deliverType", 1);
+                command.Parameters.AddWithValue("@deliverState", 0);
+                command.Parameters.AddWithValue("@totalMoney", insertData.TotalMoney);
+
+                SqlParameter parameter = command.Parameters.AddWithValue("@commoditys", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
-                parameter.TypeName = "dbo.adminUserRoleTempType";
-
+                parameter.TypeName = "dbo.orderCommodityTempType";
+                
                 command.Connection.Open();
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
@@ -142,7 +151,8 @@ namespace ShoppingMall.Api.Order
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                //throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -232,18 +242,9 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 檢查新增管理者資料的傳入參數
         /// </summary>
-        public bool CheckInsertInputData(InsertAdminDataDto insertData)
+        public bool CheckInsertInputData(InsertOrderDataDto insertData)
         {
-            string rule = @"^[a-zA-Z0-9]+$";
-
-            // 檢查帳號、密碼、名字、角色是否為空
-            if (string.IsNullOrEmpty(insertData.Acc) || string.IsNullOrEmpty(insertData.Pwd) || string.IsNullOrEmpty(insertData.Name) || insertData.Roles.Count == 0) return false;
-            // 檢查是否有效的參數是否正確
-            if (insertData.Enabled < 0 || insertData.Enabled > 1) return false;
-            // 檢查帳號、密碼、名字的長度是否正確
-            if (insertData.Acc.Length > 16 || insertData.Pwd.Length > 16 || insertData.Name.Length > 20) return false;
-            // 檢查帳號、密碼是否有非法字元
-            if (!Regex.IsMatch(insertData.Acc, rule) || !Regex.IsMatch(insertData.Pwd, rule)) return false;
+            
 
             return true;
         }

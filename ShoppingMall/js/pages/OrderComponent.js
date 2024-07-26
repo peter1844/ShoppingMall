@@ -45,50 +45,12 @@
                         <td>{{ $t('orderPage.option.' + item.DeliverStateName) }}</td>
                         <td>
                             <input type="button" class="btn detail" value="明 細" @click="OpenDetail(item.Id)"/>
-                            <input type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
+                            <input type="button" class="btn update" value="編 輯" v-if="item.DeliverStateId != 2" @click="OpenUpdate(item.Id)"/>
                             <input type="button" class="btn delete" value="刪 除" @click="DeleteOrder(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
-            <div class="popupUpdate" v-if="showPopupUpdate">
-                <div class="popupUpdate_head">
-                    <h5>編 輯</h5>
-                </div>
-
-                <div class="popupUpdate_data">
-                    <div>
-                        <label><label class="required_mark">*</label>訂單編號</label><br><br>
-                        <input type="text" class="text" v-model="orderId" disabled><br><br>
-
-                        <label><label class="required_mark">*</label>付款方式</label><br/>
-                        <select class="select" v-model="payType">
-                            <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
-                        </select><br/><br/>
-
-                        <label><label class="required_mark">*</label>付款狀態</label><br/>
-                        <select class="select" v-model="payState">
-                            <option v-for="item in optionData.PayStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
-                        </select><br/><br/>
-
-                        <label><label class="required_mark">*</label>配送方式</label><br/>
-                        <select class="select" v-model="deliverType">
-                            <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
-                        </select><br/><br/>
-
-                        <label><label class="required_mark">*</label>配送狀態</label><br/>
-                        <select class="select" v-model="deliverState">
-                            <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
-                        </select><br/><br/>
-                    </div>
-                    
-                    <div align="right">
-                        <input type="button" class="btn submit" value="送 出" @click="UpdateOrder()"/>
-                        <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
-                    </div>
-                </div>
-            </div>
 
             <div class="popupDetail" v-if="showPopupDetail">
                 
@@ -125,6 +87,81 @@
                 </div>
             </div>
 
+
+            <div class="popupInsert" v-if="showPopupInsert">
+                <div class="popupInsert_head">
+                    <h5>模擬下單</h5>
+                </div>
+
+                <div class="popupInsert_data">
+                    <div>
+                        <label><label class="required_mark">*</label>付款方式</label><br/>
+                        <select class="select" v-model="insertPayType">
+                            <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                        </select><br/><br/>
+
+                        <input type="button" class="btn insert" value="新增" @click="addCommodityRow()"><br/>
+
+                        <div v-for="(item, index) in insertCommodityData" :key="index">
+                            <label>商品名稱</label>
+                            <select class="select" v-model="item.CommodityId" @change="updatePrice(index)">
+                                <option v-for="commoditys in optionData.OpenCommodityDatas" :value="commoditys.CommodityId">{{ commoditys.CommodityName }}</option>
+                            </select>
+
+                            <label style="margin-left:30px;">單價:{{ item.Price }}</label>
+
+                            <label style="margin-left:30px;">數量</label>
+                            <input type="number" class="number" v-model="item.Quantity">
+                            <label>小計:{{ item.Quantity * item.Price }}</label>
+                        </div>
+                    </div><br/>
+
+                    <div align="right">
+                        <input type="button" class="btn submit" value="送 出" @click="InsertOrder()"/>
+                        <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="popupUpdate" v-if="showPopupUpdate">
+                <div class="popupUpdate_head">
+                    <h5>編 輯</h5>
+                </div>
+
+                <div class="popupUpdate_data">
+                    <div>
+                        <label>訂單編號</label><br><br>
+                        <input type="text" class="text" v-model="orderId" disabled><br><br>
+
+                        <label><label class="required_mark">*</label>付款方式</label><br/>
+                        <select class="select" v-model="payType">
+                            <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                        </select><br/><br/>
+
+                        <label><label class="required_mark">*</label>付款狀態</label><br/>
+                        <select class="select" v-model="payState">
+                            <option v-for="item in optionData.PayStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
+                        </select><br/><br/>
+
+                        <label><label class="required_mark">*</label>配送方式</label><br/>
+                        <select class="select" v-model="deliverType">
+                            <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                        </select><br/><br/>
+
+                        <label><label class="required_mark">*</label>配送狀態</label><br/>
+                        <select class="select" v-model="deliverState">
+                            <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
+                        </select><br/><br/>
+                    </div>
+
+                    <div align="right">
+                        <input type="button" class="btn submit" value="送 出" @click="UpdateOrder()"/>
+                        <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
+                    </div>
+                </div>
+            </div>
+
             <div class="overlay" v-if="showOverlay"></div>
         </div>
     `,
@@ -133,7 +170,9 @@
             orderData: {},
             orderDetailData: {},
             optionData: {},
+            insertCommodityData: [],
             showPopupDetail: false,
+            showPopupInsert: false,
             showPopupUpdate: false,
             showOverlay: false,
             orderId: '',
@@ -146,7 +185,9 @@
             conditionId: '',
             conditionStartDate: '',
             conditionEndDate: '',
-            conditionDeliveryState: ''
+            conditionDeliveryState: '',
+            insertPayType: ''
+
         }
     },
     created: function () {
@@ -280,135 +321,142 @@
                 })
             })
         },
-        async InsertCommodity() {
+        async InsertOrder() {
 
-            if (this.commodityName == '' || this.type == '' || this.price == '' || this.stock == '') {
+            const allCommodityId = this.insertCommodityData.map(item => item.CommodityId);
+            const uniqueCommodityId = new Set(allCommodityId);
+
+            if (allCommodityId.length != uniqueCommodityId.size) {
                 Swal.fire({
-                    text: '尚有必填欄位未填',
-                    icon: "error",
-                    confirmButtonText: '確認'
-                });
-
-                return false;
-            }
-
-            const validCharacters = /^[1-9][0-9]*$/;
-            if (!validCharacters.test(this.price) || !validCharacters.test(this.stock)) {
-                Swal.fire({
-                    text: '價格或庫存量格式錯誤',
+                    text: '重覆商品請合併填寫',
                     icon: "error",
                     confirmButtonText: '確認'
                 })
+            } else {
+                const data = {
+                    MemberId: 2,
+                    PayType: this.insertPayType,
+                    TotalMoney: this.totalAmount,
+                    CommodityDatas: this.insertCommodityData,
+                };
 
-                return false;
-            }
+                fetch('/api/order/insertOrderData', {
+                    method: 'POST',
+                    headers: {
+                        'token': localStorage.getItem('token'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then((response) => {
+                    this.showPopupInsert = false;
+                    this.showOverlay = false;
 
-            const formData = new FormData();
-
-            formData.append('Name', this.commodityName);
-            formData.append('Description', this.description);
-            formData.append('Type', this.type);
-            formData.append('Price', this.price);
-            formData.append('Stock', this.stock);
-            formData.append('Open', this.open);
-            formData.append('ImageFile', this.uploadFile);
-
-            await fetch('/api/commodity/insertCommodityData', {
-                method: 'POST',
-                headers: {
-                    'token': localStorage.getItem('token'),
-                },
-                body: formData
-            }).then((response) => {
-                this.showPopup = false;
-                this.showOverlay = false;
-
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
+                    return response.json()
+                }).then((myJson) => {
+                    if (myJson.ErrorMessage === undefined) {
+                        Swal.fire({
+                            text: '新增完成',
+                            icon: "success",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            location.reload();
+                        });
+                    } else if (myJson.ErrorMessage == 'InvaildToken') {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            window.location.href = '/Views/Login.aspx';
+                        });
+                    } else {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        })
+                    }
+                }).catch((error) => {
                     Swal.fire({
-                        text: '新增完成',
-                        icon: "success",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        location.reload();
-                    });
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
-                        icon: "error",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: '系統異常，請稍後再試',
                         icon: "error",
                         confirmButtonText: '確認'
                     })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: '系統異常，請稍後再試',
-                    icon: "error",
-                    confirmButtonText: '確認'
                 })
-            })
+            }
+
+
         },
         async UpdateOrder() {
+            var actionFlag = true;
 
-            const data = {
-                OrderId: this.orderId,
-                PayTypeId: this.payType,
-                PayStateId: this.payState,
-                DeliverTypeId: this.deliverType,
-                DeliverStateId: this.deliverState
-            };
+            if (this.deliverState == 2) {
+                await Swal.fire({
+                    html: '將配送狀態修改為 <label style="color:red;">' + this.$t('orderPage.option.Return') + '</label> 後將不能編輯此訂單，是否執行？',
+                    icon: "question",
+                    confirmButtonText: '確認',
+                    showCancelButton: true,
+                    cancelButtonText: '取消',
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        actionFlag = false
+                    }
+                });
+            }
 
-            await fetch('/api/order/updateOrderData', {
-                method: 'PUT',
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            }).then((response) => {
-                this.showPopupUpdate = false;
-                this.showOverlay = false;
+            if (actionFlag) {
+                const data = {
+                    OrderId: this.orderId,
+                    PayTypeId: this.payType,
+                    PayStateId: this.payState,
+                    DeliverTypeId: this.deliverType,
+                    DeliverStateId: this.deliverState
+                };
 
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
+                fetch('/api/order/updateOrderData', {
+                    method: 'PUT',
+                    headers: {
+                        'token': localStorage.getItem('token'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then((response) => {
+                    this.showPopupUpdate = false;
+                    this.showOverlay = false;
+
+                    return response.json()
+                }).then((myJson) => {
+                    if (myJson.ErrorMessage === undefined) {
+                        Swal.fire({
+                            text: '編輯完成',
+                            icon: "success",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            location.reload();
+                        });
+                    } else if (myJson.ErrorMessage == 'InvaildToken') {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            window.location.href = '/Views/Login.aspx';
+                        });
+                    } else {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        })
+                    }
+                }).catch((error) => {
                     Swal.fire({
-                        text: '編輯完成',
-                        icon: "success",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        location.reload();
-                    });
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
-                        icon: "error",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: '系統異常，請稍後再試',
                         icon: "error",
                         confirmButtonText: '確認'
                     })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: '系統異常，請稍後再試',
-                    icon: "error",
-                    confirmButtonText: '確認'
                 })
-            })
+            }
         },
         DeleteOrder(id) {
             let deleteData = this.orderData.find(item => item.Id === id);
@@ -477,20 +525,15 @@
             this.showOverlay = true;
         },
         OpenInsert() {
-            //this.showPopup = true;
+            this.showPopupInsert = true;
             this.showOverlay = true;
-            this.commodityId = 0;
-            this.commodityName = '';
-            this.description = '';
-            this.type = '';
-            this.uploadFile = '';
-            this.imagePath = '';
-            this.showImage = false;
-            this.price = '';
-            this.stock = '';
-            this.open = 1;
-            this.actionType = 'insert';
-            this.actionText = '新 增';
+            this.insertPayType = 1;
+            this.insertCommodityData = [];
+            this.insertCommodityData.push({
+                CommodityId: this.optionData.OpenCommodityDatas[0].CommodityId,
+                Price: this.optionData.OpenCommodityDatas[0].CommodityPrice,
+                Quantity: 1
+            });
         },
         OpenUpdate(id) {
             let updateData = this.orderData.find(item => item.Id === id);
@@ -504,6 +547,7 @@
             this.deliverState = updateData.DeliverStateId;
         },
         ClosePopup() {
+            this.showPopupInsert = false;
             this.showPopupUpdate = false;
             this.showPopupDetail = false;
             this.showOverlay = false;
@@ -523,6 +567,21 @@
         },
         FormatDate(dateData) {
             return dateData.split('T')[0];
+        },
+        addCommodityRow() {
+            this.insertCommodityData.push({
+                CommodityId: this.optionData.OpenCommodityDatas[0].CommodityId,
+                Price: this.optionData.OpenCommodityDatas[0].CommodityPrice,
+                Quantity: 1
+            });
+        },
+        updatePrice(index) {
+            let commodityPrice = this.optionData.OpenCommodityDatas.find(item => item.CommodityId === this.insertCommodityData[index].CommodityId).CommodityPrice;
+
+            this.$set(this.insertCommodityData, index, {
+                ...this.insertCommodityData[index],
+                Price: commodityPrice
+            });
         }
     },
     computed: {
@@ -541,6 +600,11 @@
             } else {
                 return this.orderData;
             }
+        },
+        totalAmount() {
+            return this.insertCommodityData.reduce((total, item) => {
+                return total + (item.Price * item.Quantity);
+            }, 0);
         }
     },
     beforeDestroy() {

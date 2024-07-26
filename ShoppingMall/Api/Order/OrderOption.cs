@@ -1,15 +1,22 @@
 ﻿using ShoppingMall.App_Code;
-using ShoppingMall.Models.Admin;
+using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using ShoppingMall.Api.Commodity;
 
 namespace ShoppingMall.Api.Order
 {
     public class OrderOption : ShoppingMall.Base.Base
     {
+        private CommodityProccess commodityProccessclass;
+
+        public OrderOption() 
+        {
+            commodityProccessclass = new CommodityProccess();
+        }
         /// <summary>
         /// 取得訂單管理頁面所需的選項
         /// </summary>
@@ -20,6 +27,7 @@ namespace ShoppingMall.Api.Order
             List<PayState> payStateData = new List<PayState>();
             List<DeliveryType> deliveryTypeData = new List<DeliveryType>();
             List<DeliveryState> deliveryStateData = new List<DeliveryState>();
+            List<OpenCommodityData> commodityData = new List<OpenCommodityData>();
 
             try
             {
@@ -64,11 +72,14 @@ namespace ShoppingMall.Api.Order
                     });
                 }
 
+                commodityData = commodityProccessclass.GetOpenCommodityData();
+
                 orderOptionData.Add(new OrderOptionDataDtoResponse{
                     PayTypes = payTypeData,
                     PayStates = payStateData,
                     DeliveryTypes = deliveryTypeData,
-                    DeliveryStates = deliveryStateData
+                    DeliveryStates = deliveryStateData,
+                    OpenCommodityDatas = commodityData
                 });
 
                 return orderOptionData;

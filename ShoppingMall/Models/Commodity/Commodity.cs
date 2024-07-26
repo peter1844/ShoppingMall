@@ -46,6 +46,25 @@ namespace ShoppingMall.Models.Commodity
     }
 
     /// <summary>
+    /// 狀態為開啟的商品資料
+    /// </summary>
+    public class OpenCommodityData
+    {
+        /// <summary>
+        /// 商品ID
+        /// </summary>
+        public int CommodityId { get; set; }
+        /// <summary>
+        /// 商品名稱
+        /// </summary>
+        public string CommodityName { get;set; }
+        /// <summary>
+        /// 商品價格
+        /// </summary>
+        public int CommodityPrice { get; set; }
+    }
+
+    /// <summary>
     /// 篩選條件
     /// </summary>
     public class ConditionDataDto

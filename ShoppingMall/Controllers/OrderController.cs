@@ -65,13 +65,42 @@ namespace ShoppingMall.Controllers
         /// <returns></returns>
         [Route("getOrderOptionData")]
         [HttpGet]
-        public IHttpActionResult GetCommodityOptionData()
+        public IHttpActionResult GetOrderOptionData()
         {
             try
             {
                 List<OrderOptionDataDtoResponse> orderOptionData = orderOptionClass.GetOrderOptionData();
 
                 return Ok(orderOptionData);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// 新增訂單資料
+        /// </summary>
+        [Route("insertOrderData")]
+        [HttpPost]
+        public IHttpActionResult InsertOrderData([FromBody] InsertOrderDataDto insertData)
+        {
+            try
+            {
+                //bool inputVaild = orderProccessClass.CheckUpdateInputData(updateData);
+                bool inputVaild = true;
+
+                if (inputVaild)
+                {
+                    bool result = orderProccessClass.InsertOrderData(insertData);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
+                }
             }
             catch (Exception ex)
             {

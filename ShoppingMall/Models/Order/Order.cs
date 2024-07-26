@@ -94,6 +94,29 @@ namespace ShoppingMall.Models.Order
     }
 
     /// <summary>
+    /// 新增訂單傳入資料
+    /// </summary>
+    public class InsertOrderDataDto
+    {
+        /// <summary>
+        /// 會員ID
+        /// </summary>
+        public int MemberId { get; set; }
+        /// <summary>
+        /// 付款方式
+        /// </summary>
+        public int PayType { get; set; }
+        /// <summary>
+        /// 訂單總金額
+        /// </summary>
+        public int TotalMoney { set; get; }
+        /// <summary>
+        /// 購買商品資料
+        /// </summary>
+        public List<CommodityInsertData> CommodityDatas { get; set; }
+    }
+
+    /// <summary>
     /// 編輯訂單傳入資料
     /// </summary>
     public class UpdateOrderDataDto
@@ -129,5 +152,24 @@ namespace ShoppingMall.Models.Order
         /// 訂單編號
         /// </summary>
         public string OrderId { set; get; }
+    }
+
+    /// <summary>
+    /// 商品傳入資料
+    /// </summary>
+    public class CommodityInsertData
+    {
+        /// <summary>
+        /// 商品ID
+        /// </summary>
+        public int CommodityId { get; set; }
+        /// <summary>
+        /// 單價
+        /// </summary>
+        public int Price { set; get; }
+        /// <summary>
+        /// 數量
+        /// </summary>
+        public int Quantity { set; get; }
     }
 }

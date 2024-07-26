@@ -1,7 +1,5 @@
-﻿using ShoppingMall.Api.Admin;
-using ShoppingMall.Api.Commodity;
+﻿using ShoppingMall.Api.Commodity;
 using ShoppingMall.App_Code;
-using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Common;
 using System;
