@@ -89,5 +89,9 @@
     <Build Include="dbo\Stored Procedures\pro_bkg_getCommodityData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_updateOrderData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getOrderData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_insertOrderData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_getOpenCommodityData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_deleteOrderData.sql" />
+    <Build Include="dbo\User Defined Types\orderCommodityTempType.sql" />
   </ItemGroup>
 </Project>
