@@ -151,6 +151,7 @@
   <ItemGroup>
     <Compile Include="Api\Admin\AdminOption.cs" />
     <Compile Include="Api\Admin\AdminProccess.cs" />
+    <Compile Include="Api\Commodity\CommodityStockCheck.cs" />
     <Compile Include="Api\Commodity\CommodityProccess.cs" />
     <Compile Include="Api\Commodity\CommodityOption.cs" />
     <Compile Include="Api\Login\LoginByAcc.cs" />
@@ -174,6 +175,7 @@
     </Compile>
     <Compile Include="Models\Admin\AdminOption.cs" />
     <Compile Include="Models\Admin\Admin.cs" />
+    <Compile Include="Models\Commodity\CommodityStockCheck.cs" />
     <Compile Include="Models\Commodity\Commodity.cs" />
     <Compile Include="Models\Commodity\CommodityOption.cs" />
     <Compile Include="Models\Common\Exception.cs" />

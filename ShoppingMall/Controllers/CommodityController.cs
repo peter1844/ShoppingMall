@@ -15,11 +15,13 @@ namespace ShoppingMall.Controllers
     {
         private CommodityProccess commodityProccessClass;
         private CommodityOption commodityOptionClass;
+        private CommodityStockCheck commodityStockCheckClass;
 
         public CommodityController()
         {
             commodityProccessClass = new CommodityProccess();
             commodityOptionClass = new CommodityOption();
+            commodityStockCheckClass = new CommodityStockCheck();
         }
 
         /// <summary>
@@ -62,6 +64,25 @@ namespace ShoppingMall.Controllers
                 List<CommodityOptionDataDtoResponse> adminOptionData = commodityOptionClass.GetAllCommodityOptionData();
 
                 return Ok(adminOptionData);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// 取得庫存不足商品資料
+        /// </summary>
+        [Route("checkCommodityStock")]
+        [HttpGet]
+        public IHttpActionResult CheckCommodityStock()
+        {
+            try
+            {
+                List<CommodityStockDataDtoResponse> commodityStockData = commodityStockCheckClass.GetShortageCommodityData();
+
+                return Ok(commodityStockData);
             }
             catch (Exception ex)
             {

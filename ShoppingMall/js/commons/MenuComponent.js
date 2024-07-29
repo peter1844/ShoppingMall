@@ -19,10 +19,18 @@
     },
     created: function () {
 
-        // 每30秒檢查一次登入狀態
+        // 每10秒檢查一次登入狀態
         setInterval(() => {
             this.checkLoginStatus();
         }, 10000);
+
+        if (localStorage.getItem('stockAlert') == null) {
+            this.checkCommodityStock();
+        } else {
+            let alertData = JSON.parse(localStorage.getItem('stockAlert'));
+
+            if (new Date().getTime() >= alertData.expiration) this.checkCommodityStock();
+        }
     },
     methods: {
         async checkLoginStatus() {
@@ -38,6 +46,57 @@
 
                 if (myJson.ErrorMessage === undefined) {
                     console.log('Is loging')
+                } else {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        window.location.href = '/Views/Login.aspx';
+                    });
+                }
+
+            }).catch((error) => {
+
+                Swal.fire({
+                    text: '系統異常，請稍後再試',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+            })
+        },
+        async checkCommodityStock() {
+
+            await fetch('/api/commodity/checkCommodityStock', {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => {
+                return response.json()
+            }).then((myJson) => {
+
+                if (myJson.ErrorMessage === undefined) {
+                    if (myJson[0].InventoryShortageCount > 0) {
+
+                        const data = {
+                            value: myJson[0].InventoryShortageCount,
+                            expiration: new Date().getTime() + 60 * 1000 
+                        };
+                        localStorage.setItem('stockAlert', JSON.stringify(data));
+
+                        Swal.fire({
+                            html: '偵測到有 <label style="color:red;">' + myJson[0].InventoryShortageCount + '</label> 筆商品庫存量不足，要前往商品頁面嗎？',
+                            icon: "question",
+                            confirmButtonText: '前往',
+                            showCancelButton: true,
+                            cancelButtonText: '取消',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/Views/Commodity.aspx';
+                            }
+                        });
+                    }
                 } else {
                     Swal.fire({
                         text: myJson.ErrorMessage,
