@@ -58,7 +58,6 @@ namespace ShoppingMall.Api.Admin
                             Enabled = g.First().Enabled,
                             Role = g.SelectMany(u => u.Role).ToList()  // 将每个组内的 Role 合并到一个列表中
                         }).ToList();
-
                 }
 
                 return groupAdminUserData;
@@ -104,7 +103,8 @@ namespace ShoppingMall.Api.Admin
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
-                if(statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
+                // DB執行錯誤
+                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
             }
@@ -149,8 +149,10 @@ namespace ShoppingMall.Api.Admin
                 command.Connection.Open();
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
-                
+
+                // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
+                // 有更新密碼就強制把該使用者登出
                 if (!string.IsNullOrEmpty(updateData.Pwd)) RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
 
                 return true;
@@ -183,6 +185,7 @@ namespace ShoppingMall.Api.Admin
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
                 RedisConnection().GetDatabase().KeyDelete($"{deleteData.AdminId}_token");
 

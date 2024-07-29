@@ -145,7 +145,9 @@ namespace ShoppingMall.Api.Order
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // 庫存量不足
                 if (statusMessage == (int)StateCode.StockError) throw new Exception(StateCode.StockError.ToString());
+                // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
@@ -182,6 +184,7 @@ namespace ShoppingMall.Api.Order
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
@@ -214,6 +217,7 @@ namespace ShoppingMall.Api.Order
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
