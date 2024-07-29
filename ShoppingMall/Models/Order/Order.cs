@@ -107,6 +107,10 @@ namespace ShoppingMall.Models.Order
         /// </summary>
         public int PayType { get; set; }
         /// <summary>
+        /// 配送方式
+        /// </summary>
+        public int DeliverType { get; set; }
+        /// <summary>
         /// 訂單總金額
         /// </summary>
         public int TotalMoney { set; get; }

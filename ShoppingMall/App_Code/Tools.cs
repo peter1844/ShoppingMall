@@ -34,7 +34,11 @@ namespace ShoppingMall.App_Code
         /// <summary>
         /// 登入失敗
         /// </summary>
-        InvaildLogin = 4012
+        InvaildLogin = 4012,
+        /// <summary>
+        /// 庫存量不足
+        /// </summary>
+        StockError = 700
     }
     
     /// <summary>

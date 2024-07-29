@@ -100,6 +100,11 @@
                             <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
                         </select><br/><br/>
 
+                        <label><label class="required_mark">*</label>配送方式</label><br/>
+                        <select class="select" v-model="insertDeliverType">
+                            <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                        </select><br/><br/>
+
                         <input type="button" class="btn insert" value="新增" @click="addCommodityRow()"><br/>
 
                         <div v-for="(item, index) in insertCommodityData" :key="index">
@@ -186,7 +191,8 @@
             conditionStartDate: '',
             conditionEndDate: '',
             conditionDeliveryState: '',
-            insertPayType: ''
+            insertPayType: '',
+            insertDeliverType: ''
 
         }
     },
@@ -336,6 +342,7 @@
                 const data = {
                     MemberId: 2,
                     PayType: this.insertPayType,
+                    DeliverType: this.insertDeliverType,
                     TotalMoney: this.totalAmount,
                     CommodityDatas: this.insertCommodityData,
                 };
@@ -368,6 +375,9 @@
                             confirmButtonText: '確認'
                         }).then((result) => {
                             window.location.href = '/Views/Login.aspx';
+                            window.location.href = '/Views/Login.aspx'; ogojjooorl; tlktpporlgfINT
+
+
                         });
                     } else {
                         Swal.fire({
@@ -527,7 +537,8 @@
         OpenInsert() {
             this.showPopupInsert = true;
             this.showOverlay = true;
-            this.insertPayType = 1;
+            this.insertPayType = this.optionData.PayTypes[0].TypeId;
+            this.insertDeliverType = this.optionData.DeliveryTypes[0].TypeId;
             this.insertCommodityData = [];
             this.insertCommodityData.push({
                 CommodityId: this.optionData.OpenCommodityDatas[0].CommodityId,

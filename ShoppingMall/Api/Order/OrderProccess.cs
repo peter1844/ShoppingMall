@@ -105,7 +105,7 @@ namespace ShoppingMall.Api.Order
         }
 
         /// <summary>
-        /// 新增管理者資料
+        /// 新增訂單資料
         /// </summary>
         public bool InsertOrderData(InsertOrderDataDto insertData)
         {
@@ -133,7 +133,7 @@ namespace ShoppingMall.Api.Order
                 command.Parameters.AddWithValue("@nowDate", now);
                 command.Parameters.AddWithValue("@payType", insertData.PayType);
                 command.Parameters.AddWithValue("@payState", 0);
-                command.Parameters.AddWithValue("@deliverType", 1);
+                command.Parameters.AddWithValue("@deliverType", insertData.DeliverType);
                 command.Parameters.AddWithValue("@deliverState", 0);
                 command.Parameters.AddWithValue("@totalMoney", insertData.TotalMoney);
 
@@ -145,13 +145,13 @@ namespace ShoppingMall.Api.Order
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                if (statusMessage == (int)StateCode.StockError) throw new Exception(StateCode.StockError.ToString());
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
             }
             catch (Exception ex)
             {
-                //throw new Exception(StateCode.DbError.ToString(), ex);
                 throw new Exception(ex.Message);
             }
             finally
@@ -162,7 +162,7 @@ namespace ShoppingMall.Api.Order
         }
 
         /// <summary>
-        /// 編輯管理者資料
+        /// 編輯訂單資料
         /// </summary>
         public bool UpdateOrderData(UpdateOrderDataDto updateData)
         {
@@ -179,7 +179,10 @@ namespace ShoppingMall.Api.Order
                 command.Parameters.AddWithValue("@deliverStateId", updateData.DeliverStateId);
 
                 command.Connection.Open();
-                command.ExecuteNonQuery();
+
+                int statusMessage = Convert.ToInt32(command.ExecuteScalar());
+
+                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
             }
@@ -195,7 +198,7 @@ namespace ShoppingMall.Api.Order
         }
 
         /// <summary>
-        /// 刪除管理者資料
+        /// 刪除訂單資料
         /// </summary>
         public bool DeleteOrderData(DeleteOrderDataDto deleteData)
         {
@@ -240,7 +243,7 @@ namespace ShoppingMall.Api.Order
         }
 
         /// <summary>
-        /// 檢查新增管理者資料的傳入參數
+        /// 檢查新增訂單資料的傳入參數
         /// </summary>
         public bool CheckInsertInputData(InsertOrderDataDto insertData)
         {
@@ -250,7 +253,7 @@ namespace ShoppingMall.Api.Order
         }
 
         /// <summary>
-        /// 檢查編輯管理者資料的傳入參數
+        /// 檢查編輯訂單資料的傳入參數
         /// </summary>
         public bool CheckUpdateInputData(UpdateOrderDataDto updateData)
         {
@@ -269,7 +272,7 @@ namespace ShoppingMall.Api.Order
         }
 
         /// <summary>
-        /// 檢查刪除管理者資料的傳入參數
+        /// 檢查刪除訂單資料的傳入參數
         /// </summary>
         public bool CheckDeleteInputData(DeleteOrderDataDto deleteData)
         {
