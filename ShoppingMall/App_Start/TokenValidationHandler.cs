@@ -13,13 +13,15 @@ using System.Web;
 
 public class TokenValidationHandler : DelegatingHandler
 {
-    private LoginByToken LoginByTokenClass;
-    private Logout LogoutClass;
+    private LoginByToken loginByTokenClass;
+    private Logout logoutClass;
+    private TokenExtend tokenExtendClass;
 
     public TokenValidationHandler()
     {
-        LoginByTokenClass = new LoginByToken();
-        LogoutClass = new Logout();
+        loginByTokenClass = new LoginByToken();
+        logoutClass = new Logout();
+        tokenExtendClass = new TokenExtend();
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -36,12 +38,16 @@ public class TokenValidationHandler : DelegatingHandler
                 string token = authHeaders.FirstOrDefault();
 
                 // Token驗證
-                if (!LoginByTokenClass.IsValidToken(token))
+                if (!loginByTokenClass.IsValidToken(token))
                 {
-                    LogoutClass.LogoutProccess();
+                    logoutClass.LogoutProccess();
 
                     // 無效Token
                     return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { ErrorMessage = StateCode.InvaildToken.ToString() });
+                }
+                else 
+                {
+                    tokenExtendClass.ExtendRedisLoginToken(token);
                 }
             }
             else

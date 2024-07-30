@@ -152,8 +152,8 @@ namespace ShoppingMall.Api.Admin
 
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
-                // 有更新密碼就強制把該使用者登出
-                if (!string.IsNullOrEmpty(updateData.Pwd)) RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
+                // 有更新就強制把該使用者登出
+                RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
 
                 return true;
             }

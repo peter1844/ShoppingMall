@@ -83,7 +83,8 @@
             sortKey: '',
             sortDesc: false,
             actionText: '',
-            showPlaceholder: false
+            showPlaceholder: false,
+            originAdminData: {}
         }
     },
     created: function () {
@@ -273,48 +274,60 @@
                 Enabled: this.enabled
             };
 
-            await fetch('/api/admin/updateAdminData', {
-                method: 'PUT',
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            }).then((response) => {
+            let noChangeFlag = this.EditDataCheck();
+
+            if (noChangeFlag) {
                 this.showPopup = false;
 
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
+                Swal.fire({
+                    text: '無異動資料',
+                    icon: "success",
+                    confirmButtonText: '確認'
+                })
+            } else {
+                await fetch('/api/admin/updateAdminData', {
+                    method: 'PUT',
+                    headers: {
+                        'token': localStorage.getItem('token'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then((response) => {
+                    this.showPopup = false;
+
+                    return response.json()
+                }).then((myJson) => {
+                    if (myJson.ErrorMessage === undefined) {
+                        Swal.fire({
+                            text: '編輯完成',
+                            icon: "success",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            location.reload();
+                        });
+                    } else if (myJson.ErrorMessage == 'InvaildToken') {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            window.location.href = '/Views/Login.aspx';
+                        });
+                    } else {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        })
+                    }
+                }).catch((error) => {
                     Swal.fire({
-                        text: '編輯完成',
-                        icon: "success",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        location.reload();
-                    });
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
-                        icon: "error",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: '系統異常，請稍後再試',
                         icon: "error",
                         confirmButtonText: '確認'
                     })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: '系統異常，請稍後再試',
-                    icon: "error",
-                    confirmButtonText: '確認'
                 })
-            })
+            }
         },
         DeleteAdmin(id) {
             let deleteData = this.adminData.find(item => item.Id === id);
@@ -404,6 +417,31 @@
             this.pwdRequired = false;
             this.actionText = '編 輯';
             this.showPlaceholder = true;
+
+            this.originAdminData = {
+                Name: updateData.Name,
+                Roles: updateData.Role,
+                Enabled: updateData.Enabled
+            };
+        },
+        EditDataCheck() {
+            const nowData = {
+                Name: this.adminName,
+                Roles: this.roles,
+                Enabled: this.enabled
+            };
+
+            if (JSON.stringify(this.originAdminData) === JSON.stringify(nowData)) {
+
+                if (this.pwd == '') {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            } else {
+                return false;
+            }
         },
         CheckAction() {
             this.actionType == 'insert' ? this.InsertAdmin() : this.UpdateAdmin();

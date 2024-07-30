@@ -118,13 +118,12 @@ namespace ShoppingMall.Base
         }
 
         /// <summary>
-        /// 隨機產生N位數的字串
+        /// 隨機產生N位數的字串(Base64)
         /// </summary>
         public string GenerateRandomBytes(int length)
         {
             byte[] randomBytes = new byte[length];
 
-            // 使用 RNGCryptoServiceProvider 生成随机字节
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
                 rng.GetBytes(randomBytes);
@@ -132,6 +131,26 @@ namespace ShoppingMall.Base
 
             string randomBase64String = Convert.ToBase64String(randomBytes);
             return randomBase64String;
+        }
+
+        /// <summary>
+        /// 隨機產生N位數的字串
+        /// </summary>
+        public string GenerateRandomString(int length)
+        {
+            Random random = new Random();
+            StringBuilder sb = new StringBuilder();
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for (int i = 0; i < length; i++)
+            {
+                int index = random.Next(chars.Length);
+                char randomChar = chars[index];
+
+                sb.Append(randomChar);
+            }
+
+            return sb.ToString();
         }
     }
 }

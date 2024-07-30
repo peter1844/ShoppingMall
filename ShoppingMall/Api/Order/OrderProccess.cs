@@ -2,6 +2,7 @@
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -115,7 +116,7 @@ namespace ShoppingMall.Api.Order
             {
                 DataTable tempTable = new DataTable();
                 DateTime now = DateTime.Now;
-                string orderId = $"T{now.ToString("yyyyMMddHHmmss")}M{insertData.MemberId.ToString()}";
+                string orderId = $"T{now.ToString("yyyyMMddHHmmss")}{GenerateRandomString(6)}";
                 
                 tempTable.Columns.Add("commodityId", typeof(int));
                 tempTable.Columns.Add("quantity", typeof(int));
@@ -203,15 +204,15 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 刪除訂單資料
         /// </summary>
-        public bool DeleteOrderData(DeleteOrderDataDto deleteData)
+        public bool DeleteOrderData()
         {
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_deleteOrderData @orderId";
+                command.CommandText = "EXEC pro_bkg_deleteOrderData @deleteDays";
 
-                command.Parameters.AddWithValue("@orderId", deleteData.OrderId);
+                command.Parameters.AddWithValue("@deleteDays", Convert.ToInt32(ConfigurationManager.AppSettings["OrderDeleteDays"]));
 
                 command.Connection.Open();
 
@@ -251,7 +252,16 @@ namespace ShoppingMall.Api.Order
         /// </summary>
         public bool CheckInsertInputData(InsertOrderDataDto insertData)
         {
-            
+            // 檢查是否有該付款方式
+            if (!Enum.IsDefined(typeof(PayTypeCode), insertData.PayType)) return false;
+            // 檢查是否有該配送方式
+            if (!Enum.IsDefined(typeof(DeliveryTypeCode), insertData.DeliverType)) return false;
+
+            string rule = @"^[1-9]\d*$";
+            foreach (CommodityInsertData item in insertData.CommodityDatas)
+            {
+                if (!Regex.IsMatch(item.Quantity.ToString(), rule)) return false;
+            }
 
             return true;
         }
@@ -261,8 +271,6 @@ namespace ShoppingMall.Api.Order
         /// </summary>
         public bool CheckUpdateInputData(UpdateOrderDataDto updateData)
         {
-            // 檢查訂單編號是否有T及M
-            if (!updateData.OrderId.Contains('T') && !updateData.OrderId.Contains('M')) return false;
             // 檢查是否有該付款方式
             if (!Enum.IsDefined(typeof(PayTypeCode), updateData.PayTypeId)) return false;
             // 檢查是否有該付款狀態

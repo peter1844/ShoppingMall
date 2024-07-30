@@ -29,6 +29,7 @@
         } else {
             let alertData = JSON.parse(localStorage.getItem('stockAlert'));
 
+            // 判斷庫存量警示的有效時間是否已到期
             if (new Date().getTime() >= alertData.expiration) this.checkCommodityStock();
         }
     },
@@ -77,11 +78,13 @@
             }).then((myJson) => {
 
                 if (myJson.ErrorMessage === undefined) {
+
+                    // 有庫存量不足的商品
                     if (myJson[0].InventoryShortageCount > 0) {
 
-                        const data = {
+                        const data = { 
                             value: myJson[0].InventoryShortageCount,
-                            expiration: new Date().getTime() + 60 * 1000 
+                            expiration: new Date().getTime() + 10 * 60 * 1000 
                         };
                         localStorage.setItem('stockAlert', JSON.stringify(data));
 

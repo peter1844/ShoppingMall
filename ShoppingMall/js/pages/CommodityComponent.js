@@ -113,7 +113,8 @@
             actionText: '',
             conditionName: '',
             conditionType: '',
-            deleteImgFlag: false
+            deleteImgFlag: false,
+            originCommodityData: {}
         }
     },
     created: function () {
@@ -350,47 +351,59 @@
                 formData.append('DeleteFlag', "1");
             }
 
-            await fetch('/api/commodity/updateCommodityData', {
-                method: 'PUT',
-                headers: {
-                    'token': localStorage.getItem('token'),
-                },
-                body: formData
-            }).then((response) => {
+            let noChangeFlag = this.EditDataCheck();
+
+            if (noChangeFlag) {
                 this.showPopup = false;
 
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
+                Swal.fire({
+                    text: '無異動資料',
+                    icon: "success",
+                    confirmButtonText: '確認'
+                })
+            } else {
+                await fetch('/api/commodity/updateCommodityData', {
+                    method: 'PUT',
+                    headers: {
+                        'token': localStorage.getItem('token'),
+                    },
+                    body: formData
+                }).then((response) => {
+                    this.showPopup = false;
+
+                    return response.json()
+                }).then((myJson) => {
+                    if (myJson.ErrorMessage === undefined) {
+                        Swal.fire({
+                            text: '編輯完成',
+                            icon: "success",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            location.reload();
+                        });
+                    } else if (myJson.ErrorMessage == 'InvaildToken') {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            window.location.href = '/Views/Login.aspx';
+                        });
+                    } else {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        })
+                    }
+                }).catch((error) => {
                     Swal.fire({
-                        text: '編輯完成',
-                        icon: "success",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        location.reload();
-                    });
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
-                        icon: "error",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: '系統異常，請稍後再試',
                         icon: "error",
                         confirmButtonText: '確認'
                     })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: '系統異常，請稍後再試',
-                    icon: "error",
-                    confirmButtonText: '確認'
                 })
-            })
+            }
         },
         OpenInsert() {
             this.showPopup = true;
@@ -425,6 +438,39 @@
             this.actionType = 'update';
             this.actionText = '編 輯';
             this.deleteImgFlag = false;
+
+            this.originCommodityData = {
+                Name: updateData.Name,
+                Description: updateData.Description,
+                Type: updateData.Type,
+                Price: updateData.Price,
+                Stock: updateData.Stock,
+                Open: updateData.Open
+            };
+        },
+        EditDataCheck() {
+            const nowData = {
+                Name: this.commodityName,
+                Description: this.description,
+                Type: this.type,
+                Price: this.price,
+                Stock: this.stock,
+                Open: this.open
+            };
+
+            if (JSON.stringify(this.originCommodityData) === JSON.stringify(nowData)) {
+
+                if (this.uploadFile == '' && !this.deleteImgFlag) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            } else {
+                return false;
+            }
+
+            return JSON.stringify(this.originCommodityData) === JSON.stringify(nowData)
         },
         CheckAction() {
             this.actionType == 'insert' ? this.InsertCommodity() : this.UpdateCommodity();

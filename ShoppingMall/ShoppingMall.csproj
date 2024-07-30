@@ -155,6 +155,7 @@
     <Compile Include="Api\Commodity\CommodityProccess.cs" />
     <Compile Include="Api\Commodity\CommodityOption.cs" />
     <Compile Include="Api\Login\LoginByAcc.cs" />
+    <Compile Include="Api\Login\TokenExtend.cs" />
     <Compile Include="Api\Login\LoginByToken.cs" />
     <Compile Include="Api\Logout\Logout.cs" />
     <Compile Include="Api\Member\MemberProccess.cs" />

@@ -23,6 +23,7 @@
 
             <div>
                 <input type="button" class="btn insert" value="模擬下單" @click="OpenInsert()"/>
+                <input type="button" class="btn delete" value="刪除訂單" @click="DeleteOrder()"/>
             </div>
             <br/>
             <table>
@@ -46,7 +47,6 @@
                         <td>
                             <input type="button" class="btn detail" value="明 細" @click="OpenDetail(item.Id)"/>
                             <input type="button" class="btn update" value="編 輯" v-if="item.DeliverStateId != 2" @click="OpenUpdate(item.Id)"/>
-                            <input type="button" class="btn delete" value="刪 除" @click="DeleteOrder(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -73,7 +73,7 @@
                         <tbody>
                             <tr v-for="item in orderDetailData">
                                 <td>{{ item.CommodityName }}</td>
-                                <td><img :src="item.Image" class="commodityImage"></td>
+                                <td><img :src="item.Image" @error="handleImageError" class="commodityImage"></td>
                                 <td>{{ item.Price }}</td>
                                 <td>{{ item.Quantity }}</td>
                                 <td>{{ item.Price * item.Quantity }}</td>
@@ -140,22 +140,22 @@
                         <input type="text" class="text" v-model="orderId" disabled><br><br>
 
                         <label><label class="required_mark">*</label>付款方式</label><br/>
-                        <select class="select" v-model="payType">
+                        <select class="select" v-model="payType" :disabled="editPayTypeDisabled">
                             <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
                         </select><br/><br/>
 
                         <label><label class="required_mark">*</label>付款狀態</label><br/>
-                        <select class="select" v-model="payState">
+                        <select class="select" v-model="payState" @change="ChangePayStateCheck">
                             <option v-for="item in optionData.PayStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
                         </select><br/><br/>
 
                         <label><label class="required_mark">*</label>配送方式</label><br/>
-                        <select class="select" v-model="deliverType">
+                        <select class="select" v-model="deliverType" :disabled="editDeliverTypeDisabled">
                             <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
                         </select><br/><br/>
 
                         <label><label class="required_mark">*</label>配送狀態</label><br/>
-                        <select class="select" v-model="deliverState">
+                        <select class="select" v-model="deliverState" @change="ChangeDeliverStateCheck">
                             <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
                         </select><br/><br/>
                     </div>
@@ -192,8 +192,13 @@
             conditionEndDate: '',
             conditionDeliveryState: '',
             insertPayType: '',
-            insertDeliverType: ''
-
+            insertDeliverType: '',
+            defaultImage: '/images/commodity/default.jpg',
+            editPayTypeDisabled: false,
+            editDeliverTypeDisabled: false,
+            originPayType: '',
+            originDeliverType: '',
+            originOrderData: {}
         }
     },
     created: function () {
@@ -338,7 +343,28 @@
                     icon: "error",
                     confirmButtonText: '確認'
                 })
-            } else {
+
+                return false;
+            }
+
+            const validCharacters = /^[1-9][0-9]*$/;
+            let editFlag = true;
+            this.insertCommodityData.forEach((item, index) => {
+
+                if (!validCharacters.test(item.Quantity)) {
+                    Swal.fire({
+                        text: '購買數量格式錯誤',
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+
+                    editFlag = false;
+                    return;
+                }
+
+            });
+
+            if (editFlag) {
                 const data = {
                     MemberId: 2,
                     PayType: this.insertPayType,
@@ -375,9 +401,6 @@
                             confirmButtonText: '確認'
                         }).then((result) => {
                             window.location.href = '/Views/Login.aspx';
-                            window.location.href = '/Views/Login.aspx'; ogojjooorl; tlktpporlgfINT
-
-
                         });
                     } else {
                         Swal.fire({
@@ -394,8 +417,6 @@
                     })
                 })
             }
-
-
         },
         async UpdateOrder() {
             var actionFlag = true;
@@ -423,56 +444,68 @@
                     DeliverStateId: this.deliverState
                 };
 
-                fetch('/api/order/updateOrderData', {
-                    method: 'PUT',
-                    headers: {
-                        'token': localStorage.getItem('token'),
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                }).then((response) => {
+                let noChangeFlag = this.EditDataCheck();
+
+                if (noChangeFlag) {
                     this.showPopupUpdate = false;
                     this.showOverlay = false;
 
-                    return response.json()
-                }).then((myJson) => {
-                    if (myJson.ErrorMessage === undefined) {
+                    Swal.fire({
+                        text: '無異動資料',
+                        icon: "success",
+                        confirmButtonText: '確認'
+                    })
+                } else {
+                    fetch('/api/order/updateOrderData', {
+                        method: 'PUT',
+                        headers: {
+                            'token': localStorage.getItem('token'),
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    }).then((response) => {
+                        this.showPopupUpdate = false;
+                        this.showOverlay = false;
+
+                        return response.json()
+                    }).then((myJson) => {
+                        if (myJson.ErrorMessage === undefined) {
+                            Swal.fire({
+                                text: '編輯完成',
+                                icon: "success",
+                                confirmButtonText: '確認'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        } else if (myJson.ErrorMessage == 'InvaildToken') {
+                            Swal.fire({
+                                text: myJson.ErrorMessage,
+                                icon: "error",
+                                confirmButtonText: '確認'
+                            }).then((result) => {
+                                window.location.href = '/Views/Login.aspx';
+                            });
+                        } else {
+                            Swal.fire({
+                                text: myJson.ErrorMessage,
+                                icon: "error",
+                                confirmButtonText: '確認'
+                            })
+                        }
+                    }).catch((error) => {
                         Swal.fire({
-                            text: '編輯完成',
-                            icon: "success",
-                            confirmButtonText: '確認'
-                        }).then((result) => {
-                            location.reload();
-                        });
-                    } else if (myJson.ErrorMessage == 'InvaildToken') {
-                        Swal.fire({
-                            text: myJson.ErrorMessage,
-                            icon: "error",
-                            confirmButtonText: '確認'
-                        }).then((result) => {
-                            window.location.href = '/Views/Login.aspx';
-                        });
-                    } else {
-                        Swal.fire({
-                            text: myJson.ErrorMessage,
+                            text: '系統異常，請稍後再試',
                             icon: "error",
                             confirmButtonText: '確認'
                         })
-                    }
-                }).catch((error) => {
-                    Swal.fire({
-                        text: '系統異常，請稍後再試',
-                        icon: "error",
-                        confirmButtonText: '確認'
                     })
-                })
+                }
             }
         },
-        DeleteOrder(id) {
-            let deleteData = this.orderData.find(item => item.Id === id);
+        async DeleteOrder() {
 
-            Swal.fire({
-                html: '確定要刪除訂單 <label style="color:red;">' + deleteData.Id + '</label> 嗎？',
+            await Swal.fire({
+                html: '確定要刪除 <label style="color:red;">180</label> 天前的訂單嗎？',
                 icon: "question",
                 confirmButtonText: '確認',
                 showCancelButton: true,
@@ -480,17 +513,12 @@
             }).then((result) => {
                 if (result.isConfirmed) {
 
-                    const data = {
-                        OrderId: id
-                    };
-
                     fetch('/api/order/deleteOrderData', {
                         method: 'DELETE',
                         headers: {
                             'token': localStorage.getItem('token'),
                             'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
+                        }
                     }).then((response) => {
                         return response.json()
                     }).then((myJson) => {
@@ -556,12 +584,41 @@
             this.payState = updateData.PayStateId;
             this.deliverType = updateData.DeliverTypeId;
             this.deliverState = updateData.DeliverStateId;
+            this.editPayTypeDisabled = this.payState == 1 ? true : false;
+            this.editDeliverTypeDisabled = this.deliverState == 1 ? true : false;
+            this.originPayType = updateData.PayStateId == 1 ? updateData.PayTypeId : '';
+            this.originDeliverType = updateData.DeliverStateId == 1 ? updateData.DeliverTypeId : '';
+
+            this.originOrderData = {
+                PayTypeId: updateData.PayTypeId,
+                PayStateId: updateData.PayStateId,
+                DeliverTypeId: updateData.DeliverTypeId,
+                DeliverStateId: updateData.DeliverStateId
+            };
+        },
+        EditDataCheck() {
+            const nowData = {
+                PayTypeId: this.payType,
+                PayStateId: this.payState,
+                DeliverTypeId: this.deliverType,
+                DeliverStateId: this.deliverState
+            };
+
+            return JSON.stringify(this.originOrderData) === JSON.stringify(nowData)
         },
         ClosePopup() {
             this.showPopupInsert = false;
             this.showPopupUpdate = false;
             this.showPopupDetail = false;
             this.showOverlay = false;
+        },
+        ChangePayStateCheck() {
+            this.editPayTypeDisabled = this.payState == 0 ? false : true;
+            if (this.originPayType != '' && this.payState != 0) this.payType = this.originPayType;
+        },
+        ChangeDeliverStateCheck() {
+            this.editDeliverTypeDisabled = this.deliverState == 0 ? false : true;
+            if (this.originDeliverType != '' && this.deliverState != 0) this.deliverType = this.originDeliverType;
         },
         HandleKeyDown(event) {
             if (event.keyCode === 27) {
@@ -593,6 +650,9 @@
                 ...this.insertCommodityData[index],
                 Price: commodityPrice
             });
+        },
+        handleImageError(event) {
+            event.target.src = this.defaultImage;
         }
     },
     computed: {

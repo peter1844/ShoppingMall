@@ -88,8 +88,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                //bool inputVaild = orderProccessClass.CheckUpdateInputData(updateData);
-                bool inputVaild = true;
+                bool inputVaild = orderProccessClass.CheckInsertInputData(insertData);
 
                 if (inputVaild)
                 {
@@ -141,22 +140,13 @@ namespace ShoppingMall.Controllers
         /// </summary>
         [Route("deleteOrderData")]
         [HttpDelete]
-        public IHttpActionResult DeleteOrderData([FromBody] DeleteOrderDataDto deleteData)
+        public IHttpActionResult DeleteOrderData()
         {
             try
             {
-                bool inputVaild = orderProccessClass.CheckDeleteInputData(deleteData);
+                bool result = orderProccessClass.DeleteOrderData();
 
-                if (inputVaild)
-                {
-                    bool result = orderProccessClass.DeleteOrderData(deleteData);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
-                }
+                return Ok(result);
             }
             catch (Exception ex)
             {

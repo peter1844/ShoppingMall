@@ -68,7 +68,8 @@
             level: 1,
             enabled: 1,
             sortKey: '',
-            sortDesc: false
+            sortDesc: false,
+            originMemberData: {}
         }
     },
     created: function () {
@@ -120,48 +121,60 @@
                 Enabled: this.enabled
             };
 
-            await fetch('/api/member/updateMemberData', {
-                method: 'PUT',
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            }).then((response) => {
+            let noChangeFlag = this.EditDataCheck();
+
+            if (noChangeFlag) {
                 this.showPopup = false;
 
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
+                Swal.fire({
+                    text: '無異動資料',
+                    icon: "success",
+                    confirmButtonText: '確認'
+                })
+            } else {
+                await fetch('/api/member/updateMemberData', {
+                    method: 'PUT',
+                    headers: {
+                        'token': localStorage.getItem('token'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then((response) => {
+                    this.showPopup = false;
+
+                    return response.json()
+                }).then((myJson) => {
+                    if (myJson.ErrorMessage === undefined) {
+                        Swal.fire({
+                            text: '編輯完成',
+                            icon: "success",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            location.reload();
+                        });
+                    } else if (myJson.ErrorMessage == 'InvaildToken') {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        }).then((result) => {
+                            window.location.href = '/Views/Login.aspx';
+                        });
+                    } else {
+                        Swal.fire({
+                            text: myJson.ErrorMessage,
+                            icon: "error",
+                            confirmButtonText: '確認'
+                        })
+                    }
+                }).catch((error) => {
                     Swal.fire({
-                        text: '編輯完成',
-                        icon: "success",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        location.reload();
-                    });
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
-                        icon: "error",
-                        confirmButtonText: '確認'
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: '系統異常，請稍後再試',
                         icon: "error",
                         confirmButtonText: '確認'
                     })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: '系統異常，請稍後再試',
-                    icon: "error",
-                    confirmButtonText: '確認'
                 })
-            })
+            }
         },
         OpenUpdate(id) {
             let updateData = this.memberData.find(item => item.Id === id);
@@ -172,6 +185,19 @@
             this.acc = updateData.Acc;
             this.level = updateData.Level;
             this.enabled = updateData.Enabled;
+
+            this.originMemberData = {
+                Level: updateData.Level,
+                Enabled: updateData.Enabled
+            };
+        },
+        EditDataCheck() {
+            const nowData = {
+                Level: this.level,
+                Enabled: this.enabled
+            };
+
+            return JSON.stringify(this.originMemberData) === JSON.stringify(nowData)
         },
         ClosePopup() {
             this.showPopup = false;
