@@ -16,26 +16,19 @@ namespace ShoppingMall.Api.Admin
         {
             List<AdminOptionDataDtoResponse> adminOptionData = new List<AdminOptionDataDtoResponse>();
 
-            SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
-            DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = MsSqlConnection();
-
-            try
+            try 
             {
-                command.CommandText = "EXEC pro_bkg_getAllAdminOptionData";
-                command.Connection.Open();
+                Array rolesArray = Enum.GetValues(typeof(Roles));
 
-                da.SelectCommand = command;
-                da.Fill(dt); 
-
-                if (dt.Rows.Count > 0)
+                foreach (Roles role in rolesArray) 
                 {
-                    for (int i = 0; i < dt.Rows.Count; i++)
+                    // 排除超級管理者
+                    if ((int)role != 1)
                     {
-                        adminOptionData.Add(new AdminOptionDataDtoResponse
+                        adminOptionData.Add(new AdminOptionDataDtoResponse()
                         {
-                            RoleId = Convert.ToInt32(dt.Rows[i]["f_id"]),
-                            RoleName = dt.Rows[i]["f_name"].ToString(),
+                            RoleId = (int)role,
+                            RoleName = role.ToString()
                         });
                     }
                 }
@@ -44,11 +37,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
-            }
-            finally
-            {
-                command.Connection.Close(); //關閉連線
+                throw new Exception(ex.Message);
             }
         }
     }

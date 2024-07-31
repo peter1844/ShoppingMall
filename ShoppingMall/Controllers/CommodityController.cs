@@ -13,15 +13,38 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/commodity")]
     public class CommodityController : ApiController
     {
+        private CommodityPermissions commodityPermissionsClass;
         private CommodityProccess commodityProccessClass;
         private CommodityOption commodityOptionClass;
         private CommodityStockCheck commodityStockCheckClass;
+        private Base.Base baseClass;
 
         public CommodityController()
         {
+            commodityPermissionsClass = new CommodityPermissions();
             commodityProccessClass = new CommodityProccess();
             commodityOptionClass = new CommodityOption();
             commodityStockCheckClass = new CommodityStockCheck();
+            baseClass = new Base.Base();
+        }
+
+        /// <summary>
+        /// 取得商品頁面權限
+        /// </summary>
+        [Route("getCommodityPermissions")]
+        [HttpGet]
+        public IHttpActionResult getCommodityPermissions()
+        {
+            try
+            {
+                List<CommodityPermissionsDtoResponse> commodityPermissions = commodityPermissionsClass.GetAllCommodityPermissions();
+
+                return Ok(commodityPermissions);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
         }
 
         /// <summary>
@@ -102,6 +125,9 @@ namespace ShoppingMall.Controllers
                 HttpRequest request = HttpContext.Current.Request;
                 HttpContext context = HttpContext.Current;
 
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.CommodityInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+
                 bool inputVaild = commodityProccessClass.CheckInsertInputData(request);
 
                 if (inputVaild)
@@ -152,6 +178,9 @@ namespace ShoppingMall.Controllers
             try
             {
                 HttpRequest request = HttpContext.Current.Request;
+
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.CommodityUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = commodityProccessClass.CheckUpdateInputData(request);
 

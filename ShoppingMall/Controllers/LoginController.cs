@@ -42,6 +42,8 @@ namespace ShoppingMall.Controllers
                     }
                     else
                     {
+                        loginByAccClass.SetLoginAdminPermissions(adminUserData[0].AdminId);
+
                         return Ok(adminUserData);
                     }
                 }

@@ -4,20 +4,26 @@
             <h4>{{welcomeText}}</h4><hr/>
 
             <ul class="menu">
-                <li onclick="location.href='/Views/Member.aspx'">會員管理</li>
-                <li onclick="location.href='/Views/Commodity.aspx'">商品管理</li>
-                <li onclick="location.href='/Views/Order.aspx'">訂單管理</li>
-                <li onclick="location.href='/Views/Admin.aspx'">後臺帳號管理</li>
+                <li v-if="memberPermission" onclick="location.href='/Views/Member.aspx'">會員管理</li>
+                <li v-if="commodityPermission" onclick="location.href='/Views/Commodity.aspx'">商品管理</li>
+                <li v-if="orderPermission" onclick="location.href='/Views/Order.aspx'">訂單管理</li>
+                <li v-if="adminPermission" onclick="location.href='/Views/Admin.aspx'">後臺帳號管理</li>
                 <li @click="logout">登出</li>
             </ul>
         </aside>
     `,
     data() {
         return {
-            welcomeText: '你好, ' + localStorage.getItem('adminName')
+            welcomeText: '你好, ' + localStorage.getItem('adminName'),
+            memberPermission: false,
+            commodityPermission: false,
+            orderPermission: false,
+            adminPermission: false,
         }
     },
     created: function () {
+
+        this.GetMemberPermissionData();
 
         // 每10秒檢查一次登入狀態
         setInterval(() => {
@@ -34,6 +40,43 @@
         }
     },
     methods: {
+        async GetMemberPermissionData() {
+            await fetch('/api/menu/getMenuPermissions', {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => {
+                return response.json()
+            }).then((myJson) => {
+                if (myJson.ErrorMessage === undefined) {
+                    this.memberPermission = myJson[0].MemberPermission;
+                    this.commodityPermission = myJson[0].CommodityPermission;
+                    this.orderPermission = myJson[0].OrderPermission;
+                    this.adminPermission = myJson[0].AdminPermission;
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        window.location.href = '/Views/Login.aspx';
+                    });
+                } else {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+                }
+            }).catch((error) => {
+                Swal.fire({
+                    text: '系統異常，請稍後再試',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+            })
+        },
         async checkLoginStatus() {
 
             await fetch('/api/login/checkLoginByToken', {

@@ -1,6 +1,5 @@
 ﻿using ShoppingMall.Api.Order;
 using ShoppingMall.App_Code;
-using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Order;
 using System;
@@ -13,13 +12,36 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/order")]
     public class OrderController : ApiController
     {
+        private OrderPermissions orderPermissionsClass;
         private OrderProccess orderProccessClass;
         private OrderOption orderOptionClass;
+        private Base.Base baseClass;
 
         public OrderController()
         {
+            orderPermissionsClass = new OrderPermissions();
             orderProccessClass = new OrderProccess();
             orderOptionClass = new OrderOption();
+            baseClass = new Base.Base();
+        }
+
+        /// <summary>
+        /// 取得訂單頁面權限
+        /// </summary>
+        [Route("getOrderPermissions")]
+        [HttpGet]
+        public IHttpActionResult getOrderPermissions()
+        {
+            try
+            {
+                List<OrderPermissionsDtoResponse> orderPermissions = orderPermissionsClass.GetAllOrderPermissions();
+
+                return Ok(orderPermissions);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
         }
 
         /// <summary>
@@ -88,6 +110,9 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.OrderInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+
                 bool inputVaild = orderProccessClass.CheckInsertInputData(insertData);
 
                 if (inputVaild)
@@ -116,6 +141,9 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.OrderUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+
                 bool inputVaild = orderProccessClass.CheckUpdateInputData(updateData);
 
                 if (inputVaild)
@@ -144,6 +172,9 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.OrderDelete)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+
                 bool result = orderProccessClass.DeleteOrderData();
 
                 return Ok(result);

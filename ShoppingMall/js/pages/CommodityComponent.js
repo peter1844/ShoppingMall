@@ -16,7 +16,7 @@
             <br/><br/>
 
             <div>
-                <input type="button" class="btn insert" value="新 增" @click="OpenInsert()"/>
+                <input v-if="insertPermission" type="button" class="btn insert" value="新 增" @click="OpenInsert()"/>
             </div>
             <br/>
             <table>
@@ -36,7 +36,7 @@
                         <td>{{ item.Price }}</td>
                         <td>{{ item.Stock }}</td>
                         <td>
-                            <input type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
+                            <input v-if="updatePermission" type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -114,10 +114,13 @@
             conditionName: '',
             conditionType: '',
             deleteImgFlag: false,
-            originCommodityData: {}
+            originCommodityData: {},
+            insertPermission: false,
+            updatePermission: false
         }
     },
     created: function () {
+        this.GetCommodityPermissionData();
         this.GetCommodityData();
         this.GetOptionData();
     },
@@ -125,6 +128,41 @@
         window.addEventListener('keydown', this.HandleKeyDown);
     },
     methods: {
+        async GetCommodityPermissionData() {
+            await fetch('/api/commodity/getCommodityPermissions', {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => {
+                return response.json()
+            }).then((myJson) => {
+                if (myJson.ErrorMessage === undefined) {
+                    this.insertPermission = myJson[0].InsertPermission;
+                    this.updatePermission = myJson[0].UpdatePermission;
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        window.location.href = '/Views/Login.aspx';
+                    });
+                } else {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+                }
+            }).catch((error) => {
+                Swal.fire({
+                    text: '系統異常，請稍後再試',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+            })
+        },
         async GetCommodityData() {
             await fetch('/api/commodity/getCommodityData', {
                 headers: {

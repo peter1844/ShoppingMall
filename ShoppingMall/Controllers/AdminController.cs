@@ -2,6 +2,7 @@
 using ShoppingMall.App_Code;
 using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Common;
+using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
 using System.Web.Http;
@@ -11,13 +12,36 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/admin")]
     public class AdminController : ApiController
     {
+        private AdminPermissions adminPermissionsClass;
         private AdminProccess adminProccessClass;
         private AdminOption adminOptionClass;
+        private Base.Base baseClass;
 
         public AdminController()
         {
+            adminPermissionsClass = new AdminPermissions();
             adminProccessClass = new AdminProccess();
             adminOptionClass = new AdminOption();
+            baseClass = new Base.Base();
+        }
+
+        /// <summary>
+        /// 取得管理者帳號頁面權限
+        /// </summary>
+        [Route("getAdminPermissions")]
+        [HttpGet]
+        public IHttpActionResult getAdminPermissions()
+        {
+            try
+            {
+                List<AdminPermissionsDtoResponse> adminPermissions = adminPermissionsClass.GetAllAdminPermissions();
+
+                return Ok(adminPermissions);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
         }
 
         /// <summary>
@@ -68,6 +92,9 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.AdminInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+
                 bool inputVaild = adminProccessClass.CheckInsertInputData(insertData);
 
                 if (inputVaild)
@@ -96,6 +123,9 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.AdminUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+
                 bool inputVaild = adminProccessClass.CheckUpdateInputData(updateData);
 
                 if (inputVaild)
@@ -124,6 +154,9 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.AdminDelete)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+
                 bool inputVaild = adminProccessClass.CheckDeleteInputData(deleteData);
 
                 if (inputVaild)

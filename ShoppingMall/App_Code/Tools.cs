@@ -7,6 +7,88 @@ using System.ComponentModel;
 namespace ShoppingMall.App_Code
 {
     /// <summary>
+    /// 角色
+    /// </summary>
+    public enum Roles
+    {
+        /// <summary>
+        /// 超級管理員
+        /// </summary>
+        SuperAdmin = 1,
+        /// <summary>
+        /// 一般管理員
+        /// </summary>
+        Admin = 2,
+        /// <summary>
+        /// 客服部
+        /// </summary>
+        CustomerService = 3,
+        /// <summary>
+        /// 產品部
+        /// </summary>
+        Commodity = 4
+    }
+
+    /// <summary>
+    /// 權限
+    /// </summary>
+    public enum Permissions
+    {
+        /// <summary>
+        /// 會員管理
+        /// </summary>
+        Member = 1,
+        /// <summary>
+        /// 會員管理-編輯
+        /// </summary>
+        MemberUpdate = 2,
+        /// <summary>
+        /// 商品管理
+        /// </summary>
+        Commodity = 3,
+        /// <summary>
+        /// 商品管理-新增
+        /// </summary>
+        CommodityInsert = 4,
+        /// <summary>
+        /// 商品管理-編輯
+        /// </summary>
+        CommodityUpdate = 5,
+        /// <summary>
+        /// 訂單管理
+        /// </summary>
+        Order = 6,
+        /// <summary>
+        /// 訂單管理-模擬下單
+        /// </summary>
+        OrderInsert = 7,
+        /// <summary>
+        /// 訂單管理-編輯
+        /// </summary>
+        OrderUpdate = 8,
+        /// <summary>
+        /// 訂單管理-刪除
+        /// </summary>
+        OrderDelete = 9,
+        /// <summary>
+        /// 管理者帳號管理
+        /// </summary>
+        Admin = 10,
+        /// <summary>
+        /// 管理者帳號管理-新增
+        /// </summary>
+        AdminInsert = 11,
+        /// <summary>
+        /// 管理者帳號管理-編輯
+        /// </summary>
+        AdminUpdate = 12,
+        /// <summary>
+        /// 管理者帳號管理-刪除
+        /// </summary>
+        AdminDelete = 13
+    }
+
+    /// <summary>
     /// 狀態碼
     /// </summary>
     public enum StateCode
@@ -35,6 +117,10 @@ namespace ShoppingMall.App_Code
         /// 登入失敗
         /// </summary>
         InvaildLogin = 4012,
+        /// <summary>
+        /// 沒有權限
+        /// </summary>
+        NoPermission = 4013,
         /// <summary>
         /// 庫存量不足
         /// </summary>

@@ -42,6 +42,7 @@ namespace ShoppingMall.Api.Login
                     // 将对象添加到列表中
                     adminUserData.Add(new AdminUserDataDtoResponse
                     {
+                        AdminId = Convert.ToInt32(dt.Rows[0]["f_id"]),
                         Name = dt.Rows[0]["f_name"].ToString(),
                         Token = token
                     });
@@ -52,6 +53,48 @@ namespace ShoppingMall.Api.Login
                 }
 
                 return adminUserData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(StateCode.DbError.ToString(), ex);
+            }
+            finally
+            {
+                command.Connection.Close(); //關閉連線
+            }
+        }
+
+        /// <summary>
+        /// 設定登入者的權限
+        /// </summary>
+        public void SetLoginAdminPermissions(int adminId) 
+        {
+            HttpContext context = HttpContext.Current;
+
+            SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
+            DataTable dt = new DataTable(); //宣告DataTable物件
+            SqlCommand command = MsSqlConnection();
+
+            try
+            {
+                command.CommandText = "EXEC pro_bkg_getLoginPermissionsData @adminId";
+                command.Parameters.AddWithValue("@adminId", adminId);
+                command.Connection.Open();
+
+                da.SelectCommand = command;
+                da.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    List<string> permissionsList = new List<string>();
+
+                    for (int i = 0; i < dt.Rows.Count; i++) 
+                    {
+                        permissionsList.Add(dt.Rows[i]["f_permissionsId"].ToString());
+                    }
+
+                    context.Session["permissions"] = string.Join(",", permissionsList.ToArray());
+                }
             }
             catch (Exception ex)
             {

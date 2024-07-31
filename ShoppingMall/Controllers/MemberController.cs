@@ -1,5 +1,6 @@
 ﻿using ShoppingMall.Api.Member;
 using ShoppingMall.App_Code;
+using ShoppingMall.Base;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Member;
 using System;
@@ -11,11 +12,34 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/member")]
     public class MemberController : ApiController
     {
+        private MemberPermissions memberPermissionsClass;
         private MemberProccess memberProccessClass;
+        private Base.Base baseClass;
 
         public MemberController()
         {
+            memberPermissionsClass = new MemberPermissions();
             memberProccessClass = new MemberProccess();
+            baseClass = new Base.Base();
+        }
+
+        /// <summary>
+        /// 取得會員頁面權限
+        /// </summary>
+        [Route("getMemberPermissions")]
+        [HttpGet]
+        public IHttpActionResult getMemberPermissions()
+        {
+            try
+            {
+                List<MemberPermissionsDtoResponse> memberPermissions = memberPermissionsClass.GetAllMemberPermissions();
+
+                return Ok(memberPermissions);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+            }
         }
 
         /// <summary>
@@ -46,6 +70,9 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                // 檢查權限
+                if (!baseClass.CheckPermission((int)Permissions.MemberUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+
                 bool inputVaild = memberProccessClass.CheckUpdateInputData(updateData);
 
                 if (inputVaild)

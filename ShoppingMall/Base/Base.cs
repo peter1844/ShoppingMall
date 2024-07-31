@@ -5,8 +5,10 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 namespace ShoppingMall.Base
 {
@@ -151,6 +153,18 @@ namespace ShoppingMall.Base
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// 檢查是否有權限執行
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckPermission(int permission)
+        {
+            HttpContext context = HttpContext.Current;
+            string[] allPermissions = context.Session["permissions"].ToString().Split(',');
+
+            return allPermissions.Contains(permission.ToString());
         }
     }
 }

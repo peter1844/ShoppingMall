@@ -22,8 +22,8 @@
             <br/><br/>
 
             <div>
-                <input type="button" class="btn insert" value="模擬下單" @click="OpenInsert()"/>
-                <input type="button" class="btn delete" value="刪除訂單" @click="DeleteOrder()"/>
+                <input v-if="insertPermission" type="button" class="btn insert" value="模擬下單" @click="OpenInsert()"/>
+                <input v-if="deletePermission" type="button" class="btn delete" value="刪除訂單" @click="DeleteOrder()"/>
             </div>
             <br/>
             <table>
@@ -46,7 +46,7 @@
                         <td>{{ $t('orderPage.option.' + item.DeliverStateName) }}</td>
                         <td>
                             <input type="button" class="btn detail" value="明 細" @click="OpenDetail(item.Id)"/>
-                            <input type="button" class="btn update" value="編 輯" v-if="item.DeliverStateId != 2" @click="OpenUpdate(item.Id)"/>
+                            <input v-if="updatePermission && item.DeliverStateId != 2" type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -198,10 +198,14 @@
             editDeliverTypeDisabled: false,
             originPayType: '',
             originDeliverType: '',
-            originOrderData: {}
+            originOrderData: {},
+            insertPermission: false,
+            updatePermission: false,
+            deletePermission: false
         }
     },
     created: function () {
+        this.GetOrderPermissionData();
         this.GetOrderData();
         this.GetOptionData();
     },
@@ -209,6 +213,42 @@
         window.addEventListener('keydown', this.HandleKeyDown);
     },
     methods: {
+        async GetOrderPermissionData() {
+            await fetch('/api/order/getOrderPermissions', {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => {
+                return response.json()
+            }).then((myJson) => {
+                if (myJson.ErrorMessage === undefined) {
+                    this.insertPermission = myJson[0].InsertPermission;
+                    this.updatePermission = myJson[0].UpdatePermission;
+                    this.deletePermission = myJson[0].DeletePermission;
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        window.location.href = '/Views/Login.aspx';
+                    });
+                } else {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+                }
+            }).catch((error) => {
+                Swal.fire({
+                    text: '系統異常，請稍後再試',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+            })
+        },
         async GetOrderData() {
 
             const params = new URLSearchParams();

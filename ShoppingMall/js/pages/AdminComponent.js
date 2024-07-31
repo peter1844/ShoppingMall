@@ -2,7 +2,7 @@
     template: `
         <div class="admin">
             <div>
-                <input type="button" class="btn insert" value="新 增" @click="OpenInsert()"/>
+                <input v-if="insertPermission" type="button" class="btn insert" value="新 增" @click="OpenInsert()"/>
             </div>
             <br/>
             <table>
@@ -18,8 +18,8 @@
                         <td>{{ item.Name }}</td>
                         <td>{{ item.Acc }}</td>
                         <td>
-                            <input type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
-                            <input type="button" class="btn delete" value="刪 除" @click="DeleteAdmin(item.Id)"/>
+                            <input v-if="updatePermission" type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
+                            <input v-if="deletePermission" type="button" class="btn delete" value="刪 除" @click="DeleteAdmin(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -84,10 +84,14 @@
             sortDesc: false,
             actionText: '',
             showPlaceholder: false,
-            originAdminData: {}
+            originAdminData: {},
+            insertPermission: false,
+            updatePermission: false,
+            deletePermission: false
         }
     },
     created: function () {
+        this.GetOrderPermissionData();
         this.GetAdminData();
         this.GetOptionData();
     },
@@ -95,6 +99,42 @@
         window.addEventListener('keydown', this.HandleKeyDown);
     },
     methods: {
+        async GetOrderPermissionData() {
+            await fetch('/api/admin/getAdminPermissions', {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => {
+                return response.json()
+            }).then((myJson) => {
+                if (myJson.ErrorMessage === undefined) {
+                    this.insertPermission = myJson[0].InsertPermission;
+                    this.updatePermission = myJson[0].UpdatePermission;
+                    this.deletePermission = myJson[0].DeletePermission;
+                } else if (myJson.ErrorMessage == 'InvaildToken') {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    }).then((result) => {
+                        window.location.href = '/Views/Login.aspx';
+                    });
+                } else {
+                    Swal.fire({
+                        text: myJson.ErrorMessage,
+                        icon: "error",
+                        confirmButtonText: '確認'
+                    })
+                }
+            }).catch((error) => {
+                Swal.fire({
+                    text: '系統異常，請稍後再試',
+                    icon: "error",
+                    confirmButtonText: '確認'
+                })
+            })
+        },
         async GetAdminData() {
             await fetch('/api/admin/getAdminData', {
                 headers: {
