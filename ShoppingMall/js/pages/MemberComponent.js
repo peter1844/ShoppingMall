@@ -4,9 +4,9 @@
             <table>
                 <thead>
                     <tr>
-                        <th class="sort" @click="SortBy('Name')">名字</th>
-                        <th class="sort" @click="SortBy('Acc')">帳號</th>
-                        <th>操作</th>
+                        <th class="sort" @click="SortBy('Name')">{{ $t('member.page.name') }}</th>
+                        <th class="sort" @click="SortBy('Acc')">{{ $t('member.page.acc') }}</th>
+                        <th>{{ $t('common.operate') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -14,7 +14,7 @@
                         <td>{{ item.Name }}</td>
                         <td>{{ item.Acc }}</td>
                         <td>
-                            <input v-if="updatePermission" type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
+                            <input v-if="updatePermission" type="button" class="btn update" :value="$t('common.update')" @click="OpenUpdate(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -22,15 +22,15 @@
 
             <div class="popup" v-if="showPopup">
                 <div class="popup_head">
-                    <h5>編 輯</h5>
+                    <h5>{{ $t('common.update') }}</h5>
                 </div>
 
                 <div class="popup_data">
                     <div>
-                        <label>帳號</label><br><br>
+                        <label>{{ $t('member.page.acc') }}</label><br><br>
                         <input type="text" class="text" maxlength="16" v-model="acc" disabled><br><br>
 
-                        <label><label class="required_mark">*</label>會員等級</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('member.page.level') }}</label><br/>
                         <select class="select" v-model="level">
                             <option value="1">LV1</option>
                             <option value="2">LV2</option>
@@ -40,17 +40,17 @@
                         </select>
                         <br/><br/>
 
-                        <label><label class="required_mark">*</label>啟用狀態</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('member.page.enabled') }}</label><br/>
                         <select class="select" v-model="enabled">
-                            <option value="1">有效</option>
-                            <option value="0">無效</option>
+                            <option value="1">{{ $t('common.vaild') }}</option>
+                            <option value="0">{{ $t('common.inVaild') }}</option>
                         </select>
                         <br/><br/>
                     </div>
 
                     <div align="right">
-                        <input type="button" class="btn submit" value="送 出" @click="UpdateMember()"/>
-                        <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
+                        <input type="button" class="btn submit" :value="$t('common.submit')" @click="UpdateMember()"/>
+                        <input type="button" class="btn cancel" :value="$t('common.cancel')" @click="ClosePopup()"/>
                     </div>
                 </div>
             </div>
@@ -94,24 +94,24 @@
                     this.updatePermission = myJson[0].UpdatePermission;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -128,24 +128,24 @@
                     this.memberData = myJson
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -163,9 +163,9 @@
                 this.showPopup = false;
 
                 Swal.fire({
-                    text: '無異動資料',
+                    text: this.$t('common.noChangeData'),
                     icon: "success",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             } else {
                 await fetch('/api/member/updateMemberData', {
@@ -182,32 +182,32 @@
                 }).then((myJson) => {
                     if (myJson.ErrorMessage === undefined) {
                         Swal.fire({
-                            text: '編輯完成',
+                            text: this.$t('common.updateCompleted'),
                             icon: "success",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         }).then((result) => {
                             location.reload();
                         });
                     } else if (myJson.ErrorMessage == 'InvaildToken') {
                         Swal.fire({
-                            text: myJson.ErrorMessage,
+                            text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         }).then((result) => {
                             window.location.href = '/Views/Login.aspx';
                         });
                     } else {
                         Swal.fire({
-                            text: myJson.ErrorMessage,
+                            text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         })
                     }
                 }).catch((error) => {
                     Swal.fire({
-                        text: '系統異常，請稍後再試',
+                        text: this.$t('common.systemError'),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 })
             }

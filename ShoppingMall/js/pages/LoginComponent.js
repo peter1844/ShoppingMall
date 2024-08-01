@@ -3,16 +3,16 @@
         <div class="login" align="center">
             <div>
                 <img src="/images/Zgmf-X20a.jpg" class="login_logo"/><br/><br/>
-                <h3>後臺管理系統</h3>
+                <h3>{{ $t('login.page.backendManagementSystem') }}</h3>
             </div>
             <div class="login_area" align="left">
-                <label class="login_description">帳號</label><br/><br/>
+                <label class="login_description">{{ $t('login.page.acc') }}</label><br/><br/>
                 <input type="text" class="login_text" maxlength="16" v-model="acc" @keyup.enter="Login"/><br/><br/>
 
-                <label class="login_description">密碼</label><br/><br/>
+                <label class="login_description">{{ $t('login.page.pwd') }}</label><br/><br/>
                 <input type="password" class="login_text" maxlength="16" v-model="pwd" @keyup.enter="Login"/><br/><br/>
 
-                <input type="button" class="login_btn" value="登 入" @click="Login">
+                <input type="button" class="login_btn" :value="$t('login.page.login')" @click="Login">
             </div>
         </div>
     `,
@@ -24,13 +24,12 @@
     },
     methods: {
         async Login() {
-            //console.log(this.$t("greeting"));
 
             if (this.acc == '' || this.pwd == '') {
                 Swal.fire({
-                    text: '帳號或密碼不得為空',
+                    text: this.$t('login.message.accOrPwdEmpty'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
 
                 return false;
@@ -39,9 +38,9 @@
             const validCharacters = /^[a-zA-Z0-9]+$/;
             if (!validCharacters.test(this.acc) || !validCharacters.test(this.pwd)) {
                 Swal.fire({
-                    text: '帳號或密碼不得有特殊字元',
+                    text: this.$t('login.message.accOrPwdSpecialChar'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
 
                 return false;
@@ -68,18 +67,18 @@
                     window.location.href = '/Views/Index.aspx';
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
 
             }).catch((error) => {
 
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },

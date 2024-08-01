@@ -1,24 +1,30 @@
 ﻿Vue.component('menulist', {
     template: `
         <aside class="sidebar">
-            <h4>{{welcomeText}}</h4><hr/>
+            <h4>{{ welcomeText }}</h4>
+            <select class="languageSelect" v-model="language" @change="changeLanguage">
+                <option value="tw">{{ $t('menu.page.tw') }}</option>
+                <option value="en">{{ $t('menu.page.en') }}</option>
+            </select><br/>
+            <hr/>
 
             <ul class="menu">
-                <li v-if="memberPermission" onclick="location.href='/Views/Member.aspx'">會員管理</li>
-                <li v-if="commodityPermission" onclick="location.href='/Views/Commodity.aspx'">商品管理</li>
-                <li v-if="orderPermission" onclick="location.href='/Views/Order.aspx'">訂單管理</li>
-                <li v-if="adminPermission" onclick="location.href='/Views/Admin.aspx'">後臺帳號管理</li>
-                <li @click="logout">登出</li>
+                <li v-if="memberPermission" onclick="location.href='/Views/Member.aspx'">{{ $t('menu.page.member') }}</li>
+                <li v-if="commodityPermission" onclick="location.href='/Views/Commodity.aspx'">{{ $t('menu.page.commodity') }}</li>
+                <li v-if="orderPermission" onclick="location.href='/Views/Order.aspx'">{{ $t('menu.page.order') }}</li>
+                <li v-if="adminPermission" onclick="location.href='/Views/Admin.aspx'">{{ $t('menu.page.admin') }}</li>
+                <li @click="logout">{{ $t('menu.page.logout') }}</li>
             </ul>
         </aside>
     `,
     data() {
         return {
-            welcomeText: '你好, ' + localStorage.getItem('adminName'),
+            welcomeText: this.$t('menu.page.welcomeText') + localStorage.getItem('adminName'),
             memberPermission: false,
             commodityPermission: false,
             orderPermission: false,
             adminPermission: false,
+            language: localStorage.getItem("lang") ?? 'tw',
         }
     },
     created: function () {
@@ -56,24 +62,24 @@
                     this.adminPermission = myJson[0].AdminPermission;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -92,9 +98,9 @@
                     console.log('Is loging')
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
@@ -103,9 +109,9 @@
             }).catch((error) => {
 
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -132,11 +138,11 @@
                         localStorage.setItem('stockAlert', JSON.stringify(data));
 
                         Swal.fire({
-                            html: '偵測到有 <label style="color:red;">' + myJson[0].InventoryShortageCount + '</label> 筆商品庫存量不足，要前往商品頁面嗎？',
+                            html: this.$t('menu.message.goAlert') + '<label style="color:red;">' + myJson[0].InventoryShortageCount + '</label>' + this.$t('menu.message.goAlert2'),
                             icon: "question",
-                            confirmButtonText: '前往',
+                            confirmButtonText: this.$t('common.go'),
                             showCancelButton: true,
-                            cancelButtonText: '取消',
+                            cancelButtonText: this.$t('common.cancelNoSpace'),
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 window.location.href = '/Views/Commodity.aspx';
@@ -145,9 +151,9 @@
                     }
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
@@ -156,9 +162,9 @@
             }).catch((error) => {
 
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -180,18 +186,22 @@
                     window.location.href = '/Views/Login.aspx';
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
+        },
+        changeLanguage() {
+            localStorage.setItem('lang', this.language);
+            location.reload();
         }
     },
 });

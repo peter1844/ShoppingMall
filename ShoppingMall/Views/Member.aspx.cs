@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Views
 {
-    public partial class Member : System.Web.UI.Page
+    public partial class Member : BasePage
     {
         protected void Page_Load(object sender, EventArgs e)
         {

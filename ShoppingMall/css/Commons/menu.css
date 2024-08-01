@@ -9,7 +9,7 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 200px;
+    width: 230px;
     background-color: #333;
     color: #fff;
     overflow-y: auto;
@@ -36,8 +36,30 @@
     text-decoration: none;
 }
 
-
 .main-content {
-    margin-left: 200px; /* Adjust this to match the width of the sidebar */
+    margin-left: 230px; /* Adjust this to match the width of the sidebar */
     padding: 20px;
+}
+
+.languageSelect {
+    width: 85px;
+    padding: 5px;
+    font-size: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.languageSelect option {
+    background-color: white;
+    color: #333;
+    font-size: 14px;
+}
+
+.languageSelect:focus {
+    outline: none;
+    border-color: #66afe9;
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
 }

@@ -169,6 +169,9 @@
     <Compile Include="App_Code\Tools.cs" />
     <Compile Include="App_Start\TokenValidationHandler.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Base\BasePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Base\Base.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OrderController.cs" />

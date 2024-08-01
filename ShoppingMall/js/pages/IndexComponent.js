@@ -1,7 +1,7 @@
 ﻿Vue.component('index', {
     template: `
         <div>
-        yo這是首頁你懂的
+        {{ $t('index.page.slogan') }}
         </div>
     `
 });

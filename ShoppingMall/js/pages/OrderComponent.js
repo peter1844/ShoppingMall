@@ -2,38 +2,38 @@
     template: `
         <div class="order">
             <div class="search_area">
-                <b>訂單編號</b>
+                <b>{{ $t('order.page.orderId') }}</b>
                 <input type="text" class="search_text" v-model="conditionId">
 
-                <b>訂單日期-起</b>
+                <b>{{ $t('order.page.startDate') }}</b>
                 <input type="date" class="search_date" v-model="conditionStartDate">
 
-                <b>訂單日期-迄</b>
+                <b>{{ $t('order.page.endDate') }}</b>
                 <input type="date" class="search_date" v-model="conditionEndDate">
 
-                <b>配送狀態</b>
+                <b>{{ $t('order.page.deliverState') }}</b>
                 <select class="search_select" v-model="conditionDeliveryState">
-                    <option value="">請選擇</option>
-                    <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
+                    <option value="">{{ $t('common.select') }}</option>
+                    <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('order.option.' + item.StateName) }}</option>
                 </select>
 
-                <input type="button" class="btn search" value="查 詢" @click="GetOrderDataByCondition()">
+                <input type="button" class="btn search" :value="$t('common.search')" @click="GetOrderDataByCondition()">
             </div>
             <br/><br/>
 
             <div>
-                <input v-if="insertPermission" type="button" class="btn insert" value="模擬下單" @click="OpenInsert()"/>
-                <input v-if="deletePermission" type="button" class="btn delete" value="刪除訂單" @click="DeleteOrder()"/>
+                <input v-if="insertPermission" type="button" class="btn insert" :value="$t('order.page.placeAnOrder')" @click="OpenInsert()"/>
+                <input v-if="deletePermission" type="button" class="btn delete" :value="$t('order.page.deleteAnOrder')" @click="DeleteOrder()"/>
             </div>
             <br/>
             <table>
                 <thead>
                     <tr>
-                        <th class="sort" @click="SortBy('Id')">訂單編號</th>
-                        <th class="sort" @click="SortBy('MemberName')">會員名字</th>
-                        <th class="sort" @click="SortBy('OrderDate')">訂單日期</th>
-                        <th class="sort" @click="SortBy('TotalMoney')">總金額</th>
-                        <th class="sort" @click="SortBy('DeliverStateName')">配送狀態</th>
+                        <th class="sort" @click="SortBy('Id')">{{ $t('order.page.orderId') }}</th>
+                        <th class="sort" @click="SortBy('MemberName')">{{ $t('order.page.memberName') }}</th>
+                        <th class="sort" @click="SortBy('OrderDate')">{{ $t('order.page.orderDate') }}</th>
+                        <th class="sort" @click="SortBy('TotalMoney')">{{ $t('order.page.totalMoney') }}</th>
+                        <th class="sort" @click="SortBy('DeliverStateName')">{{ $t('order.page.deliverState') }}</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -43,10 +43,10 @@
                         <td>{{ item.MemberName }}</td>
                         <td>{{ FormatDate(item.OrderDate) }}</td>
                         <td>{{ item.TotalMoney }}</td>
-                        <td>{{ $t('orderPage.option.' + item.DeliverStateName) }}</td>
+                        <td>{{ $t('order.option.' + item.DeliverStateName) }}</td>
                         <td>
-                            <input type="button" class="btn detail" value="明 細" @click="OpenDetail(item.Id)"/>
-                            <input v-if="updatePermission && item.DeliverStateId != 2" type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
+                            <input type="button" class="btn detail" :value="$t('order.page.detail')" @click="OpenDetail(item.Id)"/>
+                            <input v-if="updatePermission && item.DeliverStateId != 2" type="button" class="btn update" :value="$t('common.update')" @click="OpenUpdate(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -55,7 +55,7 @@
             <div class="popupDetail" v-if="showPopupDetail">
                 
                 <div class="popupDetail_head">
-                    <h5>訂單明細</h5>
+                    <h5>{{ $t('order.page.orderDetail') }}</h5>
                 </div>
                 <hr>
 
@@ -63,11 +63,11 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>商品名稱</th>
-                                <th>商品圖片</th>
-                                <th>單價</th>
-                                <th>數量</th>
-                                <th>小計</th>
+                                <th>{{ $t('order.page.commodityName') }}</th>
+                                <th>{{ $t('order.page.commodityImage') }}</th>
+                                <th>{{ $t('order.page.price') }}</th>
+                                <th>{{ $t('order.page.quantity') }}</th>
+                                <th>{{ $t('order.page.subTotal') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,7 +82,7 @@
                     </table>
 
                     <div align="right">
-                        <input type="button" class="btn cancel" value="關 閉" @click="ClosePopup()"/>
+                        <input type="button" class="btn cancel" :value="$t('common.close')" @click="ClosePopup()"/>
                     </div>
                 </div>
             </div>
@@ -90,40 +90,40 @@
 
             <div class="popupInsert" v-if="showPopupInsert">
                 <div class="popupInsert_head">
-                    <h5>模擬下單</h5>
+                    <h5>{{ $t('order.page.placeAnOrder') }}</h5>
                 </div>
 
                 <div class="popupInsert_data">
                     <div>
-                        <label><label class="required_mark">*</label>付款方式</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('order.page.payType') }}</label><br/>
                         <select class="select" v-model="insertPayType">
-                            <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                            <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('order.option.' + item.TypeName) }}</option>
                         </select><br/><br/>
 
-                        <label><label class="required_mark">*</label>配送方式</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('order.page.deliverType') }}</label><br/>
                         <select class="select" v-model="insertDeliverType">
-                            <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                            <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('order.option.' + item.TypeName) }}</option>
                         </select><br/><br/>
 
-                        <input type="button" class="btn insert" value="新增" @click="addCommodityRow()"><br/>
+                        <input type="button" class="btn insert" :value="$t('common.insert')" @click="addCommodityRow()"><br/>
 
                         <div v-for="(item, index) in insertCommodityData" :key="index">
-                            <label>商品名稱</label>
+                            <label>{{ $t('order.page.commodityName') }}</label>
                             <select class="select" v-model="item.CommodityId" @change="updatePrice(index)">
                                 <option v-for="commoditys in optionData.OpenCommodityDatas" :value="commoditys.CommodityId">{{ commoditys.CommodityName }}</option>
                             </select>
 
-                            <label style="margin-left:30px;">單價:{{ item.Price }}</label>
+                            <label style="margin-left:30px;">{{ $t('order.page.price') }}:{{ item.Price }}</label>
 
-                            <label style="margin-left:30px;">數量</label>
+                            <label style="margin-left:30px;">{{ $t('order.page.quantity') }}</label>
                             <input type="number" class="number" v-model="item.Quantity">
-                            <label>小計:{{ item.Quantity * item.Price }}</label>
+                            <label>{{ $t('order.page.subTotal') }}:{{ item.Quantity * item.Price }}</label>
                         </div>
                     </div><br/>
 
                     <div align="right">
-                        <input type="button" class="btn submit" value="送 出" @click="InsertOrder()"/>
-                        <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
+                        <input type="button" class="btn submit" :value="$t('common.submit')" @click="InsertOrder()"/>
+                        <input type="button" class="btn cancel" :value="$t('common.cancel')" @click="ClosePopup()"/>
                     </div>
                 </div>
             </div>
@@ -131,38 +131,38 @@
 
             <div class="popupUpdate" v-if="showPopupUpdate">
                 <div class="popupUpdate_head">
-                    <h5>編 輯</h5>
+                    <h5>{{ $t('common.update') }}</h5>
                 </div>
 
                 <div class="popupUpdate_data">
                     <div>
-                        <label>訂單編號</label><br><br>
+                        <label>{{ $t('order.page.orderId') }}</label><br><br>
                         <input type="text" class="text" v-model="orderId" disabled><br><br>
 
-                        <label><label class="required_mark">*</label>付款方式</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('order.page.payType') }}</label><br/>
                         <select class="select" v-model="payType" :disabled="editPayTypeDisabled">
-                            <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                            <option v-for="item in optionData.PayTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('order.option.' + item.TypeName) }}</option>
                         </select><br/><br/>
 
-                        <label><label class="required_mark">*</label>付款狀態</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('order.page.payState') }}</label><br/>
                         <select class="select" v-model="payState" @change="ChangePayStateCheck">
-                            <option v-for="item in optionData.PayStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
+                            <option v-for="item in optionData.PayStates" :key="item.StateId" :value="item.StateId">{{ $t('order.option.' + item.StateName) }}</option>
                         </select><br/><br/>
 
-                        <label><label class="required_mark">*</label>配送方式</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('order.page.deliverType') }}</label><br/>
                         <select class="select" v-model="deliverType" :disabled="editDeliverTypeDisabled">
-                            <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('orderPage.option.' + item.TypeName) }}</option>
+                            <option v-for="item in optionData.DeliveryTypes" :key="item.TypeId" :value="item.TypeId">{{ $t('order.option.' + item.TypeName) }}</option>
                         </select><br/><br/>
 
-                        <label><label class="required_mark">*</label>配送狀態</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('order.page.deliverState') }}</label><br/>
                         <select class="select" v-model="deliverState" @change="ChangeDeliverStateCheck">
-                            <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('orderPage.option.' + item.StateName) }}</option>
+                            <option v-for="item in optionData.DeliveryStates" :key="item.StateId" :value="item.StateId">{{ $t('order.option.' + item.StateName) }}</option>
                         </select><br/><br/>
                     </div>
 
                     <div align="right">
-                        <input type="button" class="btn submit" value="送 出" @click="UpdateOrder()"/>
-                        <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
+                        <input type="button" class="btn submit" :value="$t('common.submit')" @click="UpdateOrder()"/>
+                        <input type="button" class="btn cancel" :value="$t('common.cancel')" @click="ClosePopup()"/>
                     </div>
                 </div>
             </div>
@@ -228,24 +228,24 @@
                     this.deletePermission = myJson[0].DeletePermission;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -269,24 +269,24 @@
                     this.orderData = myJson;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -308,33 +308,33 @@
             }).then((myJson) => {
                 if (myJson.ErrorMessage === undefined) {
                     Swal.fire({
-                        text: '查詢成功',
+                        text: this.$t('common.searchCompleted'),
                         icon: "success",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
 
                     this.orderData = myJson;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 console.log(error.message);
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -351,24 +351,24 @@
                     this.optionData = myJson[0];
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -379,9 +379,9 @@
 
             if (allCommodityId.length != uniqueCommodityId.size) {
                 Swal.fire({
-                    text: '重覆商品請合併填寫',
+                    text: this.$t('order.message.repeatCommodity'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
 
                 return false;
@@ -393,9 +393,9 @@
 
                 if (!validCharacters.test(item.Quantity)) {
                     Swal.fire({
-                        text: '購買數量格式錯誤',
+                        text: this.$t('order.message.quantityFormatError'),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
 
                     editFlag = false;
@@ -428,32 +428,32 @@
                 }).then((myJson) => {
                     if (myJson.ErrorMessage === undefined) {
                         Swal.fire({
-                            text: '新增完成',
+                            text: this.$t('common.insertCompleted'),
                             icon: "success",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         }).then((result) => {
                             location.reload();
                         });
                     } else if (myJson.ErrorMessage == 'InvaildToken') {
                         Swal.fire({
-                            text: myJson.ErrorMessage,
+                            text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         }).then((result) => {
                             window.location.href = '/Views/Login.aspx';
                         });
                     } else {
                         Swal.fire({
-                            text: myJson.ErrorMessage,
+                            text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         })
                     }
                 }).catch((error) => {
                     Swal.fire({
-                        text: '系統異常，請稍後再試',
+                        text: this.$t('common.systemError'),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 })
             }
@@ -463,11 +463,11 @@
 
             if (this.deliverState == 2) {
                 await Swal.fire({
-                    html: '將配送狀態修改為 <label style="color:red;">' + this.$t('orderPage.option.Return') + '</label> 後將不能編輯此訂單，是否執行？',
+                    html: this.$t('order.message.returnAlert') + '<label style="color:red;">' + this.$t('order.option.Return') + '</label>' + this.$t('order.message.returnAlert2'),
                     icon: "question",
-                    confirmButtonText: '確認',
+                    confirmButtonText: this.$t('common.confirm'),
                     showCancelButton: true,
-                    cancelButtonText: '取消',
+                    cancelButtonText: this.$t('common.cancelNoSpace'),
                 }).then((result) => {
                     if (!result.isConfirmed) {
                         actionFlag = false
@@ -491,9 +491,9 @@
                     this.showOverlay = false;
 
                     Swal.fire({
-                        text: '無異動資料',
+                        text: this.$t('common.noChangeData'),
                         icon: "success",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 } else {
                     fetch('/api/order/updateOrderData', {
@@ -511,32 +511,32 @@
                     }).then((myJson) => {
                         if (myJson.ErrorMessage === undefined) {
                             Swal.fire({
-                                text: '編輯完成',
+                                text: this.$t('common.updateCompleted'),
                                 icon: "success",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             }).then((result) => {
                                 location.reload();
                             });
                         } else if (myJson.ErrorMessage == 'InvaildToken') {
                             Swal.fire({
-                                text: myJson.ErrorMessage,
+                                text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                                 icon: "error",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             }).then((result) => {
                                 window.location.href = '/Views/Login.aspx';
                             });
                         } else {
                             Swal.fire({
-                                text: myJson.ErrorMessage,
+                                text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                                 icon: "error",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             })
                         }
                     }).catch((error) => {
                         Swal.fire({
-                            text: '系統異常，請稍後再試',
+                            text: this.$t('common.systemError'),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         })
                     })
                 }
@@ -545,11 +545,11 @@
         async DeleteOrder() {
 
             await Swal.fire({
-                html: '確定要刪除 <label style="color:red;">180</label> 天前的訂單嗎？',
+                html: this.$t('order.message.deleteAlert') + '<label style="color:red;">180</label>' + this.$t('order.message.deleteAlert2'),
                 icon: "question",
-                confirmButtonText: '確認',
+                confirmButtonText: this.$t('common.confirm'),
                 showCancelButton: true,
-                cancelButtonText: '取消',
+                cancelButtonText: this.$t('common.cancelNoSpace'),
             }).then((result) => {
                 if (result.isConfirmed) {
 
@@ -564,32 +564,32 @@
                     }).then((myJson) => {
                         if (myJson.ErrorMessage === undefined) {
                             Swal.fire({
-                                text: '刪除完成',
+                                text: this.$t('common.deleteCompleted'),
                                 icon: "success",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             }).then((result) => {
                                 location.reload();
                             });
                         } else if (myJson.ErrorMessage == 'InvaildToken') {
                             Swal.fire({
-                                text: myJson.ErrorMessage,
+                                text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                                 icon: "error",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             }).then((result) => {
                                 window.location.href = '/Views/Login.aspx';
                             });
                         } else {
                             Swal.fire({
-                                text: myJson.ErrorMessage,
+                                text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                                 icon: "error",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             })
                         }
                     }).catch((error) => {
                         Swal.fire({
-                            text: '系統異常，請稍後再試',
+                            text: this.$t('common.systemError'),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         })
                     })
                 }

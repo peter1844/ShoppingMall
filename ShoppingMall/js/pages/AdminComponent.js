@@ -2,15 +2,15 @@
     template: `
         <div class="admin">
             <div>
-                <input v-if="insertPermission" type="button" class="btn insert" value="新 增" @click="OpenInsert()"/>
+                <input v-if="insertPermission" type="button" class="btn insert" :value="$t('common.insert')" @click="OpenInsert()"/>
             </div>
             <br/>
             <table>
                 <thead>
                     <tr>
-                        <th class="sort" @click="SortBy('Name')">名字</th>
-                        <th class="sort" @click="SortBy('Acc')">帳號</th>
-                        <th>操作</th>
+                        <th class="sort" @click="SortBy('Name')">{{ $t('admin.page.name') }}</th>
+                        <th class="sort" @click="SortBy('Acc')">{{  $t('admin.page.acc') }}</th>
+                        <th>{{  $t('common.operate') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -18,8 +18,8 @@
                         <td>{{ item.Name }}</td>
                         <td>{{ item.Acc }}</td>
                         <td>
-                            <input v-if="updatePermission" type="button" class="btn update" value="編 輯" @click="OpenUpdate(item.Id)"/>
-                            <input v-if="deletePermission" type="button" class="btn delete" value="刪 除" @click="DeleteAdmin(item.Id)"/>
+                            <input v-if="updatePermission" type="button" class="btn update" :value="$t('common.update')" @click="OpenUpdate(item.Id)"/>
+                            <input v-if="deletePermission" type="button" class="btn delete" :value="$t('common.delete')" @click="DeleteAdmin(item.Id)"/>
                         </td>
                     </tr>
                 </tbody>
@@ -32,33 +32,33 @@
 
                 <div class="popup_data">
                     <div>
-                        <label><label class="required_mark">*</label>名字</label><br><br>
+                        <label><label class="required_mark">*</label>{{ $t('admin.page.name') }}</label><br><br>
                         <input type="text" class="text" maxlength="20" v-model="adminName"><br><br>
 
-                        <label><label class="required_mark">*</label>帳號</label><br><br>
+                        <label><label class="required_mark">*</label>{{ $t('admin.page.acc') }}</label><br><br>
                         <input type="text" class="text" maxlength="16" :disabled="accDisabled" v-model="acc"><br><br>
 
-                        <label><label class="required_mark" v-if="pwdRequired">*</label>密碼</label><br><br>
-                        <input type="text" class="text" maxlength="16" :placeholder="showPlaceholder ? '未輸入則不修改密碼' : ''" v-model="pwd"><br><br>
+                        <label><label class="required_mark" v-if="pwdRequired">*</label>{{ $t('admin.page.pwd') }}</label><br><br>
+                        <input type="text" class="text" maxlength="16" :placeholder="showPlaceholder ? this.$t('admin.message.passwordNoChange') : ''" v-model="pwd"><br><br>
 
-                        <label><label class="required_mark">*</label>角色</label><br><br>
+                        <label><label class="required_mark">*</label>{{ $t('admin.page.role') }}</label><br><br>
                         <label v-for="items in optionData" :key="items.RoleId">
-                            <input type="checkbox" :value="items.RoleId" v-model="roles"/> {{ items.RoleName }}
+                            <input type="checkbox" :value="items.RoleId" v-model="roles"/> {{ $t('admin.option.' + items.RoleName) }}
                             <br/>
                         </label>
                         <br/><br/>
 
-                        <label><label class="required_mark">*</label>啟用狀態</label><br/>
+                        <label><label class="required_mark">*</label>{{ $t('admin.page.enabled') }}</label><br/>
                         <select class="select" v-model="enabled">
-                            <option value="1">有效</option>
-                            <option value="0">無效</option>
+                            <option value="1">{{ $t('common.vaild') }}</option>
+                            <option value="0">{{ $t('common.inVaild') }}</option>
                         </select>
                         <br/><br/>
                     </div>
 
                     <div align="right">
-                        <input type="button" class="btn submit" value="送 出" @click="CheckAction()"/>
-                        <input type="button" class="btn cancel" value="取 消" @click="ClosePopup()"/>
+                        <input type="button" class="btn submit" :value="$t('common.submit')" @click="CheckAction()"/>
+                        <input type="button" class="btn cancel" :value="$t('common.scancel')" @click="ClosePopup()"/>
                     </div>
                 </div>
             </div>
@@ -114,24 +114,24 @@
                     this.deletePermission = myJson[0].DeletePermission;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -154,24 +154,24 @@
                     this.adminData = Object.keys(data).map(key => data[key]);
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -188,24 +188,24 @@
                     this.optionData = myJson;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -213,9 +213,9 @@
 
             if (this.acc == '' || this.pwd == '' || this.adminName == '' || this.roles.length == 0) {
                 Swal.fire({
-                    text: '尚有必填欄位未填',
+                    text: this.$t('admin.message.requiredYet'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 });
 
                 return false;
@@ -224,9 +224,9 @@
             const validCharacters = /^[a-zA-Z0-9]+$/;
             if (!validCharacters.test(this.acc) || !validCharacters.test(this.pwd)) {
                 Swal.fire({
-                    text: '帳號或密碼不得有特殊字元',
+                    text: this.$t('admin.message.accOrPwdSpecialChar'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
 
                 return false;
@@ -254,32 +254,32 @@
             }).then((myJson) => {
                 if (myJson.ErrorMessage === undefined) {
                     Swal.fire({
-                        text: '新增完成',
+                        text: this.$t('common.insertCompleted'),
                         icon: "success",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         location.reload();
                     });
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     }).then((result) => {
                         window.location.href = '/Views/Login.aspx';
                     });
                 } else {
                     Swal.fire({
-                        text: myJson.ErrorMessage,
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 }
             }).catch((error) => {
                 Swal.fire({
-                    text: '系統異常，請稍後再試',
+                    text: this.$t('common.systemError'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             })
         },
@@ -287,9 +287,9 @@
 
             if (this.adminName == '' || this.roles.length == 0) {
                 Swal.fire({
-                    text: '尚有必填欄位未填',
+                    text: this.$t('admin.message.requiredYet'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 });
 
                 return false;
@@ -298,9 +298,9 @@
             const validCharacters = /^[a-zA-Z0-9]+$/;
             if (!validCharacters.test(this.acc) || (this.pwd != '' && !validCharacters.test(this.pwd) )) {
                 Swal.fire({
-                    text: '帳號或密碼不得有特殊字元',
+                    text: this.$t('admin.message.accOrPwdSpecialChar'),
                     icon: "error",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
 
                 return false;
@@ -320,9 +320,9 @@
                 this.showPopup = false;
 
                 Swal.fire({
-                    text: '無異動資料',
+                    text: this.$t('common.noChangeData'),
                     icon: "success",
-                    confirmButtonText: '確認'
+                    confirmButtonText: this.$t('common.confirm')
                 })
             } else {
                 await fetch('/api/admin/updateAdminData', {
@@ -339,32 +339,32 @@
                 }).then((myJson) => {
                     if (myJson.ErrorMessage === undefined) {
                         Swal.fire({
-                            text: '編輯完成',
+                            text: this.$t('common.updateCompleted'),
                             icon: "success",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         }).then((result) => {
                             location.reload();
                         });
                     } else if (myJson.ErrorMessage == 'InvaildToken') {
                         Swal.fire({
-                            text: myJson.ErrorMessage,
+                            text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         }).then((result) => {
                             window.location.href = '/Views/Login.aspx';
                         });
                     } else {
                         Swal.fire({
-                            text: myJson.ErrorMessage,
+                            text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         })
                     }
                 }).catch((error) => {
                     Swal.fire({
-                        text: '系統異常，請稍後再試',
+                        text: this.$t('common.systemError'),
                         icon: "error",
-                        confirmButtonText: '確認'
+                        confirmButtonText: this.$t('common.confirm')
                     })
                 })
             }
@@ -373,11 +373,11 @@
             let deleteData = this.adminData.find(item => item.Id === id);
 
             Swal.fire({
-                html: '確定要刪除帳號 <label style="color:red;">' + deleteData.Acc + '</label> 嗎？',
+                html: this.$t('admin.message.deleteAlert') + '<label style="color:red;">' + deleteData.Acc + '</label>' + this.$t('admin.message.deleteAlert2'),
                 icon: "question",
-                confirmButtonText: '確認',
+                confirmButtonText: this.$t('common.confirm'),
                 showCancelButton: true,
-                cancelButtonText: '取消',
+                cancelButtonText: this.$t('common.cancelNoSpace'),
             }).then((result) => {
                 if (result.isConfirmed) {
 
@@ -397,32 +397,32 @@
                     }).then((myJson) => {
                         if (myJson.ErrorMessage === undefined) {
                             Swal.fire({
-                                text: '刪除完成',
+                                text: this.$t('common.deleteCompleted'),
                                 icon: "success",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             }).then((result) => {
                                 location.reload();
                             });
                         } else if (myJson.ErrorMessage == 'InvaildToken') {
                             Swal.fire({
-                                text: myJson.ErrorMessage,
+                                text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                                 icon: "error",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             }).then((result) => {
                                 window.location.href = '/Views/Login.aspx';
                             });
                         } else {
                             Swal.fire({
-                                text: myJson.ErrorMessage,
+                                text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
                                 icon: "error",
-                                confirmButtonText: '確認'
+                                confirmButtonText: this.$t('common.confirm')
                             })
                         }
                     }).catch((error) => {
                         Swal.fire({
-                            text: '系統異常，請稍後再試',
+                            text: this.$t('common.systemError'),
                             icon: "error",
-                            confirmButtonText: '確認'
+                            confirmButtonText: this.$t('common.confirm')
                         })
                     })                    
                 }
@@ -439,7 +439,7 @@
             this.enabled = 1;
             this.actionType = 'insert';
             this.pwdRequired = true;
-            this.actionText = '新 增';
+            this.actionText = this.$t('common.insert');
             this.showPlaceholder = false;
         },
         OpenUpdate(id) {
@@ -455,7 +455,7 @@
             this.enabled = updateData.Enabled;
             this.actionType = 'update';
             this.pwdRequired = false;
-            this.actionText = '編 輯';
+            this.actionText = this.$t('common.update');
             this.showPlaceholder = true;
 
             this.originAdminData = {
