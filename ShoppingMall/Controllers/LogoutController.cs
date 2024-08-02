@@ -8,9 +8,11 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/logout")]
     public class LogoutController : ApiController
     {
+        private Base.Base baseClass;
         private Logout logoutClass;
 
         public LogoutController() {
+            baseClass = new Base.Base();
             logoutClass = new Logout();
         }
 
@@ -30,6 +32,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
+                baseClass.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message});
             }
         }

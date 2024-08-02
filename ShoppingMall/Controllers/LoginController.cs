@@ -12,11 +12,13 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/login")]
     public class LoginController : ApiController
     {
+        private Base.Base baseClass;
         private LoginByAcc loginByAccClass;
         private LoginByToken loginByTokenClass;
 
         public LoginController()
         {
+            baseClass = new Base.Base();
             loginByAccClass = new LoginByAcc();
             loginByTokenClass = new LoginByToken();
         }
@@ -54,6 +56,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
+                baseClass.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -83,6 +86,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
+                baseClass.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message});
             }
         }

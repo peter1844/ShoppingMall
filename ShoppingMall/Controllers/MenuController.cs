@@ -13,9 +13,11 @@ namespace ShoppingMall.Controllers
     public class MenuController : ApiController
     {
         private MenuPermissions menuPermissionsClass;
+        private Base.Base baseClass;
 
         public MenuController()
         {
+            baseClass = new Base.Base();
             menuPermissionsClass = new MenuPermissions();
         }
 
@@ -34,6 +36,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
+                baseClass.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }

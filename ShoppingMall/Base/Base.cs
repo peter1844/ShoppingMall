@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using NLog;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -162,9 +163,20 @@ namespace ShoppingMall.Base
         public bool CheckPermission(int permission)
         {
             HttpContext context = HttpContext.Current;
+
+            if (context.Session["permissions"] == null) return false;
             string[] allPermissions = context.Session["permissions"].ToString().Split(',');
 
             return allPermissions.Contains(permission.ToString());
+        }
+
+        /// <summary>
+        /// 寫入log
+        /// </summary>
+        public void Logger(string message) { 
+            Logger log = LogManager.GetCurrentClassLogger();
+
+            log.Info(message);
         }
     }
 }
