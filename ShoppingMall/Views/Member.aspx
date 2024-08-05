@@ -9,8 +9,7 @@
 
     <script src="/js/vue.js" type="text/javascript"></script>
     <script src="/js/vue-i18n.js" type="text/javascript"></script>
-    <script src="<%= GetVersionUrl("lang/Tw.js", "js") %>" type="text/javascript"></script>
-    <script src="<%= GetVersionUrl("lang/En.js", "js") %>" type="text/javascript"></script>
+    <script src="<%= GetLanguagePackage() %>" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
 
     <script src="<%= GetVersionUrl("commons/MenuComponent.js", "js") %>" type="text/javascript"></script>
@@ -31,11 +30,12 @@
 </html>
 
 <script>
+    var globalLang = '<%=Session["lang"] %>';
+
     const i18n = new VueI18n({
-        locale: localStorage.getItem("lang") ?? 'tw',
+        locale: globalLang,
         messages: {
-            en: en,
-            tw: tw
+            '<%=Session["lang"] %>': <%=Session["lang"] %>,
         }
     });
 

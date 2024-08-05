@@ -24,12 +24,12 @@
             commodityPermission: false,
             orderPermission: false,
             adminPermission: false,
-            language: localStorage.getItem("lang") ?? 'tw',
+            language: globalLang,
         }
     },
     created: function () {
 
-        this.GetMemberPermissionData();
+        this.GetMenuPermissionData();
 
         // 每10秒檢查一次登入狀態
         setInterval(() => {
@@ -46,7 +46,7 @@
         }
     },
     methods: {
-        async GetMemberPermissionData() {
+        async GetMenuPermissionData() {
             await fetch('/api/menu/getMenuPermissions', {
                 headers: {
                     'token': localStorage.getItem('token'),
@@ -199,10 +199,40 @@
                 })
             })
         },
-        changeLanguage() {
-            localStorage.setItem('lang', this.language);
-            location.reload();
-            //this.$i18n.locale = this.language;
+        async changeLanguage() {
+
+            const data = {
+                Language: this.language
+            };
+
+            await fetch('/api/menu/setLanguage', {
+                method: 'POST',
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then((response) => {
+                return response.json()
+            }).then((myJson) => {
+                if (myJson.ErrorMessage === undefined) {
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
+                        icon: "error",
+                        confirmButtonText: this.$t('common.confirm')
+                    })
+                }
+
+            }).catch((error) => {
+
+                Swal.fire({
+                    text: this.$t('common.systemError'),
+                    icon: "error",
+                    confirmButtonText: this.$t('common.confirm')
+                })
+            })            
         }
     },
 });

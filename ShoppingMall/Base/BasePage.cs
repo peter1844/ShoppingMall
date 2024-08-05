@@ -14,6 +14,32 @@ public class BasePage : System.Web.UI.Page
         Session["lang"] = (Session["lang"] ?? "tw").ToString();
     }
 
+    /// <summary>
+    /// 取得對應的語言包
+    /// </summary>
+    protected string GetLanguagePackage() 
+    {
+        string languageUrl;
+
+        switch (Session["lang"])
+        {
+            case "tw":
+                languageUrl = this.GetVersionUrl("lang/Tw.js", "js");
+                break;
+            case "en":
+                languageUrl = this.GetVersionUrl("lang/En.js", "js");
+                break;
+            default:
+                languageUrl = this.GetVersionUrl("lang/Tw.js", "js");
+                break;
+        }
+
+        return languageUrl;
+    }
+
+    /// <summary>
+    /// 取得對應版本的js或css
+    /// </summary>
     protected string GetVersionUrl(string url, string type)
     {
         string typeVersion = type == "js" ? this.JS_VERSION : type == "css" ? this.CSS_VERSION : "";

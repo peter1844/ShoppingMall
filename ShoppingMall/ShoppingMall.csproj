@@ -222,6 +222,7 @@
     <Compile Include="Models\Login\LoginByAcc.cs" />
     <Compile Include="Models\Member\MemberPermissions.cs" />
     <Compile Include="Models\Member\Member.cs" />
+    <Compile Include="Models\Menu\MenuLanguage.cs" />
     <Compile Include="Models\Menu\MenuPermissions.cs" />
     <Compile Include="Models\Order\OrderPermissions.cs" />
     <Compile Include="Models\Order\Order.cs" />
