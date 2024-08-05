@@ -7,6 +7,8 @@
 
 
 
+
+
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'流水序', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_adminUserRole', @level2type = N'COLUMN', @level2name = N'f_id';
 
@@ -18,7 +20,9 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'管理者-�
 
 
 GO
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'角色-關聯role的id', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_adminUserRole', @level2type = N'COLUMN', @level2name = N'f_roleId';
+EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'角色-程式內enum的Roles', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N't_adminUserRole', @level2type = N'COLUMN', @level2name = N'f_roleId';
+
+
 
 
 GO

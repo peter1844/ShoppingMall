@@ -9,22 +9,34 @@ CREATE PROCEDURE [dbo].[pro_bkg_insertAdminData]
 	@acc VARCHAR(16),
 	@pwd VARCHAR(16),
 	@enabled BIT,
-	@roleId [dbo].[adminUserRoleTempType] READONLY
+	@roleId [dbo].[adminUserRoleTempType] READONLY,
+	@adminId INT,
+	@permission INT
 AS
 BEGIN
-	BEGIN TRY
-		BEGIN TRANSACTION
-			INSERT INTO dbo.t_adminUser(f_name,f_acc,f_pwd,f_enabled) VALUES(@name,@acc,HASHBYTES('MD5', @pwd),@enabled);
+	DECLARE @vaildPermissionCount INT;
+	SELECT @vaildPermissionCount = COUNT(rp.f_id) FROM t_adminUserRole AS aur INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId AND rp.f_permissionsId = @permission
 
-			DECLARE @primaryKey INT;
-			SET @primaryKey = SCOPE_IDENTITY();
+	IF @vaildPermissionCount > 0
+	BEGIN
+		BEGIN TRY
+			BEGIN TRANSACTION
+				INSERT INTO dbo.t_adminUser(f_name,f_acc,f_pwd,f_enabled) VALUES(@name,@acc,HASHBYTES('MD5', @pwd),@enabled);
 
-			INSERT INTO t_adminUserRole	SELECT @primaryKey,roleId FROM @roleId;
-        COMMIT TRANSACTION;
-		SELECT 200;
-    END TRY
-	BEGIN CATCH
-		ROLLBACK TRANSACTION;
-		SELECT 102;
-	END CATCH
+				DECLARE @primaryKey INT;
+				SET @primaryKey = SCOPE_IDENTITY();
+
+				INSERT INTO t_adminUserRole	SELECT @primaryKey,roleId FROM @roleId;
+			COMMIT TRANSACTION;
+			SELECT 200;
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRANSACTION;
+			SELECT 102;
+		END CATCH
+	END
+	ELSE
+	BEGIN
+		SELECT 4013;
+	END
 END

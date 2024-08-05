@@ -1,14 +1,16 @@
 ﻿CREATE TABLE [dbo].[t_orderMain] (
-    [f_id]           VARCHAR (40) NOT NULL,
-    [f_memberId]     INT          NOT NULL,
-    [f_date]         DATE         NOT NULL,
-    [f_payType]      SMALLINT     NOT NULL,
-    [f_payState]     TINYINT      NOT NULL,
-    [f_deliverType]  SMALLINT     NOT NULL,
-    [f_deliverState] TINYINT      NOT NULL,
-    [f_totalMoney]   INT          NOT NULL,
+    [f_id]           CHAR (21) NOT NULL,
+    [f_memberId]     INT       NOT NULL,
+    [f_date]         DATE      NOT NULL,
+    [f_payType]      SMALLINT  NOT NULL,
+    [f_payState]     TINYINT   NOT NULL,
+    [f_deliverType]  SMALLINT  NOT NULL,
+    [f_deliverState] TINYINT   NOT NULL,
+    [f_totalMoney]   INT       NOT NULL,
     CONSTRAINT [PK_t_orderMain] PRIMARY KEY CLUSTERED ([f_id] ASC)
 );
+
+
 
 
 

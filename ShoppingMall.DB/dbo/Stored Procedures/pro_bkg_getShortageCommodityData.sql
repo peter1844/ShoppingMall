@@ -3,11 +3,9 @@
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[pro_bkg_getOpenCommodityData]
+CREATE PROCEDURE [dbo].[pro_bkg_getShortageCommodityData]
 	-- Add the parameters for the stored procedure here
 AS
 BEGIN
-	SELECT f_id,f_name,f_price FROM t_commodity WITH(NOLOCK) WHERE f_open = 1 AND f_stock > 0;
-		
-	RETURN
+	SELECT COUNT(f_id) AS CNT FROM t_commodity WHERE f_stock <= 5
 END

@@ -5,22 +5,16 @@
 -- =============================================
 CREATE PROCEDURE [dbo].[pro_bkg_deleteOrderData]
 	-- Add the parameters for the stored procedure here
-	@orderId VARCHAR(40)
+	@deleteDays SMALLINT
 AS
 BEGIN
-	DECLARE @orderDeliverState INT;
-	SELECT @orderDeliverState = f_deliverState FROM t_orderMain WHERE f_id = @orderId;
+	DECLARE @deleteDate DATE;
+    SET @deleteDate = DATEADD(DAY, -@deleteDays, GETDATE());	
 
 	BEGIN TRY
 		BEGIN TRANSACTION
-
-			IF @orderDeliverState = 0
-			BEGIN 
-				UPDATE t_commodity SET f_stock = f_stock + od.f_quantity FROM t_commodity AS c INNER JOIN t_orderDetail AS od ON c.f_id = od.f_commodityId WHERE od.f_orderMainId = @orderId;
-			END
-
-			DELETE FROM dbo.t_orderMain WHERE f_id = @orderId;
-			DELETE FROM dbo.t_orderDetail WHERE f_orderMainId = @orderId;
+			DELETE FROM dbo.t_orderMain WHERE f_id IN(SELECT f_id FROM t_orderMain WHERE f_date < @deleteDate);
+			DELETE FROM dbo.t_orderDetail WHERE f_orderMainId IN(SELECT f_id FROM t_orderMain WHERE f_date < @deleteDate);
 		COMMIT TRANSACTION;
 		SELECT 200;
 	END TRY

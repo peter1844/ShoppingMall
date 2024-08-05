@@ -1,11 +1,13 @@
 ﻿CREATE TABLE [dbo].[t_orderDetail] (
-    [f_id]          INT          IDENTITY (1, 1) NOT NULL,
-    [f_orderMainId] VARCHAR (40) NOT NULL,
-    [f_commodityId] INT          NOT NULL,
-    [f_quantity]    INT          NOT NULL,
-    [f_price]       INT          NOT NULL,
+    [f_id]          INT       IDENTITY (1, 1) NOT NULL,
+    [f_orderMainId] CHAR (21) NOT NULL,
+    [f_commodityId] INT       NOT NULL,
+    [f_quantity]    INT       NOT NULL,
+    [f_price]       INT       NOT NULL,
     CONSTRAINT [PK_t_orderDetail] PRIMARY KEY CLUSTERED ([f_id] ASC)
 );
+
+
 
 
 

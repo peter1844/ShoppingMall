@@ -12,20 +12,32 @@ CREATE PROCEDURE [dbo].[pro_bkg_updateCommodityData]
 	@image NVARCHAR(60),
 	@price INT,
 	@stock INT,
-	@open BIT
+	@open BIT,
+	@adminId INT,
+	@permission INT
 AS
 BEGIN
-	UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_name = @name,f_description = @description,f_typeId = @type,f_price = @price,f_stock = @stock,f_open = @open WHERE f_id = @commodityId;
-		
-	IF @image <> ''
+	DECLARE @vaildPermissionCount INT;
+	SELECT @vaildPermissionCount = COUNT(rp.f_id) FROM t_adminUserRole AS aur INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId AND rp.f_permissionsId = @permission
+
+	IF @vaildPermissionCount > 0
 	BEGIN
-		IF @image = 'delete'
+		UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_name = @name,f_description = @description,f_typeId = @type,f_price = @price,f_stock = @stock,f_open = @open WHERE f_id = @commodityId;
+		
+		IF @image <> ''
 		BEGIN
-			UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_image = '' WHERE f_id = @commodityId;
+			IF @image = 'delete'
+			BEGIN
+				UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_image = '' WHERE f_id = @commodityId;
+			END
+			ELSE
+			BEGIN
+				UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_image = @image WHERE f_id = @commodityId;
+			END
 		END
-		ELSE
-		BEGIN
-			UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_image = @image WHERE f_id = @commodityId;
-		END
+	END
+	ELSE
+	BEGIN
+		SELECT 4013;
 	END
 END
