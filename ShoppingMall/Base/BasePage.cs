@@ -6,19 +6,30 @@ using System.Text;
 
 public class BasePage : System.Web.UI.Page
 {
-    protected string GetVersionUrl(string url)
+    private readonly string JS_VERSION = "1.0.0";
+    private readonly string CSS_VERSION = "1.0.0";
+
+    protected void Page_Init(object sender, EventArgs e)
     {
-        string filePath = Server.MapPath(url);
+        Session["lang"] = (Session["lang"] ?? "tw").ToString();
+    }
+
+    protected string GetVersionUrl(string url, string type)
+    {
+        string typeVersion = type == "js" ? this.JS_VERSION : type == "css" ? this.CSS_VERSION : "";
+        string finalUrl = $"/{type}/{typeVersion}/{url}";
+
+        string filePath = Server.MapPath(finalUrl);
 
         if (File.Exists(filePath))
         {
             using (MD5 md5 = MD5.Create())
             {
-                //string fileHash = BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(filePath))).Replace("-", "").ToLower();
-                string fileHash = ConfigurationManager.AppSettings["Version"];
-                return $"{url}?v={fileHash}";
+                string fileHash = BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(filePath))).Replace("-", "").ToLower();
+                return $"{finalUrl}?v={fileHash}";
             }
         }
+
         return url;
     }
 }

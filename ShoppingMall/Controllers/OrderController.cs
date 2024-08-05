@@ -40,7 +40,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -78,7 +78,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -99,7 +99,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -131,7 +131,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -163,30 +163,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
-            }
-        }
-
-        /// <summary>
-        /// 刪除訂單資料
-        /// </summary>
-        [Route("deleteOrderData")]
-        [HttpDelete]
-        public IHttpActionResult DeleteOrderData()
-        {
-            try
-            {
-                // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.OrderDelete)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
-
-                bool result = orderProccessClass.DeleteOrderData();
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }

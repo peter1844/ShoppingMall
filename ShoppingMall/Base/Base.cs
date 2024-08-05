@@ -173,7 +173,7 @@ namespace ShoppingMall.Base
         /// <summary>
         /// 寫入log
         /// </summary>
-        public void Logger(string message) { 
+        public static void Logger(string message) { 
             Logger log = LogManager.GetCurrentClassLogger();
 
             log.Info(message);

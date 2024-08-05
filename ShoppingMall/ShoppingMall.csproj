@@ -146,24 +146,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="css\Commons\menu.css" />
-    <Content Include="css\Pages\order.css" />
-    <Content Include="css\Pages\commodity.css" />
-    <Content Include="css\Pages\admin.css" />
-    <Content Include="css\Pages\index.css" />
-    <Content Include="css\Pages\login.css" />
-    <Content Include="css\Pages\member.css" />
+    <Content Include="css\1.0.0\Commons\menu.css" />
+    <Content Include="css\1.0.0\Pages\order.css" />
+    <Content Include="css\1.0.0\Pages\commodity.css" />
+    <Content Include="css\1.0.0\Pages\admin.css" />
+    <Content Include="css\1.0.0\Pages\index.css" />
+    <Content Include="css\1.0.0\Pages\login.css" />
+    <Content Include="css\1.0.0\Pages\member.css" />
     <Content Include="Global.asax" />
     <Content Include="images\Zgmf-X20a.jpg" />
-    <Content Include="js\commons\MenuComponent.js" />
-    <Content Include="js\lang\En.js" />
-    <Content Include="js\lang\Tw.js" />
-    <Content Include="js\pages\AdminComponent.js" />
-    <Content Include="js\pages\CommodityComponent.js" />
-    <Content Include="js\pages\IndexComponent.js" />
-    <Content Include="js\pages\LoginComponent.js" />
-    <Content Include="js\pages\MemberComponent.js" />
-    <Content Include="js\pages\OrderComponent.js" />
+    <Content Include="js\1.0.0\commons\MenuComponent.js" />
+    <Content Include="js\1.0.0\lang\En.js" />
+    <Content Include="js\1.0.0\lang\Tw.js" />
+    <Content Include="js\1.0.0\pages\AdminComponent.js" />
+    <Content Include="js\1.0.0\pages\CommodityComponent.js" />
+    <Content Include="js\1.0.0\pages\IndexComponent.js" />
+    <Content Include="js\1.0.0\pages\LoginComponent.js" />
+    <Content Include="js\1.0.0\pages\MemberComponent.js" />
+    <Content Include="js\1.0.0\pages\OrderComponent.js" />
     <Content Include="js\SweetAlert2.js" />
     <Content Include="js\vue-i18n.js" />
     <Content Include="js\vue.js" />

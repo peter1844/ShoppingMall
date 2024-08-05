@@ -204,9 +204,10 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 刪除訂單資料
         /// </summary>
-        public bool DeleteOrderData()
+        public static bool DeleteOrderData()
         {
-            SqlCommand command = MsSqlConnection();
+            Base.Base baseClass = new Base.Base();
+            SqlCommand command = baseClass.MsSqlConnection();
 
             try
             {
@@ -253,9 +254,9 @@ namespace ShoppingMall.Api.Order
         public bool CheckInsertInputData(InsertOrderDataDto insertData)
         {
             // 檢查是否有該付款方式
-            if (!Enum.IsDefined(typeof(PayTypeCode), insertData.PayType)) return false;
+            if (!Enum.IsDefined(typeof(PayTypeCode), insertData.PayType) || !Enum.TryParse(Enum.GetName(typeof(PayTypeCode), insertData.PayType), out PayTypeCode _)) return false;
             // 檢查是否有該配送方式
-            if (!Enum.IsDefined(typeof(DeliveryTypeCode), insertData.DeliverType)) return false;
+            if (!Enum.IsDefined(typeof(DeliveryTypeCode), insertData.DeliverType) || !Enum.TryParse(Enum.GetName(typeof(DeliveryTypeCode), insertData.DeliverType), out DeliveryTypeCode _)) return false;
 
             string rule = @"^[1-9]\d*$";
             foreach (CommodityInsertData item in insertData.CommodityDatas)
@@ -272,13 +273,13 @@ namespace ShoppingMall.Api.Order
         public bool CheckUpdateInputData(UpdateOrderDataDto updateData)
         {
             // 檢查是否有該付款方式
-            if (!Enum.IsDefined(typeof(PayTypeCode), updateData.PayTypeId)) return false;
+            if (!Enum.IsDefined(typeof(PayTypeCode), updateData.PayTypeId) || !Enum.TryParse(Enum.GetName(typeof(PayTypeCode), updateData.PayTypeId), out PayTypeCode _)) return false;
             // 檢查是否有該付款狀態
-            if (!Enum.IsDefined(typeof(PayStateCode), updateData.PayStateId)) return false;
+            if (!Enum.IsDefined(typeof(PayStateCode), updateData.PayStateId) || !Enum.TryParse(Enum.GetName(typeof(PayStateCode), updateData.PayStateId), out PayStateCode _)) return false;
             // 檢查是否有該配送方式
-            if (!Enum.IsDefined(typeof(DeliveryTypeCode), updateData.DeliverTypeId)) return false;
+            if (!Enum.IsDefined(typeof(DeliveryTypeCode), updateData.DeliverTypeId) || !Enum.TryParse(Enum.GetName(typeof(DeliveryTypeCode), updateData.DeliverTypeId), out DeliveryTypeCode _)) return false;
             // 檢查是否有該配送狀態
-            if (!Enum.IsDefined(typeof(DeliveryStateCode), updateData.DeliverStateId)) return false;
+            if (!Enum.IsDefined(typeof(DeliveryStateCode), updateData.DeliverStateId) || !Enum.TryParse(Enum.GetName(typeof(DeliveryStateCode), updateData.DeliverStateId), out DeliveryStateCode _)) return false;
 
             return true;
         }

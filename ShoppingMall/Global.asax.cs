@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Timers;
 using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
@@ -17,7 +17,21 @@ namespace ShoppingMall
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             // 定期執行刪除訂單
-            //Timer timer = new Timer(TimerCallback, null, TimeSpan.Zero, TimeSpan.FromSeconds(15));
+            Timer timer = new Timer(60000);
+
+            timer.Elapsed += (s, ea) =>
+            {
+                try
+                {
+                    OrderProccess.DeleteOrderData();
+                }
+                catch (Exception ex)
+                {
+                    Base.Base.Logger(ex.Message);
+                }
+            };
+
+            timer.Start();
         }
 
         protected void Application_PostAuthorizeRequest()

@@ -9,15 +9,15 @@
 
     <script src="/js/vue.js" type="text/javascript"></script>
     <script src="/js/vue-i18n.js" type="text/javascript"></script>
-    <script src="<%= GetVersionUrl("/js/lang/Tw.js") %>" type="text/javascript"></script>
-    <script src="<%= GetVersionUrl("/js/lang/En.js") %>" type="text/javascript"></script>
+    <script src="<%= GetVersionUrl("lang/Tw.js", "js") %>" type="text/javascript"></script>
+    <script src="<%= GetVersionUrl("lang/En.js", "js") %>" type="text/javascript"></script>
     <script src="/js/SweetAlert2.js" type="text/javascript"></script>
 
-    <script src="<%= GetVersionUrl("/js/commons/MenuComponent.js") %>" type="text/javascript"></script>
-    <script src="<%= GetVersionUrl("/js/pages/MemberComponent.js") %>" type="text/javascript"></script>
+    <script src="<%= GetVersionUrl("commons/MenuComponent.js", "js") %>" type="text/javascript"></script>
+    <script src="<%= GetVersionUrl("pages/MemberComponent.js", "js") %>" type="text/javascript"></script>
 
-    <link href="<%= GetVersionUrl("/css/Commons/menu.css") %>" rel="stylesheet" type="text/css"/>
-    <link href="<%= GetVersionUrl("/css/Pages/member.css") %>" rel="stylesheet" type="text/css"/>
+    <link href="<%= GetVersionUrl("Commons/menu.css", "css") %>" rel="stylesheet" type="text/css"/>
+    <link href="<%= GetVersionUrl("Pages/member.css", "css") %>" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <div id="app">

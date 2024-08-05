@@ -202,6 +202,7 @@
         changeLanguage() {
             localStorage.setItem('lang', this.language);
             location.reload();
+            //this.$i18n.locale = this.language;
         }
     },
 });

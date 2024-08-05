@@ -43,7 +43,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -72,7 +72,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -92,7 +92,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -112,7 +112,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -168,7 +168,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -232,7 +232,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                baseClass.Logger(ex.Message);
+                Base.Base.Logger(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
