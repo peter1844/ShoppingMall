@@ -199,8 +199,7 @@
             originDeliverType: '',
             originOrderData: {},
             insertPermission: false,
-            updatePermission: false,
-            deletePermission: false
+            updatePermission: false
         }
     },
     created: function () {
@@ -224,7 +223,6 @@
                 if (myJson.ErrorMessage === undefined) {
                     this.insertPermission = myJson[0].InsertPermission;
                     this.updatePermission = myJson[0].UpdatePermission;
-                    this.deletePermission = myJson[0].DeletePermission;
                 } else if (myJson.ErrorMessage == 'InvaildToken') {
                     Swal.fire({
                         text: this.$t('common.backendMessage.' + myJson.ErrorMessage),

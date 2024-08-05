@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Http.Results;
 using System.Web.UI.WebControls;
 
@@ -110,6 +111,7 @@ namespace ShoppingMall.Api.Order
         /// </summary>
         public bool InsertOrderData(InsertOrderDataDto insertData)
         {
+            HttpContext context = HttpContext.Current;
             SqlCommand command = MsSqlConnection();
 
             try
@@ -127,7 +129,7 @@ namespace ShoppingMall.Api.Order
                     tempTable.Rows.Add(data.CommodityId, data.Quantity, data.Price);
                 }
 
-                command.CommandText = "EXEC pro_bkg_insertOrderData @orderId,@memberId,@nowDate,@payType,@payState,@deliverType,@deliverState,@totalMoney,@commoditys";
+                command.CommandText = "EXEC pro_bkg_insertOrderData @orderId,@memberId,@nowDate,@payType,@payState,@deliverType,@deliverState,@totalMoney,@commoditys,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@orderId", orderId);
                 command.Parameters.AddWithValue("@memberId", insertData.MemberId);
@@ -137,6 +139,8 @@ namespace ShoppingMall.Api.Order
                 command.Parameters.AddWithValue("@deliverType", insertData.DeliverType);
                 command.Parameters.AddWithValue("@deliverState", 0);
                 command.Parameters.AddWithValue("@totalMoney", insertData.TotalMoney);
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@permission", Permissions.OrderInsert);
 
                 SqlParameter parameter = command.Parameters.AddWithValue("@commoditys", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
@@ -146,6 +150,8 @@ namespace ShoppingMall.Api.Order
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // 權限不足
+                if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
                 // 庫存量不足
                 if (statusMessage == (int)StateCode.StockError) throw new Exception(StateCode.StockError.ToString());
                 // DB執行錯誤
@@ -169,22 +175,27 @@ namespace ShoppingMall.Api.Order
         /// </summary>
         public bool UpdateOrderData(UpdateOrderDataDto updateData)
         {
+            HttpContext context = HttpContext.Current;
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_updateOrderData @orderId,@payTypeId,@payStateId,@deliverTypeId,@deliverStateId";
+                command.CommandText = "EXEC pro_bkg_updateOrderData @orderId,@payTypeId,@payStateId,@deliverTypeId,@deliverStateId,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@orderId", updateData.OrderId);
                 command.Parameters.AddWithValue("@payTypeId", updateData.PayTypeId);
                 command.Parameters.AddWithValue("@payStateId", updateData.PayStateId);
                 command.Parameters.AddWithValue("@deliverTypeId", updateData.DeliverTypeId);
                 command.Parameters.AddWithValue("@deliverStateId", updateData.DeliverStateId);
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@permission", Permissions.OrderUpdate);
 
                 command.Connection.Open();
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // 權限不足
+                if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
@@ -192,7 +203,7 @@ namespace ShoppingMall.Api.Order
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {

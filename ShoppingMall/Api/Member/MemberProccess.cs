@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web;
 
 namespace ShoppingMall.Api.Member
 {
@@ -60,24 +61,33 @@ namespace ShoppingMall.Api.Member
         /// </summary>
         public bool UpdateMemberData(UpdateMemberDataDto updateData)
         {
+            HttpContext context = HttpContext.Current;
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_updateMemberData @memberId,@level,@enabled";
+                command.CommandText = "EXEC pro_bkg_updateMemberData @memberId,@level,@enabled,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@memberId", updateData.MemberId);
                 command.Parameters.AddWithValue("@level", updateData.Level);
                 command.Parameters.AddWithValue("@enabled", updateData.Enabled);
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@permission", Permissions.MemberUpdate);
 
                 command.Connection.Open();
-                command.ExecuteNonQuery();
+                
+                int statusMessage = Convert.ToInt32(command.ExecuteScalar());
+
+                // 權限不足
+                if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
+                // DB執行錯誤
+                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {

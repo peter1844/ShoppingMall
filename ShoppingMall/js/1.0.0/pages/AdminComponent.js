@@ -58,7 +58,7 @@
 
                     <div align="right">
                         <input type="button" class="btn submit" :value="$t('common.submit')" @click="CheckAction()"/>
-                        <input type="button" class="btn cancel" :value="$t('common.scancel')" @click="ClosePopup()"/>
+                        <input type="button" class="btn cancel" :value="$t('common.cancel')" @click="ClosePopup()"/>
                     </div>
                 </div>
             </div>

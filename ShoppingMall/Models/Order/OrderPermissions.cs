@@ -13,9 +13,5 @@
         /// 編輯權限
         /// </summary>
         public bool UpdatePermission { get; set; }
-        /// <summary>
-        /// 刪除權限
-        /// </summary>
-        public bool DeletePermission { get; set; }
     }
 }

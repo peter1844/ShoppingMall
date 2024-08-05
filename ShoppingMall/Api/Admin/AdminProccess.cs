@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Http.Results;
 using System.Web.UI.WebControls;
 
@@ -77,6 +78,7 @@ namespace ShoppingMall.Api.Admin
         /// </summary>
         public bool InsertAdminData(InsertAdminDataDto insertData)
         {
+            HttpContext context = HttpContext.Current;
             SqlCommand command = MsSqlConnection();
 
             try
@@ -89,12 +91,14 @@ namespace ShoppingMall.Api.Admin
                     tempTable.Rows.Add(roleId);
                 }
                 
-                command.CommandText = "EXEC pro_bkg_insertAdminData @name,@acc,@pwd,@enabled,@roleId";
+                command.CommandText = "EXEC pro_bkg_insertAdminData @name,@acc,@pwd,@enabled,@roleId,@adminId,@permission";
                 
                 command.Parameters.AddWithValue("@name", insertData.Name);
                 command.Parameters.AddWithValue("@acc", insertData.Acc);
                 command.Parameters.AddWithValue("@pwd", insertData.Pwd);
                 command.Parameters.AddWithValue("@enabled", insertData.Enabled);
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@permission", Permissions.AdminInsert);
                 SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
                 parameter.TypeName = "dbo.adminUserRoleTempType";
@@ -103,6 +107,8 @@ namespace ShoppingMall.Api.Admin
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // 權限不足
+                if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
@@ -110,7 +116,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -124,6 +130,7 @@ namespace ShoppingMall.Api.Admin
         /// </summary>
         public bool UpdateAdminData(UpdateAdminDataDto updateData)
         {
+            HttpContext context = HttpContext.Current;
             SqlCommand command = MsSqlConnection();
             
             try
@@ -136,12 +143,14 @@ namespace ShoppingMall.Api.Admin
                     tempTable.Rows.Add(roleId);
                 }
 
-                command.CommandText = "EXEC pro_bkg_updateAdminData @adminId,@name,@pwd,@enabled,@roleId";
+                command.CommandText = "EXEC pro_bkg_updateAdminData @adminId,@name,@pwd,@enabled,@roleId,@backAdminId,@permission";
 
                 command.Parameters.AddWithValue("@adminId", updateData.AdminId);
                 command.Parameters.AddWithValue("@name", updateData.Name);
                 command.Parameters.AddWithValue("@pwd", updateData.Pwd);
                 command.Parameters.AddWithValue("@enabled", updateData.Enabled);
+                command.Parameters.AddWithValue("@backAdminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@permission", Permissions.AdminUpdate);
                 SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
                 parameter.TypeName = "dbo.adminUserRoleTempType";
@@ -150,6 +159,8 @@ namespace ShoppingMall.Api.Admin
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // 權限不足
+                if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
                 // 有更新就強制把該使用者登出
@@ -159,7 +170,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -173,18 +184,23 @@ namespace ShoppingMall.Api.Admin
         /// </summary>
         public bool DeleteAdminData(DeleteAdminDataDto deleteData)
         {
+            HttpContext context = HttpContext.Current;
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_deleteAdminData @adminId";
+                command.CommandText = "EXEC pro_bkg_deleteAdminData @adminId,@backAdminId,@permission";
 
                 command.Parameters.AddWithValue("@adminId", deleteData.AdminId);
+                command.Parameters.AddWithValue("@backAdminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@permission", Permissions.AdminDelete);
 
                 command.Connection.Open();
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
+                // 權限不足
+                if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
                 RedisConnection().GetDatabase().KeyDelete($"{deleteData.AdminId}_token");
@@ -193,7 +209,7 @@ namespace ShoppingMall.Api.Admin
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {

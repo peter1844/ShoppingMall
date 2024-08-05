@@ -21,8 +21,7 @@ namespace ShoppingMall.Api.Order
                 orderPermissions.Add(new OrderPermissionsDtoResponse
                 {
                     InsertPermission = this.CheckPermission((int)Permissions.OrderInsert),
-                    UpdatePermission = this.CheckPermission((int)Permissions.OrderUpdate),
-                    DeletePermission = this.CheckPermission((int)Permissions.OrderDelete)
+                    UpdatePermission = this.CheckPermission((int)Permissions.OrderUpdate)
                 });
 
                 return orderPermissions;

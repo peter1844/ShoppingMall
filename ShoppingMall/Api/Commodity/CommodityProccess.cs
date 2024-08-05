@@ -119,11 +119,12 @@ namespace ShoppingMall.Api.Commodity
         /// </summary>
         public bool InsertCommodityData(InsertCommodityDataDto insertData)
         {
+            HttpContext context = HttpContext.Current;
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_insertCommodityData @name,@description,@type,@image,@price,@stock,@open";
+                command.CommandText = "EXEC pro_bkg_insertCommodityData @name,@description,@type,@image,@price,@stock,@open,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@name", insertData.Name);
                 command.Parameters.AddWithValue("@description", insertData.Description);
@@ -132,15 +133,23 @@ namespace ShoppingMall.Api.Commodity
                 command.Parameters.AddWithValue("@price", insertData.Price);
                 command.Parameters.AddWithValue("@stock", insertData.Stock);
                 command.Parameters.AddWithValue("@open", insertData.Open);
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@permission", Permissions.CommodityInsert);
 
                 command.Connection.Open();
-                command.ExecuteNonQuery();
+
+                int statusMessage = Convert.ToInt32(command.ExecuteScalar());
+
+                // 權限不足
+                if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
+                // DB執行錯誤
+                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -154,11 +163,12 @@ namespace ShoppingMall.Api.Commodity
         /// </summary>
         public bool UpdateCommodityData(UpdateCommodityDataDto updateData)
         {
+            HttpContext context = HttpContext.Current;
             SqlCommand command = MsSqlConnection();
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_updateCommodityData @commodityId,@name,@description,@type,@image,@price,@stock,@open";
+                command.CommandText = "EXEC pro_bkg_updateCommodityData @commodityId,@name,@description,@type,@image,@price,@stock,@open,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@commodityId", updateData.CommodityId);
                 command.Parameters.AddWithValue("@name", updateData.Name);
@@ -168,15 +178,23 @@ namespace ShoppingMall.Api.Commodity
                 command.Parameters.AddWithValue("@price", updateData.Price);
                 command.Parameters.AddWithValue("@stock", updateData.Stock);
                 command.Parameters.AddWithValue("@open", updateData.Open);
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@permission", Permissions.CommodityUpdate);
 
                 command.Connection.Open();
-                command.ExecuteNonQuery();
+
+                int statusMessage = Convert.ToInt32(command.ExecuteScalar());
+
+                // 權限不足
+                if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
+                // DB執行錯誤
+                if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
 
                 return true;
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {
