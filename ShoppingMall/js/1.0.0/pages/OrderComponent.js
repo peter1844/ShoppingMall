@@ -23,7 +23,6 @@
 
             <div>
                 <input v-if="insertPermission" type="button" class="btn insert" :value="$t('order.page.placeAnOrder')" @click="OpenInsert()"/>
-                <input v-if="deletePermission" type="button" class="btn delete" :value="$t('order.page.deleteAnOrder')" @click="DeleteOrder()"/>
             </div>
             <br/>
             <table>
@@ -541,59 +540,6 @@
                     })
                 }
             }
-        },
-        async DeleteOrder() {
-
-            await Swal.fire({
-                html: this.$t('order.message.deleteAlert') + '<label style="color:red;">180</label>' + this.$t('order.message.deleteAlert2'),
-                icon: "question",
-                confirmButtonText: this.$t('common.confirm'),
-                showCancelButton: true,
-                cancelButtonText: this.$t('common.cancelNoSpace'),
-            }).then((result) => {
-                if (result.isConfirmed) {
-
-                    fetch('/api/order/deleteOrderData', {
-                        method: 'DELETE',
-                        headers: {
-                            'token': localStorage.getItem('token'),
-                            'Content-Type': 'application/json',
-                        }
-                    }).then((response) => {
-                        return response.json()
-                    }).then((myJson) => {
-                        if (myJson.ErrorMessage === undefined) {
-                            Swal.fire({
-                                text: this.$t('common.deleteCompleted'),
-                                icon: "success",
-                                confirmButtonText: this.$t('common.confirm')
-                            }).then((result) => {
-                                location.reload();
-                            });
-                        } else if (myJson.ErrorMessage == 'InvaildToken') {
-                            Swal.fire({
-                                text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                                icon: "error",
-                                confirmButtonText: this.$t('common.confirm')
-                            }).then((result) => {
-                                window.location.href = '/Views/Login.aspx';
-                            });
-                        } else {
-                            Swal.fire({
-                                text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                                icon: "error",
-                                confirmButtonText: this.$t('common.confirm')
-                            })
-                        }
-                    }).catch((error) => {
-                        Swal.fire({
-                            text: this.$t('common.systemError'),
-                            icon: "error",
-                            confirmButtonText: this.$t('common.confirm')
-                        })
-                    })
-                }
-            });
         },
         OpenDetail(id) {
             let detailData = this.orderData.find(item => item.Id === id);

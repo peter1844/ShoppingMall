@@ -67,10 +67,6 @@ namespace ShoppingMall.App_Code
         /// </summary>
         OrderUpdate = 8,
         /// <summary>
-        /// 訂單管理-刪除
-        /// </summary>
-        OrderDelete = 9,
-        /// <summary>
         /// 管理者帳號管理
         /// </summary>
         Admin = 10,
