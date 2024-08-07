@@ -15,7 +15,7 @@ CREATE PROCEDURE [dbo].[pro_bkg_insertAdminData]
 AS
 BEGIN
 	DECLARE @vaildPermissionCount INT;
-	SELECT @vaildPermissionCount = COUNT(rp.f_id) FROM t_adminUserRole AS aur INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId AND rp.f_permissionsId = @permission
+	SELECT @vaildPermissionCount = COUNT(rp.f_id) FROM t_adminUserRole AS aur WITH(NOLOCK) INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId AND rp.f_permissionsId = @permission
 
 	IF @vaildPermissionCount > 0
 	BEGIN

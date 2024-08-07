@@ -13,11 +13,12 @@ CREATE PROCEDURE [dbo].[pro_bkg_updateMemberData]
 AS
 BEGIN
 	DECLARE @vaildPermissionCount INT;
-	SELECT @vaildPermissionCount = COUNT(rp.f_id) FROM t_adminUserRole AS aur INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId AND rp.f_permissionsId = @permission
+	SELECT @vaildPermissionCount = COUNT(rp.f_id) FROM t_adminUserRole AS aur WITH(NOLOCK) INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId AND rp.f_permissionsId = @permission
 
 	IF @vaildPermissionCount > 0
 	BEGIN
 		UPDATE dbo.t_member WITH(ROWLOCK) SET f_level = @level,f_enabled = @enabled	WHERE f_id = @memberId;
+		SELECT 200;
 	END
 	ELSE
 	BEGIN

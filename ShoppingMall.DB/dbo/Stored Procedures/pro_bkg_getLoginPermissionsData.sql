@@ -8,7 +8,7 @@ CREATE PROCEDURE [dbo].[pro_bkg_getLoginPermissionsData]
 	@adminId INT
 AS
 BEGIN
-	SELECT rp.f_permissionsId FROM t_adminUserRole AS aur INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId GROUP BY rp.f_permissionsId
+	SELECT rp.f_permissionsId FROM t_adminUserRole AS aur WITH(NOLOCK) INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId GROUP BY rp.f_permissionsId
 		
 	RETURN
 END

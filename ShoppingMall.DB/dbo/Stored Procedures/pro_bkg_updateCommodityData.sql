@@ -18,7 +18,7 @@ CREATE PROCEDURE [dbo].[pro_bkg_updateCommodityData]
 AS
 BEGIN
 	DECLARE @vaildPermissionCount INT;
-	SELECT @vaildPermissionCount = COUNT(rp.f_id) FROM t_adminUserRole AS aur INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId AND rp.f_permissionsId = @permission
+	SELECT @vaildPermissionCount = COUNT(rp.f_id) FROM t_adminUserRole AS aur WITH(NOLOCK) INNER JOIN t_rolePermissions AS rp ON aur.f_roleId = rp.f_roleId WHERE aur.f_adminUserId = @adminId AND rp.f_permissionsId = @permission
 
 	IF @vaildPermissionCount > 0
 	BEGIN
@@ -35,6 +35,7 @@ BEGIN
 				UPDATE dbo.t_commodity WITH(ROWLOCK) SET f_image = @image WHERE f_id = @commodityId;
 			END
 		END
+		SELECT 200;
 	END
 	ELSE
 	BEGIN
