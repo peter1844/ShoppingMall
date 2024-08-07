@@ -1,19 +1,17 @@
-﻿using ShoppingMall.App_Code;
+﻿using ShoppingMall.Api.Commodity;
+using ShoppingMall.App_Code;
 using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using ShoppingMall.Api.Commodity;
 
 namespace ShoppingMall.Api.Order
 {
-    public class OrderOption : ShoppingMall.Base.Base
+    public class OrderOption
     {
         private CommodityProccess commodityProccessclass;
 
-        public OrderOption() 
+        public OrderOption()
         {
             commodityProccessclass = new CommodityProccess();
         }
@@ -74,7 +72,8 @@ namespace ShoppingMall.Api.Order
 
                 commodityData = commodityProccessclass.GetOpenCommodityData();
 
-                orderOptionData.Add(new OrderOptionDataDtoResponse{
+                orderOptionData.Add(new OrderOptionDataDtoResponse
+                {
                     PayTypes = payTypeData,
                     PayStates = payStateData,
                     DeliveryTypes = deliveryTypeData,

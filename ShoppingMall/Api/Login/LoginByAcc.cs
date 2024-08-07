@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Login;
 using System;
 using System.Collections.Generic;
@@ -9,19 +10,22 @@ using System.Web;
 
 namespace ShoppingMall.Api.Login
 {
-    public class LoginByAcc : ShoppingMall.Base.Base
+    public class LoginByAcc
     {
         /// <summary>
         /// 用帳號密碼檢查登入
         /// </summary>
         public List<AdminUserDataDtoResponse> CheckLoginByAccountPassword(LoginDataDto loginData)
         {
+            string a = ConfigurationsHelper.jsVersion;
+
+
             List<AdminUserDataDtoResponse> adminUserData = new List<AdminUserDataDtoResponse>();
             HttpContext context = HttpContext.Current;
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -31,13 +35,13 @@ namespace ShoppingMall.Api.Login
                 command.Connection.Open();
 
                 da.SelectCommand = command;
-                da.Fill(dt); 
+                da.Fill(dt);
 
                 if (dt.Rows.Count > 0)
                 {
-                    string randCode = GenerateRandomBytes(32);
+                    string randCode = Tools.GenerateRandomBytes(32);
                     string originToken = $"{dt.Rows[0]["f_id"].ToString()},{randCode}";
-                    string token = AesEncrypt(originToken);
+                    string token = Tools.AesEncrypt(originToken);
 
                     // 将对象添加到列表中
                     adminUserData.Add(new AdminUserDataDtoResponse
@@ -47,7 +51,7 @@ namespace ShoppingMall.Api.Login
                         Token = token
                     });
 
-                    RedisConnection().GetDatabase().StringSet($"{dt.Rows[0]["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(20));
+                    DbHelper.RedisConnection().GetDatabase().StringSet($"{dt.Rows[0]["f_id"].ToString()}_token", token, TimeSpan.FromMinutes(20));
                     context.Session["id"] = dt.Rows[0]["f_id"].ToString();
                     context.Session["token"] = token;
                 }
@@ -67,13 +71,13 @@ namespace ShoppingMall.Api.Login
         /// <summary>
         /// 設定登入者的權限
         /// </summary>
-        public void SetLoginAdminPermissions(int adminId) 
+        public void SetLoginAdminPermissions(int adminId)
         {
             HttpContext context = HttpContext.Current;
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -88,7 +92,7 @@ namespace ShoppingMall.Api.Login
                 {
                     List<string> permissionsList = new List<string>();
 
-                    for (int i = 0; i < dt.Rows.Count; i++) 
+                    for (int i = 0; i < dt.Rows.Count; i++)
                     {
                         permissionsList.Add(dt.Rows[i]["f_permissionsId"].ToString());
                     }

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ShoppingMall.Models.Commodity;
+﻿using ShoppingMall.Models.Commodity;
+using System.Collections.Generic;
 
 namespace ShoppingMall.Models.Order
 {

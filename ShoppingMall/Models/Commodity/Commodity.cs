@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ShoppingMall.Models.Commodity
+﻿namespace ShoppingMall.Models.Commodity
 {
     /// <summary>
     /// 商品資料
@@ -57,7 +55,7 @@ namespace ShoppingMall.Models.Commodity
         /// <summary>
         /// 商品名稱
         /// </summary>
-        public string CommodityName { get;set; }
+        public string CommodityName { get; set; }
         /// <summary>
         /// 商品價格
         /// </summary>

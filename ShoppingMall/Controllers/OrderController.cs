@@ -1,5 +1,6 @@
 ﻿using ShoppingMall.Api.Order;
 using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Order;
 using System;
@@ -15,14 +16,12 @@ namespace ShoppingMall.Controllers
         private OrderPermissions orderPermissionsClass;
         private OrderProccess orderProccessClass;
         private OrderOption orderOptionClass;
-        private Base.Base baseClass;
 
         public OrderController()
         {
             orderPermissionsClass = new OrderPermissions();
             orderProccessClass = new OrderProccess();
             orderOptionClass = new OrderOption();
-            baseClass = new Base.Base();
         }
 
         /// <summary>
@@ -40,7 +39,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -71,14 +70,14 @@ namespace ShoppingMall.Controllers
                 {
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
-                
+
                 List<OrderDataDtoResponse> orderData = orderProccessClass.GetOrderData(conditionData[0]);
 
                 return Ok(orderData);
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -99,7 +98,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -114,7 +113,7 @@ namespace ShoppingMall.Controllers
             try
             {
                 // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.OrderInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!Tools.CheckPermission((int)Permissions.OrderInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = orderProccessClass.CheckInsertInputData(insertData);
 
@@ -131,7 +130,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -146,7 +145,7 @@ namespace ShoppingMall.Controllers
             try
             {
                 // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.OrderUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!Tools.CheckPermission((int)Permissions.OrderUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = orderProccessClass.CheckUpdateInputData(updateData);
 
@@ -163,7 +162,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }

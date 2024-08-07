@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Member;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Web;
 
 namespace ShoppingMall.Api.Member
 {
-    public class MemberProccess : ShoppingMall.Base.Base
+    public class MemberProccess
     {
         /// <summary>
         /// 取得所有會員資料
@@ -19,7 +20,7 @@ namespace ShoppingMall.Api.Member
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -62,7 +63,7 @@ namespace ShoppingMall.Api.Member
         public bool UpdateMemberData(UpdateMemberDataDto updateData)
         {
             HttpContext context = HttpContext.Current;
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -75,7 +76,7 @@ namespace ShoppingMall.Api.Member
                 command.Parameters.AddWithValue("@permission", Permissions.MemberUpdate);
 
                 command.Connection.Open();
-                
+
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
 
                 // 權限不足
@@ -87,7 +88,7 @@ namespace ShoppingMall.Api.Member
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception(ex.Message, ex);
             }
             finally
             {

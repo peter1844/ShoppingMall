@@ -1,19 +1,14 @@
 ﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Commodity;
-using ShoppingMall.Models.Member;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text.RegularExpressions;
-using System.Web;
 
 namespace ShoppingMall.Api.Commodity
 {
-    public class CommodityStockCheck : ShoppingMall.Base.Base
+    public class CommodityStockCheck
     {
         /// <summary>
         /// 取得庫存不足的商品資料
@@ -24,7 +19,7 @@ namespace ShoppingMall.Api.Commodity
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {

@@ -1,6 +1,6 @@
 ﻿using ShoppingMall.Api.Member;
 using ShoppingMall.App_Code;
-using ShoppingMall.Base;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Member;
 using System;
@@ -14,13 +14,11 @@ namespace ShoppingMall.Controllers
     {
         private MemberPermissions memberPermissionsClass;
         private MemberProccess memberProccessClass;
-        private Base.Base baseClass;
 
         public MemberController()
         {
             memberPermissionsClass = new MemberPermissions();
             memberProccessClass = new MemberProccess();
-            baseClass = new Base.Base();
         }
 
         /// <summary>
@@ -38,7 +36,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -58,7 +56,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -73,7 +71,7 @@ namespace ShoppingMall.Controllers
             try
             {
                 // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.MemberUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!Tools.CheckPermission((int)Permissions.MemberUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = memberProccessClass.CheckUpdateInputData(updateData);
 
@@ -90,7 +88,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.InnerException.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }

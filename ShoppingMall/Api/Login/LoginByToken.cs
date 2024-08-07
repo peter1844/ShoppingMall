@@ -1,8 +1,10 @@
-﻿using System.Web;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
+using System.Web;
 
 namespace ShoppingMall.Api.Login
 {
-    public class LoginByToken : ShoppingMall.Base.Base
+    public class LoginByToken
     {
         /// <summary>
         /// 用Token檢查登入
@@ -27,13 +29,13 @@ namespace ShoppingMall.Api.Login
         /// </summary>
         public bool IsValidToken(string token)
         {
-            string decryptToken = AesDecrypt(token);
+            string decryptToken = Tools.AesDecrypt(token);
             string[] tokenData = decryptToken.Split(',');
 
             // 檢查AES解密後的資料是否合法
             if (tokenData.Length != 2) return false;
 
-            bool isVaild = RedisConnection().GetDatabase().StringGet($"{tokenData[0]}_token") == token ? true : false;
+            bool isVaild = DbHelper.RedisConnection().GetDatabase().StringGet($"{tokenData[0]}_token") == token ? true : false;
 
             return isVaild;
         }

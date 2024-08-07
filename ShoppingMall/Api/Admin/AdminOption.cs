@@ -2,12 +2,10 @@
 using ShoppingMall.Models.Admin;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace ShoppingMall.Api.Admin
 {
-    public class AdminOption : ShoppingMall.Base.Base
+    public class AdminOption
     {
         /// <summary>
         /// 取得管理者帳號頁面所需的選項
@@ -16,11 +14,11 @@ namespace ShoppingMall.Api.Admin
         {
             List<AdminOptionDataDtoResponse> adminOptionData = new List<AdminOptionDataDtoResponse>();
 
-            try 
+            try
             {
                 Array rolesArray = Enum.GetValues(typeof(Roles));
 
-                foreach (Roles role in rolesArray) 
+                foreach (Roles role in rolesArray)
                 {
                     // 排除超級管理者
                     if ((int)role != 1)

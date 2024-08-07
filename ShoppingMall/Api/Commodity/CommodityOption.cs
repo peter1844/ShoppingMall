@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Commodity;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Data.SqlClient;
 
 namespace ShoppingMall.Api.Commodity
 {
-    public class CommodityOption : ShoppingMall.Base.Base
+    public class CommodityOption
     {
         /// <summary>
         /// 取得商品管理頁面所需的選項
@@ -18,7 +19,7 @@ namespace ShoppingMall.Api.Commodity
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -26,7 +27,7 @@ namespace ShoppingMall.Api.Commodity
                 command.Connection.Open();
 
                 da.SelectCommand = command;
-                da.Fill(dt); 
+                da.Fill(dt);
 
                 if (dt.Rows.Count > 0)
                 {

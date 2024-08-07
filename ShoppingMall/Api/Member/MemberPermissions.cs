@@ -2,12 +2,10 @@
 using ShoppingMall.Models.Member;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace ShoppingMall.Api.Member
 {
-    public class MemberPermissions : ShoppingMall.Base.Base
+    public class MemberPermissions
     {
         /// <summary>
         /// 取得會員頁面所有權限
@@ -20,7 +18,7 @@ namespace ShoppingMall.Api.Member
             {
                 memberPermissions.Add(new MemberPermissionsDtoResponse
                 {
-                    UpdatePermission = this.CheckPermission((int)Permissions.MemberUpdate)
+                    UpdatePermission = Tools.CheckPermission((int)Permissions.MemberUpdate)
                 });
 
                 return memberPermissions;

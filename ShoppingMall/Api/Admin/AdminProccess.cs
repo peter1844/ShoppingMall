@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Admin;
 using System;
 using System.Collections.Generic;
@@ -7,12 +8,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Http.Results;
 using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Api.Admin
 {
-    public class AdminProccess : ShoppingMall.Base.Base
+    public class AdminProccess
     {
         /// <summary>
         /// 取得所有管理者資料
@@ -24,7 +24,7 @@ namespace ShoppingMall.Api.Admin
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -79,7 +79,7 @@ namespace ShoppingMall.Api.Admin
         public bool InsertAdminData(InsertAdminDataDto insertData)
         {
             HttpContext context = HttpContext.Current;
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -90,9 +90,9 @@ namespace ShoppingMall.Api.Admin
                 {
                     tempTable.Rows.Add(roleId);
                 }
-                
+
                 command.CommandText = "EXEC pro_bkg_insertAdminData @name,@acc,@pwd,@enabled,@roleId,@adminId,@permission";
-                
+
                 command.Parameters.AddWithValue("@name", insertData.Name);
                 command.Parameters.AddWithValue("@acc", insertData.Acc);
                 command.Parameters.AddWithValue("@pwd", insertData.Pwd);
@@ -122,7 +122,7 @@ namespace ShoppingMall.Api.Admin
             {
                 command.Connection.Close(); //關閉連線
             }
-            
+
         }
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace ShoppingMall.Api.Admin
         public bool UpdateAdminData(UpdateAdminDataDto updateData)
         {
             HttpContext context = HttpContext.Current;
-            SqlCommand command = MsSqlConnection();
-            
+            SqlCommand command = DbHelper.MsSqlConnection();
+
             try
             {
                 DataTable tempTable = new DataTable();
@@ -164,7 +164,7 @@ namespace ShoppingMall.Api.Admin
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
                 // 有更新就強制把該使用者登出
-                RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
+                DbHelper.RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
 
                 return true;
             }
@@ -185,7 +185,7 @@ namespace ShoppingMall.Api.Admin
         public bool DeleteAdminData(DeleteAdminDataDto deleteData)
         {
             HttpContext context = HttpContext.Current;
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -203,7 +203,7 @@ namespace ShoppingMall.Api.Admin
                 if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
-                RedisConnection().GetDatabase().KeyDelete($"{deleteData.AdminId}_token");
+                DbHelper.RedisConnection().GetDatabase().KeyDelete($"{deleteData.AdminId}_token");
 
                 return true;
             }

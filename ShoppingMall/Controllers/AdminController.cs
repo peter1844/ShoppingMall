@@ -1,8 +1,8 @@
 ﻿using ShoppingMall.Api.Admin;
 using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Common;
-using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
 using System.Web.Http;
@@ -15,14 +15,12 @@ namespace ShoppingMall.Controllers
         private AdminPermissions adminPermissionsClass;
         private AdminProccess adminProccessClass;
         private AdminOption adminOptionClass;
-        private Base.Base baseClass;
 
         public AdminController()
         {
             adminPermissionsClass = new AdminPermissions();
             adminProccessClass = new AdminProccess();
             adminOptionClass = new AdminOption();
-            baseClass = new Base.Base();
         }
 
         /// <summary>
@@ -40,7 +38,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -60,7 +58,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -81,7 +79,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -96,7 +94,7 @@ namespace ShoppingMall.Controllers
             try
             {
                 // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.AdminInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!Tools.CheckPermission((int)Permissions.AdminInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = adminProccessClass.CheckInsertInputData(insertData);
 
@@ -113,7 +111,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -128,7 +126,7 @@ namespace ShoppingMall.Controllers
             try
             {
                 // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.AdminUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!Tools.CheckPermission((int)Permissions.AdminUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = adminProccessClass.CheckUpdateInputData(updateData);
 
@@ -145,7 +143,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -160,7 +158,7 @@ namespace ShoppingMall.Controllers
             try
             {
                 // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.AdminDelete)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!Tools.CheckPermission((int)Permissions.AdminDelete)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = adminProccessClass.CheckDeleteInputData(deleteData);
 
@@ -177,7 +175,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }

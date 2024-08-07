@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ShoppingMall.Models.Commodity
+﻿namespace ShoppingMall.Models.Commodity
 {
     /// <summary>
     /// 商品資料

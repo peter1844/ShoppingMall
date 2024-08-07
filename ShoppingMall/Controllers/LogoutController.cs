@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.Api.Logout;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
 using System;
 using System.Web.Http;
@@ -8,11 +9,10 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/logout")]
     public class LogoutController : ApiController
     {
-        private Base.Base baseClass;
         private Logout logoutClass;
 
-        public LogoutController() {
-            baseClass = new Base.Base();
+        public LogoutController()
+        {
             logoutClass = new Logout();
         }
 
@@ -32,8 +32,8 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message});
+                LogHelper.logger.Warn(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
     }

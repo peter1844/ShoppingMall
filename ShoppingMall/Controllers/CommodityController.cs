@@ -1,10 +1,10 @@
 ﻿using ShoppingMall.Api.Commodity;
 using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Common;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Web;
 using System.Web.Http;
 
@@ -17,7 +17,6 @@ namespace ShoppingMall.Controllers
         private CommodityProccess commodityProccessClass;
         private CommodityOption commodityOptionClass;
         private CommodityStockCheck commodityStockCheckClass;
-        private Base.Base baseClass;
 
         public CommodityController()
         {
@@ -25,7 +24,6 @@ namespace ShoppingMall.Controllers
             commodityProccessClass = new CommodityProccess();
             commodityOptionClass = new CommodityOption();
             commodityStockCheckClass = new CommodityStockCheck();
-            baseClass = new Base.Base();
         }
 
         /// <summary>
@@ -43,7 +41,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -72,7 +70,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -92,7 +90,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -112,7 +110,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -130,7 +128,7 @@ namespace ShoppingMall.Controllers
                 HttpContext context = HttpContext.Current;
 
                 // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.CommodityInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!Tools.CheckPermission((int)Permissions.CommodityInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = commodityProccessClass.CheckInsertInputData(request);
 
@@ -168,7 +166,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -185,7 +183,7 @@ namespace ShoppingMall.Controllers
                 HttpRequest request = HttpContext.Current.Request;
 
                 // 檢查權限
-                if (!baseClass.CheckPermission((int)Permissions.CommodityUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!Tools.CheckPermission((int)Permissions.CommodityUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
                 bool inputVaild = commodityProccessClass.CheckUpdateInputData(request);
 
@@ -232,7 +230,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }

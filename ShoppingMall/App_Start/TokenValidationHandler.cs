@@ -45,7 +45,7 @@ public class TokenValidationHandler : DelegatingHandler
                     // 無效Token
                     return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { ErrorMessage = StateCode.InvaildToken.ToString() });
                 }
-                else 
+                else
                 {
                     tokenExtendClass.ExtendRedisLoginToken(token);
                 }

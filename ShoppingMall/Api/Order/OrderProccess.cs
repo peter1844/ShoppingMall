@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Http.Results;
 using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Api.Order
 {
-    public class OrderProccess : ShoppingMall.Base.Base
+    public class OrderProccess
     {
         /// <summary>
         /// 取得訂單資料
@@ -25,7 +25,7 @@ namespace ShoppingMall.Api.Order
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -39,7 +39,7 @@ namespace ShoppingMall.Api.Order
                     command.Parameters.AddWithValue("@startDate", conditionData.StartDate);
                     command.Parameters.AddWithValue("@endDate", conditionData.EndDate);
                 }
-                else 
+                else
                 {
                     command.Parameters.AddWithValue("@startDate", DBNull.Value);
                     command.Parameters.AddWithValue("@endDate", DBNull.Value);
@@ -112,14 +112,14 @@ namespace ShoppingMall.Api.Order
         public bool InsertOrderData(InsertOrderDataDto insertData)
         {
             HttpContext context = HttpContext.Current;
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
                 DataTable tempTable = new DataTable();
                 DateTime now = DateTime.Now;
-                string orderId = $"T{now.ToString("yyyyMMddHHmmss")}{GenerateRandomString(6)}";
-                
+                string orderId = $"T{now.ToString("yyyyMMddHHmmss")}{Tools.GenerateRandomString(6)}";
+
                 tempTable.Columns.Add("commodityId", typeof(int));
                 tempTable.Columns.Add("quantity", typeof(int));
                 tempTable.Columns.Add("price", typeof(int));
@@ -145,7 +145,7 @@ namespace ShoppingMall.Api.Order
                 SqlParameter parameter = command.Parameters.AddWithValue("@commoditys", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
                 parameter.TypeName = "dbo.orderCommodityTempType";
-                
+
                 command.Connection.Open();
 
                 int statusMessage = Convert.ToInt32(command.ExecuteScalar());
@@ -176,7 +176,7 @@ namespace ShoppingMall.Api.Order
         public bool UpdateOrderData(UpdateOrderDataDto updateData)
         {
             HttpContext context = HttpContext.Current;
-            SqlCommand command = MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {
@@ -217,8 +217,7 @@ namespace ShoppingMall.Api.Order
         /// </summary>
         public static bool DeleteOrderData()
         {
-            Base.Base baseClass = new Base.Base();
-            SqlCommand command = baseClass.MsSqlConnection();
+            SqlCommand command = DbHelper.MsSqlConnection();
 
             try
             {

@@ -2,12 +2,10 @@
 using ShoppingMall.Models.Menu;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace ShoppingMall.Api.Menu
 {
-    public class MenuPermissions : ShoppingMall.Base.Base
+    public class MenuPermissions
     {
         /// <summary>
         /// 取得會員頁面所有權限
@@ -20,10 +18,10 @@ namespace ShoppingMall.Api.Menu
             {
                 menuPermissions.Add(new MenuPermissionsDtoResponse
                 {
-                    MemberPermission = this.CheckPermission((int)Permissions.Member),
-                    CommodityPermission = this.CheckPermission((int)Permissions.Commodity),
-                    OrderPermission = this.CheckPermission((int)Permissions.Order),
-                    AdminPermission = this.CheckPermission((int)Permissions.Admin),
+                    MemberPermission = Tools.CheckPermission((int)Permissions.Member),
+                    CommodityPermission = Tools.CheckPermission((int)Permissions.Commodity),
+                    OrderPermission = Tools.CheckPermission((int)Permissions.Order),
+                    AdminPermission = Tools.CheckPermission((int)Permissions.Admin),
                 });
 
                 return menuPermissions;

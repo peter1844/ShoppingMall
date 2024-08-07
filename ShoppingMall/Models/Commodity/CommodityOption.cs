@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ShoppingMall.Models.Commodity
+﻿namespace ShoppingMall.Models.Commodity
 {
     public class CommodityOptionDataDtoResponse
     {

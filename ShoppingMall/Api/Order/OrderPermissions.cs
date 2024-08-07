@@ -2,12 +2,10 @@
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace ShoppingMall.Api.Order
 {
-    public class OrderPermissions : ShoppingMall.Base.Base
+    public class OrderPermissions
     {
         /// <summary>
         /// 取得商品頁面所有權限
@@ -20,8 +18,8 @@ namespace ShoppingMall.Api.Order
             {
                 orderPermissions.Add(new OrderPermissionsDtoResponse
                 {
-                    InsertPermission = this.CheckPermission((int)Permissions.OrderInsert),
-                    UpdatePermission = this.CheckPermission((int)Permissions.OrderUpdate)
+                    InsertPermission = Tools.CheckPermission((int)Permissions.OrderInsert),
+                    UpdatePermission = Tools.CheckPermission((int)Permissions.OrderUpdate)
                 });
 
                 return orderPermissions;

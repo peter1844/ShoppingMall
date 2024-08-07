@@ -1,7 +1,6 @@
 ﻿using ShoppingMall.Api.Menu;
-using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
-using ShoppingMall.Models.Member;
 using ShoppingMall.Models.Menu;
 using System;
 using System.Collections.Generic;
@@ -14,11 +13,9 @@ namespace ShoppingMall.Controllers
     public class MenuController : ApiController
     {
         private MenuPermissions menuPermissionsClass;
-        private Base.Base baseClass;
 
         public MenuController()
         {
-            baseClass = new Base.Base();
             menuPermissionsClass = new MenuPermissions();
         }
 
@@ -37,7 +34,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }
@@ -59,7 +56,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                Base.Base.Logger(ex.Message);
+                LogHelper.logger.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = ex.Message });
             }
         }

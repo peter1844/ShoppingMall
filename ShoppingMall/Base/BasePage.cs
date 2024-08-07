@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 
 public class BasePage : System.Web.UI.Page
 {
@@ -17,7 +15,7 @@ public class BasePage : System.Web.UI.Page
     /// <summary>
     /// 取得對應的語言包
     /// </summary>
-    protected string GetLanguagePackage() 
+    protected string GetLanguagePackage()
     {
         string languageUrl;
 
