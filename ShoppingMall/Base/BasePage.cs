@@ -1,12 +1,10 @@
-﻿using System;
+﻿using ShoppingMall.Helper;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 
 public class BasePage : System.Web.UI.Page
 {
-    private readonly string JS_VERSION = "1.0.0";
-    private readonly string CSS_VERSION = "1.0.0";
-
     protected void Page_Init(object sender, EventArgs e)
     {
         Session["lang"] = (Session["lang"] ?? "tw").ToString();
@@ -40,18 +38,22 @@ public class BasePage : System.Web.UI.Page
     /// </summary>
     protected string GetVersionUrl(string url, string type)
     {
-        string typeVersion = type == "js" ? this.JS_VERSION : type == "css" ? this.CSS_VERSION : "";
+        string typeVersion = type == "js" ? ConfigurationsHelper.jsVersion : type == "css" ? ConfigurationsHelper.cssVersion : "";
         string finalUrl = $"/{type}/{typeVersion}/{url}";
 
         string filePath = Server.MapPath(finalUrl);
 
         if (File.Exists(filePath))
         {
+            #if DEBUG
             using (MD5 md5 = MD5.Create())
             {
                 string fileHash = BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(filePath))).Replace("-", "").ToLower();
                 return $"{finalUrl}?v={fileHash}";
             }
+            #else
+                return finalUrl;
+            #endif
         }
 
         return url;
