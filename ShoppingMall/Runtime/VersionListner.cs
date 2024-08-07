@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShoppingMall.Helper;
+using System;
 using System.IO;
 
 namespace ShoppingMall.Runtime
