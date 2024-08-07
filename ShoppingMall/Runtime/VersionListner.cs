@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 
-namespace ShoppingMall.Helper
+namespace ShoppingMall.Runtime
 {
-    public static class FileSystemWatcherHelper
+    public static class VersionListner
     {
         private static FileSystemWatcher fileSystemWatcher;
 

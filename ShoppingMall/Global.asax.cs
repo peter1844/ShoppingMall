@@ -1,5 +1,4 @@
-﻿using ShoppingMall.Helper;
-using ShoppingMall.Runtime;
+﻿using ShoppingMall.Runtime;
 using System;
 using System.Web;
 using System.Web.Http;
@@ -14,7 +13,7 @@ namespace ShoppingMall
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             // 監聽檔案變化
-            FileSystemWatcherHelper.Initialize();
+            VersionListner.Initialize();
 
             // 定期執行刪除訂單
             DeleteOrder.DeleteOrderTimer();
