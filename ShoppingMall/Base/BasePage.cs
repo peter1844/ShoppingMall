@@ -45,15 +45,15 @@ public class BasePage : System.Web.UI.Page
 
         if (File.Exists(filePath))
         {
-            #if DEBUG
+#if DEBUG
             using (MD5 md5 = MD5.Create())
             {
                 string fileHash = BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(filePath))).Replace("-", "").ToLower();
                 return $"{finalUrl}?v={fileHash}";
             }
-            #else
+#else
                 return finalUrl;
-            #endif
+#endif
         }
 
         return url;

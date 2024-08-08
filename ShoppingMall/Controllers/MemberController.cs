@@ -3,9 +3,11 @@ using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Member;
+using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Web.Http;
+using Newtonsoft.Json;
 
 namespace ShoppingMall.Controllers
 {
@@ -37,7 +39,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -57,7 +59,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -70,6 +72,8 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                LogHelper.logger.Info(JsonConvert.SerializeObject(updateData));
+
                 // 檢查權限
                 if (!Tools.CheckPermission((int)Permissions.MemberUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
@@ -89,7 +93,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.InnerException.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

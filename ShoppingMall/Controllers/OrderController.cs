@@ -3,10 +3,12 @@ using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Order;
+using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Http;
+using Newtonsoft.Json;
 
 namespace ShoppingMall.Controllers
 {
@@ -40,7 +42,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -64,6 +66,8 @@ namespace ShoppingMall.Controllers
                     DeliveryState = string.IsNullOrEmpty(request.QueryString["DeliveryState"]) ? -1 : Convert.ToInt32(request.QueryString["DeliveryState"])
                 });
 
+                LogHelper.logger.Info(JsonConvert.SerializeObject(conditionData));
+
                 bool inputVaild = orderProccessClass.CheckConditionInputData(conditionData[0]);
 
                 if (!inputVaild)
@@ -78,7 +82,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -99,7 +103,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -112,6 +116,8 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                LogHelper.logger.Info(JsonConvert.SerializeObject(insertData));
+
                 // 檢查權限
                 if (!Tools.CheckPermission((int)Permissions.OrderInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
@@ -131,7 +137,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -144,6 +150,8 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                LogHelper.logger.Info(JsonConvert.SerializeObject(updateData));
+
                 // 檢查權限
                 if (!Tools.CheckPermission((int)Permissions.OrderUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
@@ -163,7 +171,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

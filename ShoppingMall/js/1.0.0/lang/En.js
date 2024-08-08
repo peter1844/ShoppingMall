@@ -28,7 +28,8 @@
             NoHeaderToken: 'Token data anomaly',
             InvaildLogin: 'Login fail',
             NoPermission: 'Insufficient permissions',
-            StockError: 'Inventory shortage'
+            StockError: 'Inventory shortage',
+            ExceptionError: 'Ststem error',
         },
     },
     login: {

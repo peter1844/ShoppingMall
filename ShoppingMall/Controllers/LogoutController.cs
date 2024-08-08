@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.Api.Logout;
+using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
 using System;
@@ -33,7 +34,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

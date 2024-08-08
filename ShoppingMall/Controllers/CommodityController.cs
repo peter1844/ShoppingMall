@@ -1,8 +1,10 @@
-﻿using ShoppingMall.Api.Commodity;
+﻿using Newtonsoft.Json;
+using ShoppingMall.Api.Commodity;
 using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Common;
+using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -42,7 +44,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -64,6 +66,8 @@ namespace ShoppingMall.Controllers
                     Type = string.IsNullOrEmpty(request.QueryString["Type"]) ? 0 : Convert.ToInt32(request.QueryString["Type"])
                 });
 
+                LogHelper.logger.Info(JsonConvert.SerializeObject(conditionData));
+
                 List<CommodityDataDtoResponse> commodityData = commodityProccessClass.GetCommodityData(conditionData[0]);
 
                 return Ok(commodityData);
@@ -71,7 +75,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -91,7 +95,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -111,7 +115,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -155,6 +159,8 @@ namespace ShoppingMall.Controllers
                         ImagePath = filePath
                     });
 
+                    LogHelper.logger.Info(JsonConvert.SerializeObject(insertData));
+
                     bool result = commodityProccessClass.InsertCommodityData(insertData[0]);
 
                     return Ok(true);
@@ -167,7 +173,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -219,6 +225,8 @@ namespace ShoppingMall.Controllers
                         ImagePath = filePath
                     });
 
+                    LogHelper.logger.Info(JsonConvert.SerializeObject(updateData));
+
                     bool result = commodityProccessClass.UpdateCommodityData(updateData[0]);
 
                     return Ok(result);
@@ -231,7 +239,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Models.Login;
+using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -60,7 +61,7 @@ namespace ShoppingMall.Api.Login
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {
@@ -102,7 +103,7 @@ namespace ShoppingMall.Api.Login
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {

@@ -1,7 +1,7 @@
 ﻿using ShoppingMall.Api.Login;
 using ShoppingMall.Api.Logout;
-using ShoppingMall.App_Code;
 using ShoppingMall.Models.Common;
+using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;

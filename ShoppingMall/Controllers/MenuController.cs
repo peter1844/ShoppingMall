@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.Api.Menu;
+using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Menu;
@@ -35,7 +36,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -57,7 +58,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

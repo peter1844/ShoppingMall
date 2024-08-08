@@ -1,7 +1,7 @@
 ﻿using ShoppingMall.Api.Commodity;
-using ShoppingMall.App_Code;
 using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Order;
+using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 

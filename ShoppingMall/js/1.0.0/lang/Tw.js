@@ -28,7 +28,8 @@
             NoHeaderToken: 'token資料異常',
             InvaildLogin: '登入失敗',
             NoPermission: '權限不足',
-            StockError: '庫存量不足'
+            StockError: '庫存量不足',
+            ExceptionError: '系統異常',
         },
     },
     login: {

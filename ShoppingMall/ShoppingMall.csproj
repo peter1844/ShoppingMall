@@ -209,6 +209,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Enum\Enum.cs" />
     <Compile Include="Runtime\VersionListner.cs" />
     <Compile Include="Helper\LogHelper.cs" />
     <Compile Include="Helper\DbHelper.cs" />

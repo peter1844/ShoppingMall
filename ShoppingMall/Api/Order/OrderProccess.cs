@@ -1,5 +1,6 @@
 ﻿using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
+using ShoppingMall.Models.Enum;
 using ShoppingMall.Models.Order;
 using System;
 using System.Collections.Generic;
@@ -97,7 +98,6 @@ namespace ShoppingMall.Api.Order
             }
             catch (Exception ex)
             {
-                //throw new Exception(StateCode.DbError.ToString(), ex);
                 throw new Exception(ex.Message);
             }
             finally
@@ -236,7 +236,7 @@ namespace ShoppingMall.Api.Order
             }
             catch (Exception ex)
             {
-                throw new Exception(StateCode.DbError.ToString(), ex);
+                throw new Exception(ex.Message);
             }
             finally
             {

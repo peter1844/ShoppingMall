@@ -1,5 +1,6 @@
 ﻿using ShoppingMall.App_Code;
 using ShoppingMall.Models.Admin;
+using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 

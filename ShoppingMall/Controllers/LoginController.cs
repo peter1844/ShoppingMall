@@ -1,12 +1,14 @@
 ﻿using ShoppingMall.Api.Login;
-using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Login;
+using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Http;
+using ShoppingMall.App_Code;
+using Newtonsoft.Json;
 
 namespace ShoppingMall.Controllers
 {
@@ -31,6 +33,8 @@ namespace ShoppingMall.Controllers
         {
             try
             {
+                LogHelper.logger.Info(JsonConvert.SerializeObject(loginData));
+
                 bool inputVaild = loginByAccClass.CheckInputData(loginData);
 
                 if (inputVaild)
@@ -56,7 +60,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -86,7 +90,7 @@ namespace ShoppingMall.Controllers
             catch (Exception ex)
             {
                 LogHelper.logger.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = ex.Message });
+                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }
