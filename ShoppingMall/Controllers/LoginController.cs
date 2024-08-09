@@ -33,7 +33,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.logger.Info(JsonConvert.SerializeObject(loginData));
+                //LogHelper.logger.Info(JsonConvert.SerializeObject(loginData));
 
                 bool inputVaild = loginByAccClass.CheckInputData(loginData);
 
