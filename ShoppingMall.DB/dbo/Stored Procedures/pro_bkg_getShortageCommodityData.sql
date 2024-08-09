@@ -1,11 +1,10 @@
-﻿-- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
+﻿/*
+    描述: 取得庫存量短缺的商品
+    日期: 2024-08-09
+*/
 CREATE PROCEDURE [dbo].[pro_bkg_getShortageCommodityData]
-	-- Add the parameters for the stored procedure here
+	
 AS
 BEGIN
-	SELECT COUNT(f_id) AS CNT FROM t_commodity WITH(NOLOCK) WHERE f_stock <= 5
+	SELECT COUNT(f_id) AS CNT FROM t_commodity WITH(NOLOCK) WHERE f_stock <= 5;
 END

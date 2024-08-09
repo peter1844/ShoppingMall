@@ -71,26 +71,26 @@
     <Build Include="dbo\Tables\t_member.sql" />
     <Build Include="dbo\Tables\t_commodityType.sql" />
     <Build Include="dbo\Tables\t_commodity.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_updateMemberData.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_updateAdminData.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_insertAdminData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getAllMemberData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getAllCommodityOptionData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getAllAdminData.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_deleteAdminData.sql" />
-    <Build Include="dbo\User Defined Types\adminUserRoleTempType.sql" />
     <Build Include="dbo\Tables\t_orderMain.sql" />
     <Build Include="dbo\Tables\t_orderDetail.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_updateCommodityData.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_insertCommodityData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getCommodityData.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_updateOrderData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getOrderData.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_insertOrderData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getOpenCommodityData.sql" />
-    <Build Include="dbo\Stored Procedures\pro_bkg_deleteOrderData.sql" />
-    <Build Include="dbo\User Defined Types\orderCommodityTempType.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getShortageCommodityData.sql" />
     <Build Include="dbo\Stored Procedures\pro_bkg_getLoginPermissionsData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_editOrderData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_editMemberData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_editCommodityData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_editAdminData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_delOrderData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_delAdminData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_addOrderData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_addCommodityData.sql" />
+    <Build Include="dbo\Stored Procedures\pro_bkg_addAdminData.sql" />
+    <Build Include="dbo\User Defined Types\type_bkg_orderCommodity.sql" />
+    <Build Include="dbo\User Defined Types\type_bkg_adminUserRole.sql" />
   </ItemGroup>
 </Project>
