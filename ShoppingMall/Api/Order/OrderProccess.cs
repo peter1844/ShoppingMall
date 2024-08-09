@@ -129,7 +129,7 @@ namespace ShoppingMall.Api.Order
                     tempTable.Rows.Add(data.CommodityId, data.Quantity, data.Price);
                 }
 
-                command.CommandText = "EXEC pro_bkg_insertOrderData @orderId,@memberId,@nowDate,@payType,@payState,@deliverType,@deliverState,@totalMoney,@commoditys,@adminId,@permission";
+                command.CommandText = "EXEC pro_bkg_addOrderData @orderId,@memberId,@nowDate,@payType,@payState,@deliverType,@deliverState,@totalMoney,@commoditys,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@orderId", orderId);
                 command.Parameters.AddWithValue("@memberId", insertData.MemberId);
@@ -144,7 +144,7 @@ namespace ShoppingMall.Api.Order
 
                 SqlParameter parameter = command.Parameters.AddWithValue("@commoditys", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
-                parameter.TypeName = "dbo.orderCommodityTempType";
+                parameter.TypeName = "dbo.type_bkg_orderCommodity";
 
                 command.Connection.Open();
 
@@ -167,7 +167,6 @@ namespace ShoppingMall.Api.Order
             {
                 command.Connection.Close(); //關閉連線
             }
-
         }
 
         /// <summary>
@@ -180,7 +179,7 @@ namespace ShoppingMall.Api.Order
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_updateOrderData @orderId,@payTypeId,@payStateId,@deliverTypeId,@deliverStateId,@adminId,@permission";
+                command.CommandText = "EXEC pro_bkg_editOrderData @orderId,@payTypeId,@payStateId,@deliverTypeId,@deliverStateId,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@orderId", updateData.OrderId);
                 command.Parameters.AddWithValue("@payTypeId", updateData.PayTypeId);
@@ -221,7 +220,7 @@ namespace ShoppingMall.Api.Order
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_deleteOrderData @deleteDays";
+                command.CommandText = "EXEC pro_bkg_delOrderData @deleteDays";
 
                 command.Parameters.AddWithValue("@deleteDays", Convert.ToInt32(ConfigurationManager.AppSettings["OrderDeleteDays"]));
 

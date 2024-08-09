@@ -14,7 +14,7 @@ namespace ShoppingMall.Helper
         public static SqlCommand MsSqlConnection()
         {
             command = new SqlCommand(); //宣告SqlCommand物件
-            command.Connection = new SqlConnection(ConfigurationsHelper.MSSQL_CONNECTION_STRING); //設定連線字串
+            command.Connection = new SqlConnection(ConfigurationsHelper.GetMsSqlConnectString()); //設定連線字串
 
             return command;
         }
@@ -26,7 +26,7 @@ namespace ShoppingMall.Helper
         {
             if (redis == null || !redis.IsConnected)
             {
-                redis = ConnectionMultiplexer.Connect(ConfigurationsHelper.REDIS_CONNECTION_STRING);
+                redis = ConnectionMultiplexer.Connect(ConfigurationsHelper.GetRedisConnectString());
             }
 
             return redis;

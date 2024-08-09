@@ -123,7 +123,7 @@ namespace ShoppingMall.Api.Commodity
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_insertCommodityData @name,@description,@type,@image,@price,@stock,@open,@adminId,@permission";
+                command.CommandText = "EXEC pro_bkg_addCommodityData @name,@description,@type,@image,@price,@stock,@open,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@name", insertData.Name);
                 command.Parameters.AddWithValue("@description", insertData.Description);
@@ -167,7 +167,7 @@ namespace ShoppingMall.Api.Commodity
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_updateCommodityData @commodityId,@name,@description,@type,@image,@price,@stock,@open,@adminId,@permission";
+                command.CommandText = "EXEC pro_bkg_editCommodityData @commodityId,@name,@description,@type,@image,@price,@stock,@open,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@commodityId", updateData.CommodityId);
                 command.Parameters.AddWithValue("@name", updateData.Name);
@@ -223,6 +223,9 @@ namespace ShoppingMall.Api.Commodity
             return filePath;
         }
 
+        /// <summary>
+        /// 刪除舊的商品圖片檔
+        /// </summary>
         public void DeleteCommodityFile(string filePath)
         {
             string realPath = HttpContext.Current.Server.MapPath($"~{filePath}");

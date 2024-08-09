@@ -18,9 +18,6 @@ namespace ShoppingMall.Api.Login
         /// </summary>
         public List<AdminUserDataDtoResponse> CheckLoginByAccountPassword(LoginDataDto loginData)
         {
-            string a = ConfigurationsHelper.jsVersion;
-
-
             List<AdminUserDataDtoResponse> adminUserData = new List<AdminUserDataDtoResponse>();
             HttpContext context = HttpContext.Current;
 

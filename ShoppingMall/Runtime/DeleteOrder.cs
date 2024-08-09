@@ -7,7 +7,9 @@ namespace ShoppingMall.Runtime
 {
     public static class DeleteOrder
     {
-        // 每隔1天執行一次刪除訂單
+        /// <summary>
+        /// 每隔1天執行一次刪除訂單
+        /// </summary>
         public static void DeleteOrderTimer()
         {
             Timer timer = new Timer(TimeSpan.FromDays(1).TotalMilliseconds);
@@ -20,7 +22,7 @@ namespace ShoppingMall.Runtime
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.logger.Warn(ex.Message);
+                    LogHelper.Warn(ex.Message);
                 }
             };
 

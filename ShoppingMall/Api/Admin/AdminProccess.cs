@@ -91,7 +91,7 @@ namespace ShoppingMall.Api.Admin
                     tempTable.Rows.Add(roleId);
                 }
 
-                command.CommandText = "EXEC pro_bkg_insertAdminData @name,@acc,@pwd,@enabled,@roleId,@adminId,@permission";
+                command.CommandText = "EXEC pro_bkg_addAdminData @name,@acc,@pwd,@enabled,@roleId,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@name", insertData.Name);
                 command.Parameters.AddWithValue("@acc", insertData.Acc);
@@ -101,7 +101,7 @@ namespace ShoppingMall.Api.Admin
                 command.Parameters.AddWithValue("@permission", Permissions.AdminInsert);
                 SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
-                parameter.TypeName = "dbo.adminUserRoleTempType";
+                parameter.TypeName = "dbo.type_bkg_adminUserRole";
 
                 command.Connection.Open();
 
@@ -143,7 +143,7 @@ namespace ShoppingMall.Api.Admin
                     tempTable.Rows.Add(roleId);
                 }
 
-                command.CommandText = "EXEC pro_bkg_updateAdminData @adminId,@name,@pwd,@enabled,@roleId,@backAdminId,@permission";
+                command.CommandText = "EXEC pro_bkg_editAdminData @adminId,@name,@pwd,@enabled,@roleId,@backAdminId,@permission";
 
                 command.Parameters.AddWithValue("@adminId", updateData.AdminId);
                 command.Parameters.AddWithValue("@name", updateData.Name);
@@ -153,7 +153,7 @@ namespace ShoppingMall.Api.Admin
                 command.Parameters.AddWithValue("@permission", Permissions.AdminUpdate);
                 SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
-                parameter.TypeName = "dbo.adminUserRoleTempType";
+                parameter.TypeName = "dbo.type_bkg_adminUserRole";
 
                 command.Connection.Open();
 
@@ -189,7 +189,7 @@ namespace ShoppingMall.Api.Admin
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_deleteAdminData @adminId,@backAdminId,@permission";
+                command.CommandText = "EXEC pro_bkg_delAdminData @adminId,@backAdminId,@permission";
 
                 command.Parameters.AddWithValue("@adminId", deleteData.AdminId);
                 command.Parameters.AddWithValue("@backAdminId", Convert.ToInt32(context.Session["id"]));

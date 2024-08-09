@@ -41,7 +41,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -66,7 +66,7 @@ namespace ShoppingMall.Controllers
                     DeliveryState = string.IsNullOrEmpty(request.QueryString["DeliveryState"]) ? -1 : Convert.ToInt32(request.QueryString["DeliveryState"])
                 });
 
-                LogHelper.logger.Info(JsonConvert.SerializeObject(conditionData));
+                LogHelper.Info(JsonConvert.SerializeObject(conditionData));
 
                 bool inputVaild = orderProccessClass.CheckConditionInputData(conditionData[0]);
 
@@ -81,7 +81,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -102,7 +102,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -116,7 +116,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.logger.Info(JsonConvert.SerializeObject(insertData));
+                LogHelper.Info(JsonConvert.SerializeObject(insertData));
 
                 // 檢查權限
                 if (!Tools.CheckPermission((int)Permissions.OrderInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
@@ -136,7 +136,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -150,7 +150,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.logger.Info(JsonConvert.SerializeObject(updateData));
+                LogHelper.Info(JsonConvert.SerializeObject(updateData));
 
                 // 檢查權限
                 if (!Tools.CheckPermission((int)Permissions.OrderUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
@@ -170,7 +170,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }

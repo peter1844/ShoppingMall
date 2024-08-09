@@ -9,13 +9,13 @@ namespace ShoppingMall.Helper
 {
     public static class ConfigurationsHelper
     {
-        public static readonly byte[] KEY;
-        public static readonly byte[] IV;
-        public static readonly string MSSQL_CONNECTION_STRING;
-        public static readonly string REDIS_CONNECTION_STRING;
+        private static readonly byte[] KEY;
+        private static readonly byte[] IV;
+        private static readonly string MSSQL_CONNECTION_STRING;
+        private static readonly string REDIS_CONNECTION_STRING;
 
-        public static string jsVersion;
-        public static string cssVersion;
+        private static string jsVersion;
+        private static string cssVersion;
 
         static ConfigurationsHelper()
         {
@@ -43,8 +43,56 @@ namespace ShoppingMall.Helper
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// 取得AES加密的Key
+        /// </summary>
+        public static byte[] GetKey() 
+        {
+            return KEY;
+        }
+
+        /// <summary>
+        /// 取得AES加密的Iv
+        /// </summary>
+        public static byte[] GetIv()
+        {
+            return IV;
+        }
+
+        /// <summary>
+        /// 取得MsSql的連線字串
+        /// </summary>
+        public static string GetMsSqlConnectString()
+        {
+            return MSSQL_CONNECTION_STRING;
+        }
+
+        /// <summary>
+        /// 取得Redis的連線字串
+        /// </summary>
+        public static string GetRedisConnectString()
+        {
+            return REDIS_CONNECTION_STRING;
+        }
+
+        /// <summary>
+        /// 取得Js的版本號
+        /// </summary>
+        public static string GetJsVersion()
+        {
+            return jsVersion;
+        }
+
+        /// <summary>
+        /// 取得Css的版本號
+        /// </summary>
+        public static string GetCssVersion()
+        {
+            return cssVersion;
         }
     }
 }

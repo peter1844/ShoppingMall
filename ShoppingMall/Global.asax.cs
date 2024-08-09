@@ -1,4 +1,5 @@
-﻿using ShoppingMall.Runtime;
+﻿using ShoppingMall.Helper;
+using ShoppingMall.Runtime;
 using System;
 using System.Web;
 using System.Web.Http;
@@ -30,6 +31,12 @@ namespace ShoppingMall
         private bool IsWebApiRequest()
         {
             return HttpContext.Current.Request.AppRelativeCurrentExecutionFilePath.StartsWith(WebApiConfig.UrlPrefixRelative);
+        }
+
+        protected void Application_End(object sender, EventArgs e)
+        {
+            // 釋放版本監聽
+            VersionListner.Dispose();
         }
     }
 }

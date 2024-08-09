@@ -21,8 +21,8 @@ namespace ShoppingMall.App_Code
             // 创建一个 AES 实例
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
-                aesAlg.Key = ConfigurationsHelper.KEY;
-                aesAlg.IV = ConfigurationsHelper.IV;
+                aesAlg.Key = ConfigurationsHelper.GetKey();
+                aesAlg.IV = ConfigurationsHelper.GetIv();
 
                 // 创建加密器
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
@@ -57,8 +57,8 @@ namespace ShoppingMall.App_Code
             // 创建一个 AES 实例
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
-                aesAlg.Key = ConfigurationsHelper.KEY;
-                aesAlg.IV = ConfigurationsHelper.IV;
+                aesAlg.Key = ConfigurationsHelper.GetKey();
+                aesAlg.IV = ConfigurationsHelper.GetIv();
 
                 // 创建解密器
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);

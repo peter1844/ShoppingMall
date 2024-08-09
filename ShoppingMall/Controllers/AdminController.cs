@@ -40,7 +40,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -60,7 +60,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -81,7 +81,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -95,7 +95,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.logger.Info(JsonConvert.SerializeObject(insertData));
+                LogHelper.Info(JsonConvert.SerializeObject(insertData));
 
                 // 檢查權限
                 if (!Tools.CheckPermission((int)Permissions.AdminInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
@@ -115,7 +115,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -129,7 +129,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.logger.Info(JsonConvert.SerializeObject(updateData));
+                LogHelper.Info(JsonConvert.SerializeObject(updateData));
 
                 // 檢查權限
                 if (!Tools.CheckPermission((int)Permissions.AdminUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
@@ -149,7 +149,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }
@@ -163,7 +163,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.logger.Info(JsonConvert.SerializeObject(deleteData));
+                LogHelper.Info(JsonConvert.SerializeObject(deleteData));
 
                 // 檢查權限
                 if (!Tools.CheckPermission((int)Permissions.AdminDelete)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
@@ -183,7 +183,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }

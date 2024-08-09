@@ -38,7 +38,7 @@ public class BasePage : System.Web.UI.Page
     /// </summary>
     protected string GetVersionUrl(string url, string type)
     {
-        string typeVersion = type == "js" ? ConfigurationsHelper.jsVersion : type == "css" ? ConfigurationsHelper.cssVersion : "";
+        string typeVersion = type == "js" ? ConfigurationsHelper.GetJsVersion() : type == "css" ? ConfigurationsHelper.GetCssVersion() : "";
         string finalUrl = $"/{type}/{typeVersion}/{url}";
 
         string filePath = Server.MapPath(finalUrl);

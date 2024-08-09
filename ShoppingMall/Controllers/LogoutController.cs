@@ -33,7 +33,7 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.logger.Warn(ex.Message);
+                LogHelper.Warn(ex.Message);
                 return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
             }
         }

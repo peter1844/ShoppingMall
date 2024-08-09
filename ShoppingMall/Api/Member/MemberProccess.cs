@@ -67,7 +67,7 @@ namespace ShoppingMall.Api.Member
 
             try
             {
-                command.CommandText = "EXEC pro_bkg_updateMemberData @memberId,@level,@enabled,@adminId,@permission";
+                command.CommandText = "EXEC pro_bkg_editMemberData @memberId,@level,@enabled,@adminId,@permission";
 
                 command.Parameters.AddWithValue("@memberId", updateData.MemberId);
                 command.Parameters.AddWithValue("@level", updateData.Level);

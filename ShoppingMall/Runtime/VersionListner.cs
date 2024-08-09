@@ -8,6 +8,9 @@ namespace ShoppingMall.Runtime
     {
         private static FileSystemWatcher fileSystemWatcher;
 
+        /// <summary>
+        /// 初始化Version.json檔的監聽
+        /// </summary>
         public static void Initialize()
         {
             if (fileSystemWatcher != null)
@@ -18,7 +21,7 @@ namespace ShoppingMall.Runtime
             fileSystemWatcher = new FileSystemWatcher
             {
                 Path = AppDomain.CurrentDomain.BaseDirectory,
-                Filter = "*.json",
+                Filter = "Version.json",
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
 
@@ -31,9 +34,12 @@ namespace ShoppingMall.Runtime
         private static void OnChanged(object sender, FileSystemEventArgs e)
         {
             ConfigurationsHelper.LoadVersion();
-            LogHelper.logger.Info($"file is {e.ChangeType}: {e.FullPath}");
+            LogHelper.Info($"file is {e.ChangeType}: {e.FullPath}");
         }
 
+        /// <summary>
+        /// 釋放監聽資源
+        /// </summary>
         public static void Dispose()
         {
             if (fileSystemWatcher != null)
