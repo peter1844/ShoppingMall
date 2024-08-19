@@ -1,4 +1,5 @@
 ﻿using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Enum;
 using System;
 using System.IO;
@@ -9,20 +10,29 @@ using System.Web;
 
 namespace ShoppingMall.App_Code
 {
-    public static class Tools
+    public class Tools : ITools
     {
+        private IContextHelper _contextHelper;
+        private IConfigurationsHelper _configurationsHelper;
+
+        public Tools(IContextHelper contextHelper = null, IConfigurationsHelper configurationsHelper = null)
+        {
+            _contextHelper = contextHelper ?? new ContextHelper();
+            _configurationsHelper = configurationsHelper ?? new ConfigurationsHelper();
+        }
+
         /// <summary>
         /// AES加密
         /// </summary>
-        public static string AesEncrypt(string encryptData)
+        public string AesEncrypt(string encryptData)
         {
             byte[] encrypted;
 
             // 创建一个 AES 实例
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
-                aesAlg.Key = ConfigurationsHelper.GetKey();
-                aesAlg.IV = ConfigurationsHelper.GetIv();
+                aesAlg.Key = _configurationsHelper.GetKey();
+                aesAlg.IV = _configurationsHelper.GetIv();
 
                 // 创建加密器
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
@@ -49,7 +59,7 @@ namespace ShoppingMall.App_Code
         /// <summary>
         /// AES解密
         /// </summary>
-        public static string AesDecrypt(string decryptData)
+        public string AesDecrypt(string decryptData)
         {
             byte[] cipherText = Convert.FromBase64String(decryptData);
             string plainText = null;
@@ -57,8 +67,8 @@ namespace ShoppingMall.App_Code
             // 创建一个 AES 实例
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
-                aesAlg.Key = ConfigurationsHelper.GetKey();
-                aesAlg.IV = ConfigurationsHelper.GetIv();
+                aesAlg.Key = _configurationsHelper.GetKey();
+                aesAlg.IV = _configurationsHelper.GetIv();
 
                 // 创建解密器
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
@@ -84,7 +94,7 @@ namespace ShoppingMall.App_Code
         /// <summary>
         /// 隨機產生N位數的字串(Base64)
         /// </summary>
-        public static string GenerateRandomBytes(int length)
+        public string GenerateRandomBytes(int length)
         {
             byte[] randomBytes = new byte[length];
 
@@ -100,7 +110,7 @@ namespace ShoppingMall.App_Code
         /// <summary>
         /// 隨機產生N位數的字串
         /// </summary>
-        public static string GenerateRandomString(int length)
+        public string GenerateRandomString(int length)
         {
             Random random = new Random();
             StringBuilder sb = new StringBuilder();
@@ -121,12 +131,10 @@ namespace ShoppingMall.App_Code
         /// 檢查是否有權限執行
         /// </summary>
         /// <returns></returns>
-        public static bool CheckPermission(int permission)
+        public bool CheckPermission(int permission)
         {
-            HttpContext context = HttpContext.Current;
-
-            if (context.Session["permissions"] == null) return false;
-            string[] allPermissions = context.Session["permissions"].ToString().Split(',');
+            if (_contextHelper.GetContext().Session["permissions"] == null) return false;
+            string[] allPermissions = _contextHelper.GetContext().Session["permissions"].ToString().Split(',');
 
             return allPermissions.Contains(permission.ToString());
         }
@@ -134,7 +142,7 @@ namespace ShoppingMall.App_Code
         /// <summary>
         /// 回傳顯示用的錯誤訊息
         /// </summary>
-        public static string ReturnExceptionMessage(string message)
+        public string ReturnExceptionMessage(string message)
         {
             return Enum.IsDefined(typeof(StateCode), message) ? message : StateCode.ExceptionError.ToString();
         }

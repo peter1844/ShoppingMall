@@ -6,11 +6,24 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web;
+using ShoppingMall.Interface;
+using ShoppingMall.App_Code;
 
 namespace ShoppingMall.Api.Member
 {
-    public class MemberProccess
+    public class MemberProccess : IMember
     {
+        private IContextHelper _contextHelper;
+        private IDbHelper _dbHelper;
+        private ITools _tools;
+
+        public MemberProccess(IContextHelper contextHelper = null, IDbHelper dbHelper = null, ITools tools = null)
+        {
+            _contextHelper = contextHelper ?? new ContextHelper();
+            _dbHelper = dbHelper ?? new DbHelper();
+            _tools = tools ?? new Tools();
+        }
+
         /// <summary>
         /// 取得所有會員資料
         /// </summary>
@@ -20,7 +33,7 @@ namespace ShoppingMall.Api.Member
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -62,8 +75,7 @@ namespace ShoppingMall.Api.Member
         /// </summary>
         public bool UpdateMemberData(UpdateMemberDataDto updateData)
         {
-            HttpContext context = HttpContext.Current;
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -72,7 +84,7 @@ namespace ShoppingMall.Api.Member
                 command.Parameters.AddWithValue("@memberId", updateData.MemberId);
                 command.Parameters.AddWithValue("@level", updateData.Level);
                 command.Parameters.AddWithValue("@enabled", updateData.Enabled);
-                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(_contextHelper.GetContext().Session["id"]));
                 command.Parameters.AddWithValue("@permission", Permissions.MemberUpdate);
 
                 command.Connection.Open();

@@ -1,4 +1,6 @@
-﻿using ShoppingMall.Helper;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Enum;
 using System;
@@ -12,8 +14,19 @@ using System.Web;
 
 namespace ShoppingMall.Api.Commodity
 {
-    public class CommodityProccess
+    public class CommodityProccess : ICommodity
     {
+        private IContextHelper _contextHelper;
+        private IDbHelper _dbHelper;
+        private ITools _tools;
+
+        public CommodityProccess(IContextHelper contextHelper = null, IDbHelper dbHelper = null, ITools tools = null)
+        {
+            _contextHelper = contextHelper ?? new ContextHelper();
+            _dbHelper = dbHelper ?? new DbHelper();
+            _tools = tools ?? new Tools();
+        }
+
         /// <summary>
         /// 取得所有商品資料
         /// </summary>
@@ -23,7 +36,7 @@ namespace ShoppingMall.Api.Commodity
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -77,7 +90,7 @@ namespace ShoppingMall.Api.Commodity
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -118,8 +131,7 @@ namespace ShoppingMall.Api.Commodity
         /// </summary>
         public bool InsertCommodityData(InsertCommodityDataDto insertData)
         {
-            HttpContext context = HttpContext.Current;
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -132,7 +144,7 @@ namespace ShoppingMall.Api.Commodity
                 command.Parameters.AddWithValue("@price", insertData.Price);
                 command.Parameters.AddWithValue("@stock", insertData.Stock);
                 command.Parameters.AddWithValue("@open", insertData.Open);
-                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(_contextHelper.GetContext().Session["id"]));
                 command.Parameters.AddWithValue("@permission", Permissions.CommodityInsert);
 
                 command.Connection.Open();
@@ -162,8 +174,7 @@ namespace ShoppingMall.Api.Commodity
         /// </summary>
         public bool UpdateCommodityData(UpdateCommodityDataDto updateData)
         {
-            HttpContext context = HttpContext.Current;
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -177,7 +188,7 @@ namespace ShoppingMall.Api.Commodity
                 command.Parameters.AddWithValue("@price", updateData.Price);
                 command.Parameters.AddWithValue("@stock", updateData.Stock);
                 command.Parameters.AddWithValue("@open", updateData.Open);
-                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(_contextHelper.GetContext().Session["id"]));
                 command.Parameters.AddWithValue("@permission", Permissions.CommodityUpdate);
 
                 command.Connection.Open();
@@ -205,9 +216,8 @@ namespace ShoppingMall.Api.Commodity
         /// <summary>
         /// 上傳商品圖片
         /// </summary>
-        public string UploadCommodityFile(HttpPostedFile files)
+        public string UploadCommodityFile(HttpPostedFileBase files)
         {
-            HttpContext context = HttpContext.Current;
             string filePath = "";
             string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
             string[] filesInfo = files.FileName.Split('.');
@@ -217,8 +227,8 @@ namespace ShoppingMall.Api.Commodity
                 Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~/images/commodity"));
             }
 
-            files.SaveAs(HttpContext.Current.Server.MapPath($"~/images/commodity/{timestamp}_{context.Session["id"]}.{filesInfo[filesInfo.Length - 1]}"));
-            filePath = $"{timestamp}_{context.Session["id"]}.{filesInfo[filesInfo.Length - 1]}";
+            files.SaveAs(HttpContext.Current.Server.MapPath($"~/images/commodity/{timestamp}_{_contextHelper.GetContext().Session["id"]}.{filesInfo[filesInfo.Length - 1]}"));
+            filePath = $"{timestamp}_{_contextHelper.GetContext().Session["id"]}.{filesInfo[filesInfo.Length - 1]}";
 
             return filePath;
         }
@@ -228,7 +238,7 @@ namespace ShoppingMall.Api.Commodity
         /// </summary>
         public void DeleteCommodityFile(string filePath)
         {
-            string realPath = HttpContext.Current.Server.MapPath($"~{filePath}");
+            string realPath = _contextHelper.GetContext().Server.MapPath($"~{filePath}");
 
             if (File.Exists(realPath))
             {
@@ -239,7 +249,7 @@ namespace ShoppingMall.Api.Commodity
         /// <summary>
         /// 檢查新增商品資料的傳入參數
         /// </summary>
-        public bool CheckInsertInputData(HttpRequest insertData)
+        public bool CheckInsertInputData(HttpRequestBase insertData)
         {
             string rule = @"^[1-9]\d*$";
             string[] allowedExtensions = { "image/jpeg", "image/png", "image/gif" };
@@ -263,7 +273,7 @@ namespace ShoppingMall.Api.Commodity
         /// <summary>
         /// 檢查編輯商品資料的傳入參數
         /// </summary>
-        public bool CheckUpdateInputData(HttpRequest updateData)
+        public bool CheckUpdateInputData(HttpRequestBase updateData)
         {
             string rule = @"^[1-9]\d*$";
             string[] allowedExtensions = { "image/jpeg", "image/png", "image/gif" };
@@ -282,6 +292,92 @@ namespace ShoppingMall.Api.Commodity
             if (updateData.Files.Count > 0 && updateData.Files[0].ContentLength > 1024 * 300) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 取得商品管理頁面所需的選項
+        /// </summary>
+        public List<CommodityOptionDataDtoResponse> GetAllCommodityOptionData()
+        {
+            List<CommodityOptionDataDtoResponse> commodityOptionData = new List<CommodityOptionDataDtoResponse>();
+
+            SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
+            DataTable dt = new DataTable(); //宣告DataTable物件
+            SqlCommand command = _dbHelper.MsSqlConnection();
+
+            try
+            {
+                command.CommandText = "EXEC pro_bkg_getAllCommodityOptionData";
+                command.Connection.Open();
+
+                da.SelectCommand = command;
+                da.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        commodityOptionData.Add(new CommodityOptionDataDtoResponse
+                        {
+                            CommodityId = Convert.ToInt32(dt.Rows[i]["f_id"]),
+                            CommodityName = dt.Rows[i]["f_name"].ToString(),
+                        });
+                    }
+                }
+
+                return commodityOptionData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                command.Connection.Close(); //關閉連線
+            }
+        }
+
+        /// <summary>
+        /// 取得庫存不足的商品資料
+        /// </summary>
+        public List<CommodityStockDataDtoResponse> GetShortageCommodityData()
+        {
+            List<CommodityStockDataDtoResponse> commodityShortageData = new List<CommodityStockDataDtoResponse>();
+
+            SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
+            DataTable dt = new DataTable(); //宣告DataTable物件
+            SqlCommand command = _dbHelper.MsSqlConnection();
+
+            try
+            {
+                command.CommandText = "EXEC pro_bkg_getShortageCommodityData";
+
+                command.Connection.Open();
+
+                da.SelectCommand = command;
+                da.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        commodityShortageData.Add(new CommodityStockDataDtoResponse
+                        {
+                            InventoryShortageCount = Convert.ToInt32(dt.Rows[i]["CNT"])
+                        });
+                    }
+                }
+
+                return commodityShortageData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                command.Connection.Close(); //關閉連線
+            }
         }
     }
 }

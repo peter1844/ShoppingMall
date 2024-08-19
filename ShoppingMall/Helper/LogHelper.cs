@@ -1,12 +1,13 @@
 ﻿using NLog;
+using ShoppingMall.Interface;
 
 namespace ShoppingMall.Helper
 {
-    public static class LogHelper
+    public class LogHelper : ILogHelper
     {
-        private static Logger logger;
+        private Logger logger;
 
-        static LogHelper()
+        public LogHelper()
         {
             logger = LogManager.GetCurrentClassLogger();
         }
@@ -14,7 +15,7 @@ namespace ShoppingMall.Helper
         /// <summary>
         /// 將訊息紀錄到Info等級的log
         /// </summary>
-        public static void Info(string message)
+        public void Info(string message)
         {
             logger.Info(message);
         }
@@ -22,9 +23,17 @@ namespace ShoppingMall.Helper
         /// <summary>
         /// 將訊息紀錄到Warn等級的log
         /// </summary>
-        public static void Warn(string message) 
+        public void Warn(string message)
         {
             logger.Warn(message);
+        }
+
+        /// <summary>
+        /// 將訊息紀錄到Error等級的log
+        /// </summary>
+        public void Error(string message) 
+        {
+            logger.Error(message);
         }
     }
 }

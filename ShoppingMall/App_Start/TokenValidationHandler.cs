@@ -1,5 +1,9 @@
 ﻿using ShoppingMall.Api.Login;
 using ShoppingMall.Api.Logout;
+using ShoppingMall.Api.Token;
+using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Enum;
 using System;
@@ -13,15 +17,13 @@ using System.Web;
 
 public class TokenValidationHandler : DelegatingHandler
 {
-    private LoginByToken loginByTokenClass;
-    private Logout logoutClass;
-    private TokenExtend tokenExtendClass;
+    private IToken _token;
+    private ILogout _logout;
 
-    public TokenValidationHandler()
+    public TokenValidationHandler(IToken token = null, ILogout logout = null)
     {
-        loginByTokenClass = new LoginByToken();
-        logoutClass = new Logout();
-        tokenExtendClass = new TokenExtend();
+        _token = token ?? new TokenProccess();
+        _logout = logout ?? new Logout();
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -38,16 +40,16 @@ public class TokenValidationHandler : DelegatingHandler
                 string token = authHeaders.FirstOrDefault();
 
                 // Token驗證
-                if (!loginByTokenClass.IsValidToken(token))
+                if (!_token.IsValidToken(token))
                 {
-                    logoutClass.LogoutProccess();
+                    _logout.LogoutProccess();
 
                     // 無效Token
                     return request.CreateResponse(HttpStatusCode.OK, new ExceptionData { ErrorMessage = StateCode.InvaildToken.ToString() });
                 }
                 else
                 {
-                    tokenExtendClass.ExtendRedisLoginToken(token);
+                    _token.ExtendRedisLoginToken(token);
                 }
             }
             else

@@ -1,10 +1,13 @@
 ﻿using Newtonsoft.Json;
+using ShoppingMall.Api.Admin;
 using ShoppingMall.Api.Commodity;
 using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Enum;
+using ShoppingMall.Views;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -15,37 +18,25 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/commodity")]
     public class CommodityController : ApiController
     {
-        private CommodityPermissions commodityPermissionsClass;
-        private CommodityProccess commodityProccessClass;
-        private CommodityOption commodityOptionClass;
-        private CommodityStockCheck commodityStockCheckClass;
+        private ICommodity _commodity;
+        private ITools _tools;
+        private ILogHelper _logHelper;
+        private IContextHelper _contextHelper;
 
         public CommodityController()
         {
-            commodityPermissionsClass = new CommodityPermissions();
-            commodityProccessClass = new CommodityProccess();
-            commodityOptionClass = new CommodityOption();
-            commodityStockCheckClass = new CommodityStockCheck();
+            _commodity = new CommodityProccess();
+            _tools = new Tools();
+            _logHelper = new LogHelper();
+            _contextHelper = new ContextHelper();
         }
 
-        /// <summary>
-        /// 取得商品頁面權限
-        /// </summary>
-        [Route("getCommodityPermissions")]
-        [HttpGet]
-        public IHttpActionResult getCommodityPermissions()
+        public CommodityController(ICommodity commodity, ITools tools, ILogHelper logHelper, IContextHelper contextHelper)
         {
-            try
-            {
-                List<CommodityPermissionsDtoResponse> commodityPermissions = commodityPermissionsClass.GetAllCommodityPermissions();
-
-                return Ok(commodityPermissions);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
-            }
+            _commodity = commodity;
+            _tools = tools;
+            _logHelper = logHelper;
+            _contextHelper = contextHelper;
         }
 
         /// <summary>
@@ -66,16 +57,16 @@ namespace ShoppingMall.Controllers
                     Type = string.IsNullOrEmpty(request.QueryString["Type"]) ? 0 : Convert.ToInt32(request.QueryString["Type"])
                 });
 
-                LogHelper.Info(JsonConvert.SerializeObject(conditionData));
+                _logHelper.Info(JsonConvert.SerializeObject(conditionData));
 
-                List<CommodityDataDtoResponse> commodityData = commodityProccessClass.GetCommodityData(conditionData[0]);
+                List<CommodityDataDtoResponse> commodityData = _commodity.GetCommodityData(conditionData[0]);
 
                 return Ok(commodityData);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -88,14 +79,14 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<CommodityOptionDataDtoResponse> adminOptionData = commodityOptionClass.GetAllCommodityOptionData();
+                List<CommodityOptionDataDtoResponse> adminOptionData = _commodity.GetAllCommodityOptionData();
 
                 return Ok(adminOptionData);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -108,14 +99,14 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<CommodityStockDataDtoResponse> commodityStockData = commodityStockCheckClass.GetShortageCommodityData();
+                List<CommodityStockDataDtoResponse> commodityStockData = _commodity.GetShortageCommodityData();
 
                 return Ok(commodityStockData);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -128,13 +119,13 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                HttpRequest request = HttpContext.Current.Request;
-                HttpContext context = HttpContext.Current;
+                HttpContextBase context = _contextHelper.GetContext();
+                HttpRequestBase request = context.Request;
 
                 // 檢查權限
-                if (!Tools.CheckPermission((int)Permissions.CommodityInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!_tools.CheckPermission((int)Permissions.CommodityInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
-                bool inputVaild = commodityProccessClass.CheckInsertInputData(request);
+                bool inputVaild = _commodity.CheckInsertInputData(request);
 
                 if (inputVaild)
                 {
@@ -143,9 +134,9 @@ namespace ShoppingMall.Controllers
 
                     if (request.Files.Count > 0)
                     {
-                        HttpPostedFile files = request.Files[0];
+                        HttpPostedFileBase files = request.Files[0];
 
-                        filePath = commodityProccessClass.UploadCommodityFile(files);
+                        filePath = _commodity.UploadCommodityFile(files);
                     }
 
                     insertData.Add(new InsertCommodityDataDto
@@ -159,21 +150,22 @@ namespace ShoppingMall.Controllers
                         ImagePath = filePath
                     });
 
-                    LogHelper.Info(JsonConvert.SerializeObject(insertData));
+                    _logHelper.Info(JsonConvert.SerializeObject(insertData));
 
-                    bool result = commodityProccessClass.InsertCommodityData(insertData[0]);
+                    bool result = _commodity.InsertCommodityData(insertData[0]);
 
                     return Ok(true);
                 }
                 else
                 {
+                    _logHelper.Warn(JsonConvert.SerializeObject(request.Form));
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -186,12 +178,13 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                HttpRequest request = HttpContext.Current.Request;
+                HttpContextBase context = _contextHelper.GetContext();
+                HttpRequestBase request = context.Request;
 
                 // 檢查權限
-                if (!Tools.CheckPermission((int)Permissions.CommodityUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!_tools.CheckPermission((int)Permissions.CommodityUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
-                bool inputVaild = commodityProccessClass.CheckUpdateInputData(request);
+                bool inputVaild = _commodity.CheckUpdateInputData(request);
 
                 if (inputVaild)
                 {
@@ -201,16 +194,16 @@ namespace ShoppingMall.Controllers
                     // 如果有手動按下刪除圖片或是上傳新圖片，把舊的圖片刪除
                     if (!string.IsNullOrEmpty(request.Form["DeleteFlag"]) || (request.Files.Count > 0 && !string.IsNullOrEmpty(request.Form["OldImage"])))
                     {
-                        commodityProccessClass.DeleteCommodityFile(request.Form["OldImage"]);
+                        _commodity.DeleteCommodityFile(request.Form["OldImage"]);
                         filePath = "delete";
                     }
 
                     // 如果有上傳新圖片，執行檔案上傳
                     if (request.Files.Count > 0)
                     {
-                        HttpPostedFile files = request.Files[0];
+                        HttpPostedFileBase files = request.Files[0];
 
-                        filePath = commodityProccessClass.UploadCommodityFile(files);
+                        filePath = _commodity.UploadCommodityFile(files);
                     }
 
                     updateData.Add(new UpdateCommodityDataDto
@@ -225,21 +218,22 @@ namespace ShoppingMall.Controllers
                         ImagePath = filePath
                     });
 
-                    LogHelper.Info(JsonConvert.SerializeObject(updateData));
+                    _logHelper.Info(JsonConvert.SerializeObject(updateData));
 
-                    bool result = commodityProccessClass.UpdateCommodityData(updateData[0]);
+                    bool result = _commodity.UpdateCommodityData(updateData[0]);
 
                     return Ok(result);
                 }
                 else
                 {
+                    _logHelper.Warn(JsonConvert.SerializeObject(request.Form));
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

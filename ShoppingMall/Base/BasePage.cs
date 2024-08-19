@@ -1,10 +1,18 @@
 ﻿using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using System;
 using System.IO;
 using System.Security.Cryptography;
 
 public class BasePage : System.Web.UI.Page
 {
+    private IConfigurationsHelper _configurationsHelper;
+
+    public BasePage(IConfigurationsHelper configurationsHelper = null)
+    {
+        _configurationsHelper = configurationsHelper ?? new ConfigurationsHelper();
+    }
+
     protected void Page_Init(object sender, EventArgs e)
     {
         Session["lang"] = (Session["lang"] ?? "tw").ToString();
@@ -38,7 +46,7 @@ public class BasePage : System.Web.UI.Page
     /// </summary>
     protected string GetVersionUrl(string url, string type)
     {
-        string typeVersion = type == "js" ? ConfigurationsHelper.GetJsVersion() : type == "css" ? ConfigurationsHelper.GetCssVersion() : "";
+        string typeVersion = type == "js" ? _configurationsHelper.GetJsVersion() : type == "css" ? _configurationsHelper.GetCssVersion() : "";
         string finalUrl = $"/{type}/{typeVersion}/{url}";
 
         string filePath = Server.MapPath(finalUrl);

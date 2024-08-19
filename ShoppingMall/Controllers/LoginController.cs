@@ -9,19 +9,34 @@ using System.Web;
 using System.Web.Http;
 using ShoppingMall.App_Code;
 using Newtonsoft.Json;
+using ShoppingMall.Interface;
+using ShoppingMall.Api.Admin;
+using ShoppingMall.Api.Token;
 
 namespace ShoppingMall.Controllers
 {
     [RoutePrefix("api/login")]
     public class LoginController : ApiController
     {
-        private LoginByAcc loginByAccClass;
-        private LoginByToken loginByTokenClass;
+        private ILogin _login;
+        private IToken _token;
+        private ITools _tools;
+        private ILogHelper _logHelper;
 
         public LoginController()
         {
-            loginByAccClass = new LoginByAcc();
-            loginByTokenClass = new LoginByToken();
+            _login = new LoginProccess();
+            _token = new TokenProccess();
+            _tools = new Tools();
+            _logHelper = new LogHelper();
+        }
+
+        public LoginController(ILogin login, IToken token, ITools tools, ILogHelper logHelper)
+        {
+            _login = login;
+            _token = token;
+            _tools = tools;
+            _logHelper = logHelper;
         }
 
         /// <summary>
@@ -33,13 +48,11 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                //LogHelper.logger.Info(JsonConvert.SerializeObject(loginData));
-
-                bool inputVaild = loginByAccClass.CheckInputData(loginData);
+                bool inputVaild = _login.CheckInputData(loginData);
 
                 if (inputVaild)
                 {
-                    List<AdminUserDataDtoResponse> adminUserData = loginByAccClass.CheckLoginByAccountPassword(loginData);
+                    List<AdminUserDataDtoResponse> adminUserData = _login.CheckLoginByAccountPassword(loginData);
 
                     if (adminUserData.Count == 0)
                     {
@@ -47,7 +60,7 @@ namespace ShoppingMall.Controllers
                     }
                     else
                     {
-                        loginByAccClass.SetLoginAdminPermissions(adminUserData[0].AdminId);
+                        _login.SetLoginAdminPermissions(adminUserData[0].AdminId);
 
                         return Ok(adminUserData);
                     }
@@ -59,8 +72,8 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -73,7 +86,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                bool checkResult = loginByTokenClass.CheckLoginByToken();
+                bool checkResult = _token.CheckLoginByToken();
 
                 if (checkResult)
                 {
@@ -89,8 +102,8 @@ namespace ShoppingMall.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

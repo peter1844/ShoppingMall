@@ -1,6 +1,8 @@
-﻿using ShoppingMall.Api.Menu;
+﻿using ShoppingMall.Api.Admin;
+using ShoppingMall.Api.Menu;
 using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Menu;
 using System;
@@ -13,31 +15,22 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/menu")]
     public class MenuController : ApiController
     {
-        private MenuPermissions menuPermissionsClass;
+        private IMenu _menu;
+        private ITools _tools;
+        private ILogHelper _logHelper;
 
         public MenuController()
         {
-            menuPermissionsClass = new MenuPermissions();
+            _menu = new MenuProccess();
+            _tools = new Tools();
+            _logHelper = new LogHelper();
         }
 
-        /// <summary>
-        /// 取得菜單頁面權限
-        /// </summary>
-        [Route("getMenuPermissions")]
-        [HttpGet]
-        public IHttpActionResult getMenuPermissions()
+        public MenuController(IMenu menu, ITools tools, ILogHelper logHelper)
         {
-            try
-            {
-                List<MenuPermissionsDtoResponse> menuPermissions = menuPermissionsClass.GetAllMenuPermissions();
-
-                return Ok(menuPermissions);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
-            }
+            _menu = menu;
+            _tools = tools;
+            _logHelper = logHelper;
         }
 
         /// <summary>
@@ -49,16 +42,14 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                HttpContext context = HttpContext.Current;
-
-                context.Session["lang"] = languageData.Language;
+                _menu.SetLanguage(languageData.Language);
 
                 return Ok(true);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

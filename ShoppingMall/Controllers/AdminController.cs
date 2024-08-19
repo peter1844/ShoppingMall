@@ -2,6 +2,7 @@
 using ShoppingMall.Api.Admin;
 using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Enum;
@@ -14,35 +15,22 @@ namespace ShoppingMall.Controllers
     [RoutePrefix("api/admin")]
     public class AdminController : ApiController
     {
-        private AdminPermissions adminPermissionsClass;
-        private AdminProccess adminProccessClass;
-        private AdminOption adminOptionClass;
+        private IAdmin _admin;
+        private ITools _tools;
+        private ILogHelper _logHelper;
 
         public AdminController()
         {
-            adminPermissionsClass = new AdminPermissions();
-            adminProccessClass = new AdminProccess();
-            adminOptionClass = new AdminOption();
+            _admin = new AdminProccess();
+            _tools = new Tools();
+            _logHelper = new LogHelper();
         }
 
-        /// <summary>
-        /// 取得管理者帳號頁面權限
-        /// </summary>
-        [Route("getAdminPermissions")]
-        [HttpGet]
-        public IHttpActionResult getAdminPermissions()
+        public AdminController(IAdmin admin, ITools tools, ILogHelper logHelper)
         {
-            try
-            {
-                List<AdminPermissionsDtoResponse> adminPermissions = adminPermissionsClass.GetAllAdminPermissions();
-
-                return Ok(adminPermissions);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
-            }
+            _admin = admin;
+            _tools = tools;
+            _logHelper = logHelper;
         }
 
         /// <summary>
@@ -54,14 +42,14 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<AdminUserDataDtoResponse> adminUserData = adminProccessClass.GetAllAdminUserData();
+                List<AdminUserDataDtoResponse> adminUserData = _admin.GetAllAdminUserData();
 
                 return Ok(adminUserData);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -75,14 +63,14 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<AdminOptionDataDtoResponse> adminOptionData = adminOptionClass.GetAllAdminOptionData();
+                List<AdminOptionDataDtoResponse> adminOptionData = _admin.GetAllAdminOptionData();
 
                 return Ok(adminOptionData);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -95,28 +83,29 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.Info(JsonConvert.SerializeObject(insertData));
+                _logHelper.Info(JsonConvert.SerializeObject(insertData));
 
                 // 檢查權限
-                if (!Tools.CheckPermission((int)Permissions.AdminInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!_tools.CheckPermission((int)Permissions.AdminInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
-                bool inputVaild = adminProccessClass.CheckInsertInputData(insertData);
+                bool inputVaild = _admin.CheckInsertInputData(insertData);
 
                 if (inputVaild)
                 {
-                    bool result = adminProccessClass.InsertAdminData(insertData);
+                    bool result = _admin.InsertAdminData(insertData);
 
                     return Ok(result);
                 }
                 else
                 {
+                    _logHelper.Warn(JsonConvert.SerializeObject(insertData));
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -129,28 +118,29 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.Info(JsonConvert.SerializeObject(updateData));
+                _logHelper.Info(JsonConvert.SerializeObject(updateData));
 
                 // 檢查權限
-                if (!Tools.CheckPermission((int)Permissions.AdminUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!_tools.CheckPermission((int)Permissions.AdminUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
-                bool inputVaild = adminProccessClass.CheckUpdateInputData(updateData);
+                bool inputVaild = _admin.CheckUpdateInputData(updateData);
 
                 if (inputVaild)
                 {
-                    bool result = adminProccessClass.UpdateAdminData(updateData);
+                    bool result = _admin.UpdateAdminData(updateData);
 
                     return Ok(result);
                 }
                 else
                 {
+                    _logHelper.Warn(JsonConvert.SerializeObject(updateData));
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -163,28 +153,29 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.Info(JsonConvert.SerializeObject(deleteData));
+                _logHelper.Info(JsonConvert.SerializeObject(deleteData));
 
                 // 檢查權限
-                if (!Tools.CheckPermission((int)Permissions.AdminDelete)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!_tools.CheckPermission((int)Permissions.AdminDelete)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
-                bool inputVaild = adminProccessClass.CheckDeleteInputData(deleteData);
+                bool inputVaild = _admin.CheckDeleteInputData(deleteData);
 
                 if (inputVaild)
                 {
-                    bool result = adminProccessClass.DeleteAdminData(deleteData);
+                    bool result = _admin.DeleteAdminData(deleteData);
 
                     return Ok(result);
                 }
                 else
                 {
+                    _logHelper.Warn(JsonConvert.SerializeObject(deleteData));
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

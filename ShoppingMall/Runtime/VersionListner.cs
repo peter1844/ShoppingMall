@@ -1,17 +1,26 @@
 ﻿using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using System;
 using System.IO;
 
 namespace ShoppingMall.Runtime
 {
-    public static class VersionListner
+    public class VersionListner : IVersionListner
     {
-        private static FileSystemWatcher fileSystemWatcher;
+        private IConfigurationsHelper _configurationsHelper;
+        private ILogHelper _logHelper;
+        private FileSystemWatcher fileSystemWatcher;
+
+        public VersionListner(IConfigurationsHelper configurationsHelper = null, ILogHelper logHelper = null)
+        {
+            _configurationsHelper = configurationsHelper ?? new ConfigurationsHelper();
+            _logHelper = logHelper ?? new LogHelper();
+        }
 
         /// <summary>
         /// 初始化Version.json檔的監聽
         /// </summary>
-        public static void Initialize()
+        public void Initialize()
         {
             if (fileSystemWatcher != null)
             {
@@ -31,16 +40,16 @@ namespace ShoppingMall.Runtime
             fileSystemWatcher.EnableRaisingEvents = true;
         }
 
-        private static void OnChanged(object sender, FileSystemEventArgs e)
+        private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            ConfigurationsHelper.LoadVersion();
-            LogHelper.Info($"file is {e.ChangeType}: {e.FullPath}");
+            _configurationsHelper.LoadVersion();
+            _logHelper.Info($"file is {e.ChangeType}: {e.FullPath}");
         }
 
         /// <summary>
         /// 釋放監聽資源
         /// </summary>
-        public static void Dispose()
+        public void Dispose()
         {
             if (fileSystemWatcher != null)
             {

@@ -1,32 +1,45 @@
-﻿using StackExchange.Redis;
+﻿using ShoppingMall.Interface;
+using StackExchange.Redis;
 using System.Data.SqlClient;
 
 namespace ShoppingMall.Helper
 {
-    public static class DbHelper
+    public class DbHelper : IDbHelper
     {
-        private static SqlCommand command;
-        private static ConnectionMultiplexer redis;
+        private SqlCommand command;
+        private ConnectionMultiplexer redis;
+        private IConfigurationsHelper _configurationsHelper;
+
+        public DbHelper(IConfigurationsHelper configurations = null) 
+        {
+            _configurationsHelper = configurations ?? new ConfigurationsHelper();
+        }
 
         /// <summary>
         /// 取得MSSQL連線
         /// </summary>
-        public static SqlCommand MsSqlConnection()
+        public SqlCommand MsSqlConnection()
         {
             command = new SqlCommand(); //宣告SqlCommand物件
-            command.Connection = new SqlConnection(ConfigurationsHelper.GetMsSqlConnectString()); //設定連線字串
+            command.Connection = new SqlConnection(_configurationsHelper.GetMsSqlConnectString()); //設定連線字串
 
             return command;
+        }
+
+        public void SetMsSqlConnection()
+        {
+            command = new SqlCommand(); //宣告SqlCommand物件
+            command.Connection = new SqlConnection(_configurationsHelper.GetMsSqlConnectString()); //設定連線字串            
         }
 
         /// <summary>
         /// 取得Redis連線
         /// </summary>
-        public static ConnectionMultiplexer RedisConnection()
+        public ConnectionMultiplexer RedisConnection()
         {
             if (redis == null || !redis.IsConnected)
             {
-                redis = ConnectionMultiplexer.Connect(ConfigurationsHelper.GetRedisConnectString());
+                redis = ConnectionMultiplexer.Connect(_configurationsHelper.GetRedisConnectString());
             }
 
             return redis;

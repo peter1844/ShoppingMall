@@ -8,39 +8,30 @@ using System;
 using System.Collections.Generic;
 using System.Web.Http;
 using Newtonsoft.Json;
+using ShoppingMall.Api.Admin;
+using ShoppingMall.Interface;
 
 namespace ShoppingMall.Controllers
 {
     [RoutePrefix("api/member")]
     public class MemberController : ApiController
     {
-        private MemberPermissions memberPermissionsClass;
-        private MemberProccess memberProccessClass;
+        private IMember _member;
+        private ITools _tools;
+        private ILogHelper _logHelper;
 
         public MemberController()
         {
-            memberPermissionsClass = new MemberPermissions();
-            memberProccessClass = new MemberProccess();
+            _member = new MemberProccess();
+            _tools = new Tools();
+            _logHelper = new LogHelper();
         }
 
-        /// <summary>
-        /// 取得會員頁面權限
-        /// </summary>
-        [Route("getMemberPermissions")]
-        [HttpGet]
-        public IHttpActionResult getMemberPermissions()
+        public MemberController(IMember member, ITools tools, ILogHelper logHelper)
         {
-            try
-            {
-                List<MemberPermissionsDtoResponse> memberPermissions = memberPermissionsClass.GetAllMemberPermissions();
-
-                return Ok(memberPermissions);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
-            }
+            _member = member;
+            _tools = tools;
+            _logHelper = logHelper;
         }
 
         /// <summary>
@@ -52,14 +43,14 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<MemberDataDtoResponse> memberData = memberProccessClass.GetAllMemberData();
+                List<MemberDataDtoResponse> memberData = _member.GetAllMemberData();
 
                 return Ok(memberData);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -72,28 +63,29 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.Info(JsonConvert.SerializeObject(updateData));
+                _logHelper.Info(JsonConvert.SerializeObject(updateData));
 
                 // 檢查權限
-                if (!Tools.CheckPermission((int)Permissions.MemberUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!_tools.CheckPermission((int)Permissions.MemberUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
-                bool inputVaild = memberProccessClass.CheckUpdateInputData(updateData);
+                bool inputVaild = _member.CheckUpdateInputData(updateData);
 
                 if (inputVaild)
                 {
-                    bool result = memberProccessClass.UpdateMemberData(updateData);
+                    bool result = _member.UpdateMemberData(updateData);
 
                     return Ok(result);
                 }
                 else
                 {
+                    _logHelper.Warn(JsonConvert.SerializeObject(updateData));
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.InnerException.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.InnerException.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

@@ -70,51 +70,16 @@
             sortKey: '',
             sortDesc: false,
             originMemberData: {},
-            updatePermission: false
+            updatePermission: true
         }
     },
     created: function () {
-        this.GetMemberPermissionData();
         this.GetMemberData();
     },
     mounted() {
         window.addEventListener('keydown', this.HandleKeyDown);
     },
     methods: {
-        async GetMemberPermissionData() {
-            await fetch('/api/member/getMemberPermissions', {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => {
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
-                    this.updatePermission = myJson[0].UpdatePermission;
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                        icon: "error",
-                        confirmButtonText: this.$t('common.confirm')
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                        icon: "error",
-                        confirmButtonText: this.$t('common.confirm')
-                    })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: this.$t('common.systemError'),
-                    icon: "error",
-                    confirmButtonText: this.$t('common.confirm')
-                })
-            })
-        },
         async GetMemberData() {
             await fetch('/api/member/getMemberData', {
                 headers: {

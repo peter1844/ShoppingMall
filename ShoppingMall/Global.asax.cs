@@ -1,4 +1,6 @@
-﻿using ShoppingMall.Helper;
+﻿using ShoppingMall.Api.Order;
+using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Runtime;
 using System;
 using System.Web;
@@ -9,15 +11,30 @@ namespace ShoppingMall
 {
     public class WebApiApplication : HttpApplication
     {
+        private IVersionListner _versionListner;
+        private IDeleteOrder _deleteOrder;
+
+        public WebApiApplication()
+        {
+            _versionListner = new VersionListner();
+            _deleteOrder = new DeleteOrder();
+        }
+
+        public WebApiApplication(IVersionListner versionListner, IDeleteOrder deleteOrder)
+        {
+            _versionListner = versionListner;
+            _deleteOrder = deleteOrder;
+        }
+
         protected void Application_Start(object sender, EventArgs e)
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             // 監聽檔案變化
-            VersionListner.Initialize();
+            _versionListner.Initialize();
 
             // 定期執行刪除訂單
-            DeleteOrder.DeleteOrderTimer();
+            _deleteOrder.DeleteOrderTimer();
         }
 
         protected void Application_PostAuthorizeRequest()
@@ -36,7 +53,7 @@ namespace ShoppingMall
         protected void Application_End(object sender, EventArgs e)
         {
             // 釋放版本監聽
-            VersionListner.Dispose();
+            _versionListner.Dispose();
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using ShoppingMall.Helper;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Enum;
 using System;
@@ -12,8 +14,17 @@ using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Api.Admin
 {
-    public class AdminProccess
+    public class AdminProccess : IAdmin
     {
+        private IContextHelper _contextHelper;
+        private IDbHelper _dbHelper;
+
+        public AdminProccess(IContextHelper contextHelper = null, IDbHelper dbHelper = null)
+        {
+            _contextHelper = contextHelper ?? new ContextHelper();
+            _dbHelper = dbHelper ?? new DbHelper();
+        }
+
         /// <summary>
         /// 取得所有管理者資料
         /// </summary>
@@ -24,7 +35,7 @@ namespace ShoppingMall.Api.Admin
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -36,7 +47,6 @@ namespace ShoppingMall.Api.Admin
 
                 if (dt.Rows.Count > 0)
                 {
-
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
                         adminUserData.Add(new AdminUserDataDtoResponse
@@ -57,7 +67,7 @@ namespace ShoppingMall.Api.Admin
                             Acc = g.First().Acc,
                             Name = g.First().Name,
                             Enabled = g.First().Enabled,
-                            Role = g.SelectMany(u => u.Role).ToList()  // 将每个组内的 Role 合并到一个列表中
+                            Role = g.SelectMany(u => u.Role).ToList()
                         }).ToList();
                 }
 
@@ -78,8 +88,7 @@ namespace ShoppingMall.Api.Admin
         /// </summary>
         public bool InsertAdminData(InsertAdminDataDto insertData)
         {
-            HttpContext context = HttpContext.Current;
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -97,7 +106,7 @@ namespace ShoppingMall.Api.Admin
                 command.Parameters.AddWithValue("@acc", insertData.Acc);
                 command.Parameters.AddWithValue("@pwd", insertData.Pwd);
                 command.Parameters.AddWithValue("@enabled", insertData.Enabled);
-                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(_contextHelper.GetContext().Session["id"]));
                 command.Parameters.AddWithValue("@permission", Permissions.AdminInsert);
                 SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
@@ -130,8 +139,7 @@ namespace ShoppingMall.Api.Admin
         /// </summary>
         public bool UpdateAdminData(UpdateAdminDataDto updateData)
         {
-            HttpContext context = HttpContext.Current;
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -149,7 +157,7 @@ namespace ShoppingMall.Api.Admin
                 command.Parameters.AddWithValue("@name", updateData.Name);
                 command.Parameters.AddWithValue("@pwd", updateData.Pwd);
                 command.Parameters.AddWithValue("@enabled", updateData.Enabled);
-                command.Parameters.AddWithValue("@backAdminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@backAdminId", Convert.ToInt32(_contextHelper.GetContext().Session["id"]));
                 command.Parameters.AddWithValue("@permission", Permissions.AdminUpdate);
                 SqlParameter parameter = command.Parameters.AddWithValue("@roleId", tempTable);
                 parameter.SqlDbType = SqlDbType.Structured;
@@ -164,7 +172,7 @@ namespace ShoppingMall.Api.Admin
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
                 // 有更新就強制把該使用者登出
-                DbHelper.RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
+                _dbHelper.RedisConnection().GetDatabase().KeyDelete($"{updateData.AdminId}_token");
 
                 return true;
             }
@@ -184,15 +192,14 @@ namespace ShoppingMall.Api.Admin
         /// </summary>
         public bool DeleteAdminData(DeleteAdminDataDto deleteData)
         {
-            HttpContext context = HttpContext.Current;
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
                 command.CommandText = "EXEC pro_bkg_delAdminData @adminId,@backAdminId,@permission";
 
                 command.Parameters.AddWithValue("@adminId", deleteData.AdminId);
-                command.Parameters.AddWithValue("@backAdminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@backAdminId", Convert.ToInt32(_contextHelper.GetContext().Session["id"]));
                 command.Parameters.AddWithValue("@permission", Permissions.AdminDelete);
 
                 command.Connection.Open();
@@ -203,7 +210,7 @@ namespace ShoppingMall.Api.Admin
                 if (statusMessage == (int)StateCode.NoPermission) throw new Exception(StateCode.NoPermission.ToString());
                 // DB執行錯誤
                 if (statusMessage != (int)StateCode.Success) throw new Exception(StateCode.DbError.ToString());
-                DbHelper.RedisConnection().GetDatabase().KeyDelete($"{deleteData.AdminId}_token");
+                _dbHelper.RedisConnection().GetDatabase().KeyDelete($"{deleteData.AdminId}_token");
 
                 return true;
             }
@@ -265,6 +272,38 @@ namespace ShoppingMall.Api.Admin
             if (deleteData.AdminId <= 0) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 取得管理者帳號頁面所需的選項
+        /// </summary>
+        public List<AdminOptionDataDtoResponse> GetAllAdminOptionData()
+        {
+            List<AdminOptionDataDtoResponse> adminOptionData = new List<AdminOptionDataDtoResponse>();
+
+            try
+            {
+                Array rolesArray = Enum.GetValues(typeof(Roles));
+
+                foreach (Roles role in rolesArray)
+                {
+                    // 排除超級管理者
+                    if ((int)role != 1)
+                    {
+                        adminOptionData.Add(new AdminOptionDataDtoResponse()
+                        {
+                            RoleId = (int)role,
+                            RoleName = role.ToString()
+                        });
+                    }
+                }
+
+                return adminOptionData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

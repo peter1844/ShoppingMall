@@ -1,5 +1,8 @@
-﻿using ShoppingMall.App_Code;
+﻿using ShoppingMall.Api.Commodity;
+using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
+using ShoppingMall.Interface;
+using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Enum;
 using ShoppingMall.Models.Order;
 using System;
@@ -14,19 +17,32 @@ using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Api.Order
 {
-    public class OrderProccess
+    public class OrderProccess : IOrder
     {
+        private IContextHelper _contextHelper;
+        private IDbHelper _dbHelper;
+        private ITools _tools;
+        private ICommodity _commodity;
+
+        public OrderProccess(IContextHelper contextHelper = null, IDbHelper dbHelper = null, ITools tools = null, ICommodity commodity = null)
+        {
+            _contextHelper = contextHelper ?? new ContextHelper();
+            _dbHelper = dbHelper ?? new DbHelper();
+            _tools = tools ?? new Tools();
+            _commodity = commodity ?? new CommodityProccess();
+        }
+
         /// <summary>
         /// 取得訂單資料
         /// </summary>
-        public List<OrderDataDtoResponse> GetOrderData(ConditionDataDto conditionData)
+        public List<OrderDataDtoResponse> GetOrderData(OrderConditionDataDto conditionData)
         {
             List<OrderDataDtoResponse> orderData = new List<OrderDataDtoResponse>();
             List<OrderDataDtoResponse> groupOrderData = new List<OrderDataDtoResponse>();
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -111,14 +127,13 @@ namespace ShoppingMall.Api.Order
         /// </summary>
         public bool InsertOrderData(InsertOrderDataDto insertData)
         {
-            HttpContext context = HttpContext.Current;
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
                 DataTable tempTable = new DataTable();
                 DateTime now = DateTime.Now;
-                string orderId = $"T{now.ToString("yyyyMMddHHmmss")}{Tools.GenerateRandomString(6)}";
+                string orderId = $"T{now.ToString("yyyyMMddHHmmss")}{_tools.GenerateRandomString(6)}";
 
                 tempTable.Columns.Add("commodityId", typeof(int));
                 tempTable.Columns.Add("quantity", typeof(int));
@@ -139,7 +154,7 @@ namespace ShoppingMall.Api.Order
                 command.Parameters.AddWithValue("@deliverType", insertData.DeliverType);
                 command.Parameters.AddWithValue("@deliverState", 0);
                 command.Parameters.AddWithValue("@totalMoney", insertData.TotalMoney);
-                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(_contextHelper.GetContext().Session["id"]));
                 command.Parameters.AddWithValue("@permission", Permissions.OrderInsert);
 
                 SqlParameter parameter = command.Parameters.AddWithValue("@commoditys", tempTable);
@@ -174,8 +189,7 @@ namespace ShoppingMall.Api.Order
         /// </summary>
         public bool UpdateOrderData(UpdateOrderDataDto updateData)
         {
-            HttpContext context = HttpContext.Current;
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -186,7 +200,7 @@ namespace ShoppingMall.Api.Order
                 command.Parameters.AddWithValue("@payStateId", updateData.PayStateId);
                 command.Parameters.AddWithValue("@deliverTypeId", updateData.DeliverTypeId);
                 command.Parameters.AddWithValue("@deliverStateId", updateData.DeliverStateId);
-                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(context.Session["id"]));
+                command.Parameters.AddWithValue("@adminId", Convert.ToInt32(_contextHelper.GetContext().Session["id"]));
                 command.Parameters.AddWithValue("@permission", Permissions.OrderUpdate);
 
                 command.Connection.Open();
@@ -214,9 +228,9 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 刪除訂單資料
         /// </summary>
-        public static bool DeleteOrderData()
+        public bool DeleteOrderData()
         {
-            SqlCommand command = DbHelper.MsSqlConnection();
+            SqlCommand command = _dbHelper.MsSqlConnection();
 
             try
             {
@@ -247,7 +261,7 @@ namespace ShoppingMall.Api.Order
         /// <summary>
         /// 檢查搜尋條件的傳入參數
         /// </summary>
-        public bool CheckConditionInputData(ConditionDataDto conditionData)
+        public bool CheckConditionInputData(OrderConditionDataDto conditionData)
         {
             // 檢查訂單日期起迄是否只有一邊有值
             if ((conditionData.StartDate.HasValue && !conditionData.EndDate.HasValue) || (conditionData.EndDate.HasValue && !conditionData.StartDate.HasValue)) return false;
@@ -302,6 +316,80 @@ namespace ShoppingMall.Api.Order
             if (!deleteData.OrderId.Contains('T') && !deleteData.OrderId.Contains('M')) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 取得訂單管理頁面所需的選項
+        /// </summary>
+        public List<OrderOptionDataDtoResponse> GetOrderOptionData()
+        {
+            List<OrderOptionDataDtoResponse> orderOptionData = new List<OrderOptionDataDtoResponse>();
+            List<PayType> payTypeData = new List<PayType>();
+            List<PayState> payStateData = new List<PayState>();
+            List<DeliveryType> deliveryTypeData = new List<DeliveryType>();
+            List<DeliveryState> deliveryStateData = new List<DeliveryState>();
+            List<OpenCommodityData> commodityData = new List<OpenCommodityData>();
+
+            try
+            {
+                Array payTypeArray = Enum.GetValues(typeof(PayTypeCode));
+                Array payStateArray = Enum.GetValues(typeof(PayStateCode));
+                Array deliveryTypeArray = Enum.GetValues(typeof(DeliveryTypeCode));
+                Array deliveryStateArray = Enum.GetValues(typeof(DeliveryStateCode));
+
+                foreach (PayTypeCode value in payTypeArray)
+                {
+                    payTypeData.Add(new PayType
+                    {
+                        TypeId = (int)value,
+                        TypeName = value.ToString()
+                    });
+                }
+
+                foreach (PayStateCode value in payStateArray)
+                {
+                    payStateData.Add(new PayState
+                    {
+                        StateId = (int)value,
+                        StateName = value.ToString()
+                    });
+                }
+
+                foreach (DeliveryTypeCode value in deliveryTypeArray)
+                {
+                    deliveryTypeData.Add(new DeliveryType
+                    {
+                        TypeId = (int)value,
+                        TypeName = value.ToString()
+                    });
+                }
+
+                foreach (DeliveryStateCode value in deliveryStateArray)
+                {
+                    deliveryStateData.Add(new DeliveryState
+                    {
+                        StateId = (int)value,
+                        StateName = value.ToString()
+                    });
+                }
+
+                commodityData = _commodity.GetOpenCommodityData();
+
+                orderOptionData.Add(new OrderOptionDataDtoResponse
+                {
+                    PayTypes = payTypeData,
+                    PayStates = payStateData,
+                    DeliveryTypes = deliveryTypeData,
+                    DeliveryStates = deliveryStateData,
+                    OpenCommodityDatas = commodityData
+                });
+
+                return orderOptionData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

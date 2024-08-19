@@ -1,24 +1,33 @@
 ﻿using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using System.Web;
 
 namespace ShoppingMall.Api.Logout
 {
-    public class Logout
+    public class Logout : ILogout
     {
+        private IContextHelper _contextHelper;
+        private IDbHelper _dbHelper;
+        private ITools _tools;
+
+        public Logout(IContextHelper contextHelper = null, IDbHelper dbHelper = null, ITools tools = null)
+        {
+            _contextHelper = contextHelper ?? new ContextHelper();
+            _dbHelper = dbHelper ?? new DbHelper();
+            _tools = tools ?? new Tools();
+        }
+
         /// <summary>
         /// 登出功能
         /// </summary>
         public void LogoutProccess()
         {
-
-            HttpContext context = HttpContext.Current;
-
-            string sessionToken = Tools.AesDecrypt((string)context.Session["token"]);
+            string sessionToken = _tools.AesDecrypt((string)_contextHelper.GetContext().Session["token"]);
             string[] realTokenData = sessionToken.Split(',');
 
-            context.Session.Clear();
-            DbHelper.RedisConnection().GetDatabase().KeyDelete($"{realTokenData[0]}_token");
+            _contextHelper.GetContext().Session.Clear();
+            _dbHelper.RedisConnection().GetDatabase().KeyDelete($"{realTokenData[0]}_token");
         }
     }
 }

@@ -53,7 +53,7 @@ namespace ShoppingMall.Models.Order
     /// <summary>
     /// 篩選條件
     /// </summary>
-    public class ConditionDataDto
+    public class OrderConditionDataDto
     {
         /// <summary>
         /// 訂單編號

@@ -85,13 +85,12 @@
             actionText: '',
             showPlaceholder: false,
             originAdminData: {},
-            insertPermission: false,
-            updatePermission: false,
-            deletePermission: false
+            insertPermission: true,
+            updatePermission: true,
+            deletePermission: true
         }
     },
     created: function () {
-        this.GetOrderPermissionData();
         this.GetAdminData();
         this.GetOptionData();
     },
@@ -99,42 +98,6 @@
         window.addEventListener('keydown', this.HandleKeyDown);
     },
     methods: {
-        async GetOrderPermissionData() {
-            await fetch('/api/admin/getAdminPermissions', {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => {
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
-                    this.insertPermission = myJson[0].InsertPermission;
-                    this.updatePermission = myJson[0].UpdatePermission;
-                    this.deletePermission = myJson[0].DeletePermission;
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                        icon: "error",
-                        confirmButtonText: this.$t('common.confirm')
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                        icon: "error",
-                        confirmButtonText: this.$t('common.confirm')
-                    })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: this.$t('common.systemError'),
-                    icon: "error",
-                    confirmButtonText: this.$t('common.confirm')
-                })
-            })
-        },
         async GetAdminData() {
             await fetch('/api/admin/getAdminData', {
                 headers: {

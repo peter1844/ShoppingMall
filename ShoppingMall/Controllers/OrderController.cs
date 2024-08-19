@@ -9,41 +9,33 @@ using System.Collections.Generic;
 using System.Web;
 using System.Web.Http;
 using Newtonsoft.Json;
+using ShoppingMall.Api.Admin;
+using ShoppingMall.Interface;
 
 namespace ShoppingMall.Controllers
 {
     [RoutePrefix("api/order")]
     public class OrderController : ApiController
     {
-        private OrderPermissions orderPermissionsClass;
-        private OrderProccess orderProccessClass;
-        private OrderOption orderOptionClass;
+        private IOrder _order;
+        private ITools _tools;
+        private ILogHelper _logHelper;
+        private IContextHelper _contextHelper;
 
         public OrderController()
         {
-            orderPermissionsClass = new OrderPermissions();
-            orderProccessClass = new OrderProccess();
-            orderOptionClass = new OrderOption();
+            _order = new OrderProccess();
+            _tools = new Tools();
+            _logHelper = new LogHelper();
+            _contextHelper = new ContextHelper();
         }
 
-        /// <summary>
-        /// 取得訂單頁面權限
-        /// </summary>
-        [Route("getOrderPermissions")]
-        [HttpGet]
-        public IHttpActionResult getOrderPermissions()
+        public OrderController(IOrder order, ITools tools, ILogHelper logHelper, IContextHelper contextHelper)
         {
-            try
-            {
-                List<OrderPermissionsDtoResponse> orderPermissions = orderPermissionsClass.GetAllOrderPermissions();
-
-                return Ok(orderPermissions);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
-            }
+            _order = order;
+            _tools = tools;
+            _logHelper = logHelper;
+            _contextHelper = contextHelper;
         }
 
         /// <summary>
@@ -55,10 +47,10 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<ConditionDataDto> conditionData = new List<ConditionDataDto>();
-                HttpRequest request = HttpContext.Current.Request;
+                List<OrderConditionDataDto> conditionData = new List<OrderConditionDataDto>();
+                HttpRequestBase request = _contextHelper.GetContext().Request;
 
-                conditionData.Add(new ConditionDataDto
+                conditionData.Add(new OrderConditionDataDto
                 {
                     Id = string.IsNullOrEmpty(request.QueryString["Id"]) ? "" : request.QueryString["Id"],
                     StartDate = string.IsNullOrEmpty(request.QueryString["StartDate"]) ? (DateTime?)null : Convert.ToDateTime(request.QueryString["StartDate"]),
@@ -66,23 +58,23 @@ namespace ShoppingMall.Controllers
                     DeliveryState = string.IsNullOrEmpty(request.QueryString["DeliveryState"]) ? -1 : Convert.ToInt32(request.QueryString["DeliveryState"])
                 });
 
-                LogHelper.Info(JsonConvert.SerializeObject(conditionData));
+                _logHelper.Info(JsonConvert.SerializeObject(conditionData));
 
-                bool inputVaild = orderProccessClass.CheckConditionInputData(conditionData[0]);
+                bool inputVaild = _order.CheckConditionInputData(conditionData[0]);
 
                 if (!inputVaild)
                 {
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
 
-                List<OrderDataDtoResponse> orderData = orderProccessClass.GetOrderData(conditionData[0]);
+                List<OrderDataDtoResponse> orderData = _order.GetOrderData(conditionData[0]);
 
                 return Ok(orderData);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -96,14 +88,14 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                List<OrderOptionDataDtoResponse> orderOptionData = orderOptionClass.GetOrderOptionData();
+                List<OrderOptionDataDtoResponse> orderOptionData = _order.GetOrderOptionData();
 
                 return Ok(orderOptionData);
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -116,28 +108,29 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.Info(JsonConvert.SerializeObject(insertData));
+                _logHelper.Info(JsonConvert.SerializeObject(insertData));
 
                 // 檢查權限
-                if (!Tools.CheckPermission((int)Permissions.OrderInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!_tools.CheckPermission((int)Permissions.OrderInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
-                bool inputVaild = orderProccessClass.CheckInsertInputData(insertData);
+                bool inputVaild = _order.CheckInsertInputData(insertData);
 
                 if (inputVaild)
                 {
-                    bool result = orderProccessClass.InsertOrderData(insertData);
+                    bool result = _order.InsertOrderData(insertData);
 
                     return Ok(result);
                 }
                 else
                 {
+                    _logHelper.Warn(JsonConvert.SerializeObject(insertData));
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
 
@@ -150,28 +143,29 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                LogHelper.Info(JsonConvert.SerializeObject(updateData));
+                _logHelper.Info(JsonConvert.SerializeObject(updateData));
 
                 // 檢查權限
-                if (!Tools.CheckPermission((int)Permissions.OrderUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
+                if (!_tools.CheckPermission((int)Permissions.OrderUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
 
-                bool inputVaild = orderProccessClass.CheckUpdateInputData(updateData);
+                bool inputVaild = _order.CheckUpdateInputData(updateData);
 
                 if (inputVaild)
                 {
-                    bool result = orderProccessClass.UpdateOrderData(updateData);
+                    bool result = _order.UpdateOrderData(updateData);
 
                     return Ok(result);
                 }
                 else
                 {
+                    _logHelper.Warn(JsonConvert.SerializeObject(updateData));
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildInputData.ToString() });
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Warn(ex.Message);
-                return Ok(new ExceptionData { ErrorMessage = Tools.ReturnExceptionMessage(ex.Message) });
+                _logHelper.Error(ex.Message);
+                return Ok(new ExceptionData { ErrorMessage = _tools.ReturnExceptionMessage(ex.Message) });
             }
         }
     }

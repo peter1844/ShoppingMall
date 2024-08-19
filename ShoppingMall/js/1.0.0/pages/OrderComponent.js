@@ -198,12 +198,11 @@
             originPayType: '',
             originDeliverType: '',
             originOrderData: {},
-            insertPermission: false,
-            updatePermission: false
+            insertPermission: true,
+            updatePermission: true
         }
     },
     created: function () {
-        this.GetOrderPermissionData();
         this.GetOrderData();
         this.GetOptionData();
     },
@@ -211,41 +210,6 @@
         window.addEventListener('keydown', this.HandleKeyDown);
     },
     methods: {
-        async GetOrderPermissionData() {
-            await fetch('/api/order/getOrderPermissions', {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => {
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
-                    this.insertPermission = myJson[0].InsertPermission;
-                    this.updatePermission = myJson[0].UpdatePermission;
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                        icon: "error",
-                        confirmButtonText: this.$t('common.confirm')
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                        icon: "error",
-                        confirmButtonText: this.$t('common.confirm')
-                    })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: this.$t('common.systemError'),
-                    icon: "error",
-                    confirmButtonText: this.$t('common.confirm')
-                })
-            })
-        },
         async GetOrderData() {
 
             const params = new URLSearchParams();

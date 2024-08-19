@@ -176,23 +176,14 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\Admin\AdminOption.cs" />
     <Compile Include="Api\Admin\AdminProccess.cs" />
-    <Compile Include="Api\Admin\AdminPermissions.cs" />
-    <Compile Include="Api\Commodity\CommodityStockCheck.cs" />
     <Compile Include="Api\Commodity\CommodityProccess.cs" />
-    <Compile Include="Api\Commodity\CommodityOption.cs" />
-    <Compile Include="Api\Commodity\CommodityPermissions.cs" />
-    <Compile Include="Api\Login\LoginByAcc.cs" />
-    <Compile Include="Api\Login\TokenExtend.cs" />
-    <Compile Include="Api\Login\LoginByToken.cs" />
+    <Compile Include="Api\Login\LoginProccess.cs" />
     <Compile Include="Api\Logout\Logout.cs" />
-    <Compile Include="Api\Member\MemberPermissions.cs" />
     <Compile Include="Api\Member\MemberProccess.cs" />
-    <Compile Include="Api\Menu\MenuPermissions.cs" />
-    <Compile Include="Api\Order\OrderPermissions.cs" />
+    <Compile Include="Api\Menu\MenuProccess.cs" />
     <Compile Include="Api\Order\OrderProccess.cs" />
-    <Compile Include="Api\Order\OrderOption.cs" />
+    <Compile Include="Api\Token\TokenProccess.cs" />
     <Compile Include="App_Code\Tools.cs" />
     <Compile Include="App_Start\TokenValidationHandler.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -209,6 +200,22 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\ContextHelper.cs" />
+    <Compile Include="Interface\IDeleteOrder.cs" />
+    <Compile Include="Interface\IVersionListner.cs" />
+    <Compile Include="Interface\IOrder.cs" />
+    <Compile Include="Interface\ILogout.cs" />
+    <Compile Include="Interface\IConfigurationsHelper.cs" />
+    <Compile Include="Interface\ILogHelper.cs" />
+    <Compile Include="Interface\IDbHelper.cs" />
+    <Compile Include="Interface\IMenu.cs" />
+    <Compile Include="Interface\IMember.cs" />
+    <Compile Include="Interface\IToken.cs" />
+    <Compile Include="Interface\ITools.cs" />
+    <Compile Include="Interface\IContextHelper.cs" />
+    <Compile Include="Interface\ILogin.cs" />
+    <Compile Include="Interface\ICommodity.cs" />
+    <Compile Include="Interface\IAdmin.cs" />
     <Compile Include="Models\Enum\Enum.cs" />
     <Compile Include="Runtime\VersionListner.cs" />
     <Compile Include="Helper\LogHelper.cs" />

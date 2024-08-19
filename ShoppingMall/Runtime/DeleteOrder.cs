@@ -1,16 +1,26 @@
 ﻿using ShoppingMall.Api.Order;
 using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using System;
 using System.Timers;
 
 namespace ShoppingMall.Runtime
 {
-    public static class DeleteOrder
+    public class DeleteOrder : IDeleteOrder
     {
+        private IOrder _order;
+        private ILogHelper _logHelper;
+
+        public DeleteOrder(IOrder order = null, ILogHelper logHelper = null)
+        {
+            _order = order ?? new OrderProccess();
+            _logHelper = logHelper ?? new LogHelper();
+        }
+
         /// <summary>
         /// 每隔1天執行一次刪除訂單
         /// </summary>
-        public static void DeleteOrderTimer()
+        public void DeleteOrderTimer()
         {
             Timer timer = new Timer(TimeSpan.FromDays(1).TotalMilliseconds);
 
@@ -18,11 +28,11 @@ namespace ShoppingMall.Runtime
             {
                 try
                 {
-                    OrderProccess.DeleteOrderData();
+                    _order.DeleteOrderData();
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Warn(ex.Message);
+                    _logHelper.Error(ex.Message);
                 }
             };
 

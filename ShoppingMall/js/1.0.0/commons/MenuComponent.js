@@ -20,16 +20,14 @@
     data() {
         return {
             welcomeText: this.$t('menu.page.welcomeText') + localStorage.getItem('adminName'),
-            memberPermission: false,
-            commodityPermission: false,
-            orderPermission: false,
-            adminPermission: false,
+            memberPermission: true,
+            commodityPermission: true,
+            orderPermission: true,
+            adminPermission: true,
             language: globalLang,
         }
     },
     created: function () {
-
-        this.GetMenuPermissionData();
 
         // 每10秒檢查一次登入狀態
         setInterval(() => {
@@ -46,43 +44,6 @@
         }
     },
     methods: {
-        async GetMenuPermissionData() {
-            await fetch('/api/menu/getMenuPermissions', {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => {
-                return response.json()
-            }).then((myJson) => {
-                if (myJson.ErrorMessage === undefined) {
-                    this.memberPermission = myJson[0].MemberPermission;
-                    this.commodityPermission = myJson[0].CommodityPermission;
-                    this.orderPermission = myJson[0].OrderPermission;
-                    this.adminPermission = myJson[0].AdminPermission;
-                } else if (myJson.ErrorMessage == 'InvaildToken') {
-                    Swal.fire({
-                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                        icon: "error",
-                        confirmButtonText: this.$t('common.confirm')
-                    }).then((result) => {
-                        window.location.href = '/Views/Login.aspx';
-                    });
-                } else {
-                    Swal.fire({
-                        text: this.$t('common.backendMessage.' + myJson.ErrorMessage),
-                        icon: "error",
-                        confirmButtonText: this.$t('common.confirm')
-                    })
-                }
-            }).catch((error) => {
-                Swal.fire({
-                    text: this.$t('common.systemError'),
-                    icon: "error",
-                    confirmButtonText: this.$t('common.confirm')
-                })
-            })
-        },
         async checkLoginStatus() {
 
             await fetch('/api/login/checkLoginByToken', {
