@@ -22,6 +22,7 @@ namespace ShoppingMall.Controllers
         private IToken _token;
         private ITools _tools;
         private ILogHelper _logHelper;
+        private IContextHelper _contextHelper;
 
         public LoginController()
         {
@@ -29,14 +30,16 @@ namespace ShoppingMall.Controllers
             _token = new TokenProccess();
             _tools = new Tools();
             _logHelper = new LogHelper();
+            _contextHelper = new ContextHelper();
         }
 
-        public LoginController(ILogin login, IToken token, ITools tools, ILogHelper logHelper)
+        public LoginController(ILogin login, IToken token, ITools tools, ILogHelper logHelper, IContextHelper contextHelper)
         {
             _login = login;
             _token = token;
             _tools = tools;
             _logHelper = logHelper;
+            _contextHelper = contextHelper;
         }
 
         /// <summary>
@@ -94,8 +97,7 @@ namespace ShoppingMall.Controllers
                 }
                 else
                 {
-                    HttpContext context = HttpContext.Current;
-                    context.Session.Clear();
+                    _contextHelper.ClearContextSession();
 
                     return Ok(new ExceptionData { ErrorMessage = StateCode.InvaildToken.ToString() });
                 }

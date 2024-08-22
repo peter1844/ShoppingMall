@@ -154,7 +154,7 @@ namespace ShoppingMall.Controllers
 
                     bool result = _commodity.InsertCommodityData(insertData[0]);
 
-                    return Ok(true);
+                    return Ok(result);
                 }
                 else
                 {

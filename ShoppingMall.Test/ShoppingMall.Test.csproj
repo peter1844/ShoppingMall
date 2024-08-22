@@ -74,6 +74,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\MemberControllersTest.cs" />
+    <Compile Include="Controllers\LogoutControllersTest.cs" />
+    <Compile Include="Controllers\LoginControllersTest.cs" />
     <Compile Include="Controllers\AdminControllersTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

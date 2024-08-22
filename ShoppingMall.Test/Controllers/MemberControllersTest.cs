@@ -12,26 +12,25 @@ using System.Web.Http.Results;
 namespace ShoppingMallTest.Controllers
 {
     [TestClass]
-    public class AdminControllersTest
+    public class MemberControllersTest
     {
-        private Mock<IAdmin> _mockAdmin;
+        private Mock<IMember> _mockMember;
         private Mock<ITools> _mockTools;
         private Mock<ILogHelper> _mockLogHelper;
 
-        private AdminController adminController;
+        private MemberController memberController;
 
         [TestInitialize]
         public void Setup()
         {
-            _mockAdmin = new Mock<IAdmin>();
+            _mockMember = new Mock<IMember>();
             _mockTools = new Mock<ITools>();
             _mockLogHelper = new Mock<ILogHelper>();
-
-            adminController = new AdminController(_mockAdmin.Object, _mockTools.Object, _mockLogHelper.Object);
+            memberController = new MemberController(_mockMember.Object, _mockTools.Object, _mockLogHelper.Object);
         }
 
         [TestMethod]
-        public void TestGetAdminData()
+        public void TestGetMemberData()
         {
             // Arrange
             int dataCount = 2;

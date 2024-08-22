@@ -10,5 +10,9 @@ namespace ShoppingMall.Helper
         {
             return new HttpContextWrapper(HttpContext.Current);
         }
+
+        public void ClearContextSession() { 
+            HttpContext.Current.Session.Clear();
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace ShoppingMall.Api.Logout
             string sessionToken = _tools.AesDecrypt((string)_contextHelper.GetContext().Session["token"]);
             string[] realTokenData = sessionToken.Split(',');
 
-            _contextHelper.GetContext().Session.Clear();
+            _contextHelper.ClearContextSession();
             _dbHelper.RedisConnection().GetDatabase().KeyDelete($"{realTokenData[0]}_token");
         }
     }
