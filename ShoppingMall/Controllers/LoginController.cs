@@ -1,17 +1,14 @@
 ﻿using ShoppingMall.Api.Login;
+using ShoppingMall.Api.Token;
+using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Common;
-using ShoppingMall.Models.Login;
 using ShoppingMall.Models.Enum;
+using ShoppingMall.Models.Login;
 using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.Http;
-using ShoppingMall.App_Code;
-using Newtonsoft.Json;
-using ShoppingMall.Interface;
-using ShoppingMall.Api.Admin;
-using ShoppingMall.Api.Token;
 
 namespace ShoppingMall.Controllers
 {

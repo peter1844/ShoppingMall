@@ -31,7 +31,7 @@ namespace ShoppingMall.Helper
         /// <summary>
         /// 將訊息紀錄到Error等級的log
         /// </summary>
-        public void Error(string message) 
+        public void Error(string message)
         {
             logger.Error(message);
         }

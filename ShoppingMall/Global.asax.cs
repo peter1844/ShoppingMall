@@ -1,6 +1,4 @@
-﻿using ShoppingMall.Api.Order;
-using ShoppingMall.Helper;
-using ShoppingMall.Interface;
+﻿using ShoppingMall.Interface;
 using ShoppingMall.Runtime;
 using System;
 using System.Web;

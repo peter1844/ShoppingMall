@@ -1,13 +1,8 @@
-﻿using ShoppingMall.Helper;
-using ShoppingMall.Models.Member;
-using ShoppingMall.Models.Enum;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Web;
-using ShoppingMall.App_Code;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
 using ShoppingMall.Interface;
+using System;
+using System.Web;
 
 namespace ShoppingMall.Api.Token
 {

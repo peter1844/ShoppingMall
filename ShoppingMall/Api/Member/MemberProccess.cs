@@ -1,13 +1,12 @@
-﻿using ShoppingMall.Helper;
-using ShoppingMall.Models.Member;
+﻿using ShoppingMall.App_Code;
+using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Enum;
+using ShoppingMall.Models.Member;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Web;
-using ShoppingMall.Interface;
-using ShoppingMall.App_Code;
 
 namespace ShoppingMall.Api.Member
 {

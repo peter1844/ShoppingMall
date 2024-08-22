@@ -1,13 +1,10 @@
-﻿using ShoppingMall.Api.Admin;
-using ShoppingMall.Api.Menu;
+﻿using ShoppingMall.Api.Menu;
 using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Interface;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Menu;
 using System;
-using System.Collections.Generic;
-using System.Web;
 using System.Web.Http;
 
 namespace ShoppingMall.Controllers
@@ -38,7 +35,7 @@ namespace ShoppingMall.Controllers
         /// </summary>
         [Route("setLanguage")]
         [HttpPost]
-        public IHttpActionResult setLanguage([FromBody] MenuLanguageDto languageData)
+        public IHttpActionResult SetLanguage([FromBody] MenuLanguageDto languageData)
         {
             try
             {

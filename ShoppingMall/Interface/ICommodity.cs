@@ -1,5 +1,4 @@
-﻿using ShoppingMall.Models.Admin;
-using ShoppingMall.Models.Commodity;
+﻿using ShoppingMall.Models.Commodity;
 using System.Collections.Generic;
 using System.Web;
 

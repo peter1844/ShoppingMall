@@ -1,5 +1,4 @@
-﻿using ShoppingMall.Api.Admin;
-using ShoppingMall.Api.Logout;
+﻿using ShoppingMall.Api.Logout;
 using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Interface;

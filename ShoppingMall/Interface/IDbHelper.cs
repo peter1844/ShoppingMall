@@ -1,9 +1,5 @@
-﻿using ShoppingMall.Models.Commodity;
-using ShoppingMall.Models.Login;
-using StackExchange.Redis;
-using System.Collections.Generic;
+﻿using StackExchange.Redis;
 using System.Data.SqlClient;
-using System.Web;
 
 namespace ShoppingMall.Interface
 {

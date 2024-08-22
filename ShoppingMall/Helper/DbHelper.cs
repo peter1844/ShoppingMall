@@ -10,7 +10,7 @@ namespace ShoppingMall.Helper
         private ConnectionMultiplexer redis;
         private IConfigurationsHelper _configurationsHelper;
 
-        public DbHelper(IConfigurationsHelper configurations = null) 
+        public DbHelper(IConfigurationsHelper configurations = null)
         {
             _configurationsHelper = configurations ?? new ConfigurationsHelper();
         }

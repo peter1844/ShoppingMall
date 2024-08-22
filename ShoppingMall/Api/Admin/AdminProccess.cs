@@ -1,5 +1,4 @@
-﻿using ShoppingMall.App_Code;
-using ShoppingMall.Helper;
+﻿using ShoppingMall.Helper;
 using ShoppingMall.Interface;
 using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Enum;
@@ -9,7 +8,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.UI.WebControls;
 
 namespace ShoppingMall.Api.Admin

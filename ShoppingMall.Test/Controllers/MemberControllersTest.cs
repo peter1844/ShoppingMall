@@ -2,9 +2,9 @@
 using Moq;
 using ShoppingMall.Controllers;
 using ShoppingMall.Interface;
-using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Enum;
+using ShoppingMall.Models.Member;
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -26,6 +26,7 @@ namespace ShoppingMallTest.Controllers
             _mockMember = new Mock<IMember>();
             _mockTools = new Mock<ITools>();
             _mockLogHelper = new Mock<ILogHelper>();
+
             memberController = new MemberController(_mockMember.Object, _mockTools.Object, _mockLogHelper.Object);
         }
 
@@ -34,72 +35,31 @@ namespace ShoppingMallTest.Controllers
         {
             // Arrange
             int dataCount = 2;
-            List<AdminUserDataDtoResponse> mockData = new List<AdminUserDataDtoResponse>();
+            List<MemberDataDtoResponse> mockOutputData = new List<MemberDataDtoResponse>();
 
-            mockData.Add(new AdminUserDataDtoResponse
+            mockOutputData.Add(new MemberDataDtoResponse
             {
                 Id = 1,
-                Acc = "r1Kaq34Nuu",
-                Name = "Peter",
+                Acc = "Guest001",
+                Name = "張三",
+                Level = 3,
                 Enabled = 1,
-                Role = new List<AdminUserRoleData> { new AdminUserRoleData() { RoleId = 2 } }
             });
-            mockData.Add(new AdminUserDataDtoResponse
+            mockOutputData.Add(new MemberDataDtoResponse
             {
-                Id = 8,
-                Acc = "pA15eFvv69N",
-                Name = "Burger",
+                Id = 2,
+                Acc = "Guest002",
+                Name = "李四",
+                Level = 5,
                 Enabled = 1,
-                Role = new List<AdminUserRoleData> { 
-                    new AdminUserRoleData() { RoleId = 2 },
-                    new AdminUserRoleData() { RoleId = 4 }
-                }
             });
 
-            _mockAdmin.Setup(cmd => cmd.GetAllAdminUserData()).Returns(mockData);
+            _mockMember.Setup(cmd => cmd.GetAllMemberData()).Returns(mockOutputData);
 
             // Act
-            IHttpActionResult result = adminController.GetAdminData();
+            IHttpActionResult result = memberController.GetMemberData();
 
-            OkNegotiatedContentResult<List<AdminUserDataDtoResponse>> correctResponse = result as OkNegotiatedContentResult<List<AdminUserDataDtoResponse>>;
-            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
-
-            // Assert
-            if (correctResponse == null)
-            {
-                // 拋出Exception
-                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
-            }
-            else {
-                // 正常回傳
-                Assert.AreEqual(dataCount, correctResponse.Content.Count);
-            }
-        }
-
-        [TestMethod]
-        public void TestGetAdminOptionData()
-        {
-            // Arrange
-            int dataCount = 2;
-            List<AdminOptionDataDtoResponse> mockData = new List<AdminOptionDataDtoResponse>();
-
-            mockData.Add(new AdminOptionDataDtoResponse
-            {
-                RoleId = 2,
-                RoleName = "Admin",
-            });
-            mockData.Add(new AdminOptionDataDtoResponse
-            {
-                RoleId = 3,
-                RoleName = "CustomerService",
-            });
-
-            _mockAdmin.Setup(cmd => cmd.GetAllAdminOptionData()).Returns(mockData);
-
-            // Act
-            IHttpActionResult result = adminController.GetAdminOptionData();
-
-            OkNegotiatedContentResult<List<AdminOptionDataDtoResponse>> correctResponse = result as OkNegotiatedContentResult<List<AdminOptionDataDtoResponse>>;
+            OkNegotiatedContentResult<List<MemberDataDtoResponse>> correctResponse = result as OkNegotiatedContentResult<List<MemberDataDtoResponse>>;
             OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
 
             // Assert
@@ -116,98 +76,24 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestInsertAdminData()
+        public void TestUpdateMemberData()
         {
             // Arrange
-            List<InsertAdminDataDto> mockData = new List<InsertAdminDataDto>();
+            List<UpdateMemberDataDto> mockInputData = new List<UpdateMemberDataDto>();
 
-            mockData.Add(new InsertAdminDataDto
+            mockInputData.Add(new UpdateMemberDataDto
             {
-                Name = "TestAdmin1",
-                Acc = "uZ42gYk70s",
-                Pwd = "123456",
-                Roles = new List<int> { 1, 2, 3 },
-                Enabled = 1,
-            });
-
-            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminInsert)).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.CheckInsertInputData(mockData[0])).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.InsertAdminData(mockData[0])).Returns(true);
-
-            // Act
-            IHttpActionResult result = adminController.InsertAdminData(mockData[0]);
-
-            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
-            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
-
-            // Assert
-            if (correctResponse == null)
-            {
-                // 拋出Exception
-                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
-            }
-            else
-            {
-                // 正常回傳
-                Assert.IsTrue(correctResponse.Content);
-            }
-        }
-
-        [TestMethod]
-        public void TestUpdateAdminData()
-        {
-            // Arrange
-            List<UpdateAdminDataDto> mockData = new List<UpdateAdminDataDto>();
-
-            mockData.Add(new UpdateAdminDataDto
-            {
-                AdminId = 2,
-                Name = "TestAdmin1",
-                Pwd = "123456",
-                Roles = new List<int> { 1, 2, 3 },
+                MemberId = 1,
+                Level = 2,
                 Enabled = 0,
             });
 
-            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminUpdate)).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.CheckUpdateInputData(mockData[0])).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.UpdateAdminData(mockData[0])).Returns(true);
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.MemberUpdate)).Returns(true);
+            _mockMember.Setup(cmd => cmd.CheckUpdateInputData(mockInputData[0])).Returns(true);
+            _mockMember.Setup(cmd => cmd.UpdateMemberData(mockInputData[0])).Returns(true);
 
             // Act
-            IHttpActionResult result = adminController.UpdateAdminData(mockData[0]);
-
-            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
-            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
-
-            // Assert
-            if (correctResponse == null)
-            {
-                // 拋出Exception
-                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
-            }
-            else
-            {
-                // 正常回傳
-                Assert.IsTrue(correctResponse.Content);
-            }
-        }
-
-        [TestMethod]
-        public void TestDeleteAdminData()
-        {
-            // Arrange
-            List<DeleteAdminDataDto> mockData = new List<DeleteAdminDataDto>();
-
-            mockData.Add(new DeleteAdminDataDto
-            {
-                AdminId = 2
-            });
-
-            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminDelete)).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.CheckDeleteInputData(mockData[0])).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.DeleteAdminData(mockData[0])).Returns(true);
-
-            // Act
-            IHttpActionResult result = adminController.DeleteAdminData(mockData[0]);
+            IHttpActionResult result = memberController.UpdateMemberData(mockInputData[0]);
 
             OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
             OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;

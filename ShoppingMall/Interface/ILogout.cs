@@ -1,9 +1,4 @@
-﻿using ShoppingMall.Models.Admin;
-using ShoppingMall.Models.Commodity;
-using System.Collections.Generic;
-using System.Web;
-
-namespace ShoppingMall.Interface
+﻿namespace ShoppingMall.Interface
 {
     public interface ILogout
     {

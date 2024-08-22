@@ -1,5 +1,4 @@
-﻿using NLog;
-using ShoppingMall.Interface;
+﻿using ShoppingMall.Interface;
 using System.Web;
 
 namespace ShoppingMall.Helper
@@ -11,7 +10,8 @@ namespace ShoppingMall.Helper
             return new HttpContextWrapper(HttpContext.Current);
         }
 
-        public void ClearContextSession() { 
+        public void ClearContextSession()
+        {
             HttpContext.Current.Session.Clear();
         }
     }

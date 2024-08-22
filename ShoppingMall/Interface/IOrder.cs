@@ -1,16 +1,5 @@
-﻿using ShoppingMall.App_Code;
-using ShoppingMall.Helper;
-using ShoppingMall.Models.Admin;
-using ShoppingMall.Models.Enum;
-using ShoppingMall.Models.Order;
-using System;
+﻿using ShoppingMall.Models.Order;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
 
 namespace ShoppingMall.Interface
 {

@@ -30,7 +30,7 @@ namespace ShoppingMallTest.Controllers
             _mockLogHelper = new Mock<ILogHelper>();
             _mockContextHelper = new Mock<IContextHelper>();
 
-            loginController = new LoginController(_mockLogin.Object, _mockToken.Object , _mockTools.Object, _mockLogHelper.Object, _mockContextHelper.Object);
+            loginController = new LoginController(_mockLogin.Object, _mockToken.Object, _mockTools.Object, _mockLogHelper.Object, _mockContextHelper.Object);
         }
 
         [TestMethod]

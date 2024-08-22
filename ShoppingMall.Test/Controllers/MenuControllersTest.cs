@@ -3,38 +3,47 @@ using Moq;
 using ShoppingMall.Controllers;
 using ShoppingMall.Interface;
 using ShoppingMall.Models.Common;
+using ShoppingMall.Models.Menu;
+using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Results;
 
 namespace ShoppingMallTest.Controllers
 {
     [TestClass]
-    public class LogoutControllersTest
+    public class MenuControllersTest
     {
-        private Mock<ILogout> _mockLogout;
+        private Mock<IMenu> _mockMenu;
         private Mock<ITools> _mockTools;
         private Mock<ILogHelper> _mockLogHelper;
 
-        private LogoutController logoutController;
+        private MenuController menuController;
 
         [TestInitialize]
         public void Setup()
         {
-            _mockLogout = new Mock<ILogout>();
+            _mockMenu = new Mock<IMenu>();
             _mockTools = new Mock<ITools>();
             _mockLogHelper = new Mock<ILogHelper>();
 
-            logoutController = new LogoutController(_mockLogout.Object, _mockTools.Object, _mockLogHelper.Object);
+            menuController = new MenuController(_mockMenu.Object, _mockTools.Object, _mockLogHelper.Object);
         }
 
         [TestMethod]
-        public void TestLogoutProccess()
+        public void TestSetLanguage()
         {
             // Arrange
-            _mockLogout.Setup(cmd => cmd.LogoutProccess());
+            List<MenuLanguageDto> mockInputData = new List<MenuLanguageDto>();
 
-            //// Act
-            IHttpActionResult result = logoutController.LogoutProccess();
+            mockInputData.Add(new MenuLanguageDto
+            {
+                Language = "tw"
+            });
+
+            _mockMenu.Setup(cmd => cmd.SetLanguage(mockInputData[0].Language));
+
+            // Act
+            IHttpActionResult result = menuController.SetLanguage(mockInputData[0]);
 
             OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
             OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;

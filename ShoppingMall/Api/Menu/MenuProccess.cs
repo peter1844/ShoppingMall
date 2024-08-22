@@ -1,11 +1,6 @@
-﻿using ShoppingMall.App_Code;
-using ShoppingMall.Models.Menu;
-using ShoppingMall.Models.Enum;
-using System;
-using System.Collections.Generic;
+﻿using ShoppingMall.Helper;
 using ShoppingMall.Interface;
-using System.Runtime.Remoting.Contexts;
-using ShoppingMall.Helper;
+using System;
 
 namespace ShoppingMall.Api.Menu
 {

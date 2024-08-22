@@ -1,7 +1,5 @@
-﻿using ShoppingMall.Models.Commodity;
-using ShoppingMall.Models.Login;
+﻿using ShoppingMall.Models.Login;
 using System.Collections.Generic;
-using System.Web;
 
 namespace ShoppingMall.Interface
 {

@@ -1,14 +1,13 @@
 ﻿using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
+using ShoppingMall.Interface;
 using ShoppingMall.Models.Login;
-using ShoppingMall.Models.Enum;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Web;
-using ShoppingMall.Interface;
 
 namespace ShoppingMall.Api.Login
 {
@@ -31,7 +30,7 @@ namespace ShoppingMall.Api.Login
         public List<AdminUserDataDtoResponse> CheckLoginByAccountPassword(LoginDataDto loginData)
         {
             List<AdminUserDataDtoResponse> adminUserData = new List<AdminUserDataDtoResponse>();
-           
+
 
             SqlDataAdapter da = new SqlDataAdapter(); //宣告一個配接器(DataTable與DataSet必須)
             DataTable dt = new DataTable(); //宣告DataTable物件

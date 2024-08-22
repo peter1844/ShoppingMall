@@ -1,7 +1,6 @@
 ﻿using ShoppingMall.App_Code;
 using ShoppingMall.Helper;
 using ShoppingMall.Interface;
-using System.Web;
 
 namespace ShoppingMall.Api.Logout
 {

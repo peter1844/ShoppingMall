@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ShoppingMall.Models.Enum;
+using System;
 using System.Linq;
-using ShoppingMall.Models.Enum;
 
 namespace ShoppingMall.Views
 {
