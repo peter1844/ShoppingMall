@@ -70,7 +70,7 @@ namespace ShoppingMall.Models.Order
         /// <summary>
         /// 配送狀態
         /// </summary>
-        public int DeliveryState { get; set; }
+        public int? DeliveryState { get; set; }
     }
 
     /// <summary>

@@ -79,21 +79,12 @@ namespace ShoppingMallTest.Controllers
         public void TestUpdateMemberData()
         {
             // Arrange
-            List<UpdateMemberDataDto> mockInputData = new List<UpdateMemberDataDto>();
-
-            mockInputData.Add(new UpdateMemberDataDto
-            {
-                MemberId = 1,
-                Level = 2,
-                Enabled = 0,
-            });
-
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.MemberUpdate)).Returns(true);
-            _mockMember.Setup(cmd => cmd.CheckUpdateInputData(mockInputData[0])).Returns(true);
-            _mockMember.Setup(cmd => cmd.UpdateMemberData(mockInputData[0])).Returns(true);
+            _mockMember.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateMemberDataDto>())).Returns(true);
+            _mockMember.Setup(cmd => cmd.UpdateMemberData(It.IsAny<UpdateMemberDataDto>())).Returns(true);
 
             // Act
-            IHttpActionResult result = memberController.UpdateMemberData(mockInputData[0]);
+            IHttpActionResult result = memberController.UpdateMemberData(It.IsAny<UpdateMemberDataDto>());
 
             OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
             OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;

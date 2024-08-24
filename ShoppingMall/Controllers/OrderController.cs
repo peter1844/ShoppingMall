@@ -19,22 +19,19 @@ namespace ShoppingMall.Controllers
         private IOrder _order;
         private ITools _tools;
         private ILogHelper _logHelper;
-        private IContextHelper _contextHelper;
 
         public OrderController()
         {
             _order = new OrderProccess();
             _tools = new Tools();
             _logHelper = new LogHelper();
-            _contextHelper = new ContextHelper();
         }
 
-        public OrderController(IOrder order, ITools tools, ILogHelper logHelper, IContextHelper contextHelper)
+        public OrderController(IOrder order, ITools tools, ILogHelper logHelper)
         {
             _order = order;
             _tools = tools;
             _logHelper = logHelper;
-            _contextHelper = contextHelper;
         }
 
         /// <summary>
@@ -42,20 +39,32 @@ namespace ShoppingMall.Controllers
         /// </summary>
         [Route("getOrderData")]
         [HttpGet]
-        public IHttpActionResult GetOrderData()
+        public IHttpActionResult GetOrderData([FromUri] OrderConditionDataDto searchData)
         {
             try
             {
                 List<OrderConditionDataDto> conditionData = new List<OrderConditionDataDto>();
-                HttpRequestBase request = _contextHelper.GetContext().Request;
 
-                conditionData.Add(new OrderConditionDataDto
+                if (searchData == null)
                 {
-                    Id = string.IsNullOrEmpty(request.QueryString["Id"]) ? "" : request.QueryString["Id"],
-                    StartDate = string.IsNullOrEmpty(request.QueryString["StartDate"]) ? (DateTime?)null : Convert.ToDateTime(request.QueryString["StartDate"]),
-                    EndDate = string.IsNullOrEmpty(request.QueryString["EndDate"]) ? (DateTime?)null : Convert.ToDateTime(request.QueryString["EndDate"]),
-                    DeliveryState = string.IsNullOrEmpty(request.QueryString["DeliveryState"]) ? -1 : Convert.ToInt32(request.QueryString["DeliveryState"])
-                });
+                    conditionData.Add(new OrderConditionDataDto
+                    {
+                        Id = "",
+                        StartDate = (DateTime?)null,
+                        EndDate = (DateTime?)null,
+                        DeliveryState = -1
+                    });
+                }
+                else
+                {
+                    conditionData.Add(new OrderConditionDataDto
+                    {
+                        Id = searchData.Id == null ? "" : searchData.Id,
+                        StartDate = searchData.StartDate == null ? (DateTime?)null : Convert.ToDateTime(searchData.StartDate),
+                        EndDate = searchData.EndDate == null ? (DateTime?)null : Convert.ToDateTime(searchData.EndDate),
+                        DeliveryState = searchData.DeliveryState == null ? -1 : searchData.DeliveryState
+                    });
+                }
 
                 _logHelper.Info(JsonConvert.SerializeObject(conditionData));
 

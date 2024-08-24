@@ -121,23 +121,12 @@ namespace ShoppingMallTest.Controllers
         public void TestInsertAdminData()
         {
             // Arrange
-            List<InsertAdminDataDto> mockInputData = new List<InsertAdminDataDto>();
-
-            mockInputData.Add(new InsertAdminDataDto
-            {
-                Name = "TestAdmin1",
-                Acc = "uZ42gYk70s",
-                Pwd = "123456",
-                Roles = new List<int> { 1, 2, 3 },
-                Enabled = 1,
-            });
-
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminInsert)).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.CheckInsertInputData(mockInputData[0])).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.InsertAdminData(mockInputData[0])).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.CheckInsertInputData(It.IsAny<InsertAdminDataDto>())).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.InsertAdminData(It.IsAny<InsertAdminDataDto>())).Returns(true);
 
             // Act
-            IHttpActionResult result = adminController.InsertAdminData(mockInputData[0]);
+            IHttpActionResult result = adminController.InsertAdminData(It.IsAny<InsertAdminDataDto>());
 
             OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
             OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
@@ -159,23 +148,12 @@ namespace ShoppingMallTest.Controllers
         public void TestUpdateAdminData()
         {
             // Arrange
-            List<UpdateAdminDataDto> mockInputData = new List<UpdateAdminDataDto>();
-
-            mockInputData.Add(new UpdateAdminDataDto
-            {
-                AdminId = 2,
-                Name = "TestAdmin1",
-                Pwd = "123456",
-                Roles = new List<int> { 1, 2, 3 },
-                Enabled = 0,
-            });
-
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminUpdate)).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.CheckUpdateInputData(mockInputData[0])).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.UpdateAdminData(mockInputData[0])).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateAdminDataDto>())).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.UpdateAdminData(It.IsAny<UpdateAdminDataDto>())).Returns(true);
 
             // Act
-            IHttpActionResult result = adminController.UpdateAdminData(mockInputData[0]);
+            IHttpActionResult result = adminController.UpdateAdminData(It.IsAny<UpdateAdminDataDto>());
 
             OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
             OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
@@ -197,19 +175,12 @@ namespace ShoppingMallTest.Controllers
         public void TestDeleteAdminData()
         {
             // Arrange
-            List<DeleteAdminDataDto> mockInputData = new List<DeleteAdminDataDto>();
-
-            mockInputData.Add(new DeleteAdminDataDto
-            {
-                AdminId = 2
-            });
-
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminDelete)).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.CheckDeleteInputData(mockInputData[0])).Returns(true);
-            _mockAdmin.Setup(cmd => cmd.DeleteAdminData(mockInputData[0])).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.CheckDeleteInputData(It.IsAny<DeleteAdminDataDto>())).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.DeleteAdminData(It.IsAny<DeleteAdminDataDto>())).Returns(true);
 
             // Act
-            IHttpActionResult result = adminController.DeleteAdminData(mockInputData[0]);
+            IHttpActionResult result = adminController.DeleteAdminData(It.IsAny<DeleteAdminDataDto>());
 
             OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
             OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;

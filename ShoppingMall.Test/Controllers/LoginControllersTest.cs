@@ -38,14 +38,8 @@ namespace ShoppingMallTest.Controllers
         {
             // Arrange
             int dataCount = 1;
-            List<LoginDataDto> mockInputData = new List<LoginDataDto>();
             List<AdminUserDataDtoResponse> mockOutputData = new List<AdminUserDataDtoResponse>();
 
-            mockInputData.Add(new LoginDataDto
-            {
-                Acc = "r1Kaq34Nuu",
-                Pwd = "123456"
-            });
             mockOutputData.Add(new AdminUserDataDtoResponse
             {
                 AdminId = 1,
@@ -53,12 +47,12 @@ namespace ShoppingMallTest.Controllers
                 Token = "8c1vds6v58df16v1fd65"
             });
 
-            _mockLogin.Setup(cmd => cmd.CheckInputData(mockInputData[0])).Returns(true);
-            _mockLogin.Setup(cmd => cmd.CheckLoginByAccountPassword(mockInputData[0])).Returns(mockOutputData);
+            _mockLogin.Setup(cmd => cmd.CheckInputData(It.IsAny<LoginDataDto>())).Returns(true);
+            _mockLogin.Setup(cmd => cmd.CheckLoginByAccountPassword(It.IsAny<LoginDataDto>())).Returns(mockOutputData);
             _mockLogin.Setup(cmd => cmd.SetLoginAdminPermissions(mockOutputData[0].AdminId));
 
             //// Act
-            IHttpActionResult result = loginController.LoginByAccountPassword(mockInputData[0]);
+            IHttpActionResult result = loginController.LoginByAccountPassword(It.IsAny<LoginDataDto>());
 
             OkNegotiatedContentResult<List<AdminUserDataDtoResponse>> correctResponse = result as OkNegotiatedContentResult<List<AdminUserDataDtoResponse>>;
             OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
