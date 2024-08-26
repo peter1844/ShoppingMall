@@ -169,6 +169,7 @@ namespace ShoppingMallTest.Controllers
 
             // 模擬上傳檔案
             mockFile.Setup(f => f.FileName).Returns("test.txt");
+            mockFileCollection.Setup(c => c.Count).Returns(1);
             mockFileCollection.Setup(c => c[0]).Returns(mockFile.Object);
             mockRequest.Setup(r => r.Files).Returns(mockFileCollection.Object);
 
@@ -223,6 +224,7 @@ namespace ShoppingMallTest.Controllers
 
             // 模擬上傳檔案
             mockFile.Setup(f => f.FileName).Returns("test.txt");
+            mockFileCollection.Setup(c => c.Count).Returns(1);
             mockFileCollection.Setup(c => c[0]).Returns(mockFile.Object);
             mockRequest.Setup(r => r.Files).Returns(mockFileCollection.Object);
 
