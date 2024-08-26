@@ -42,18 +42,28 @@ namespace ShoppingMall.Controllers
         /// </summary>
         [Route("getCommodityData")]
         [HttpGet]
-        public IHttpActionResult GetCommodityData()
+        public IHttpActionResult GetCommodityData([FromUri] ConditionDataDto searchData)
         {
             try
             {
                 List<ConditionDataDto> conditionData = new List<ConditionDataDto>();
-                HttpRequest request = HttpContext.Current.Request;
 
-                conditionData.Add(new ConditionDataDto
+                if (searchData == null)
                 {
-                    Name = string.IsNullOrEmpty(request.QueryString["name"]) ? "" : request.QueryString["name"],
-                    Type = string.IsNullOrEmpty(request.QueryString["Type"]) ? 0 : Convert.ToInt32(request.QueryString["Type"])
-                });
+                    conditionData.Add(new ConditionDataDto
+                    {
+                        Name = "",
+                        Type = 0
+                    });
+                }
+                else
+                {
+                    conditionData.Add(new ConditionDataDto
+                    {
+                        Name = searchData.Name == null ? "" : searchData.Name,
+                        Type = searchData.Type == null ? 0 : searchData.Type,
+                    });
+                }
 
                 _logHelper.Info(JsonConvert.SerializeObject(conditionData));
 
@@ -117,8 +127,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                HttpContextBase context = _contextHelper.GetContext();
-                HttpRequestBase request = context.Request;
+                HttpRequestBase request = _contextHelper.GetHttpRequest();
 
                 // 檢查權限
                 if (!_tools.CheckPermission((int)Permissions.CommodityInsert)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });
@@ -176,8 +185,7 @@ namespace ShoppingMall.Controllers
         {
             try
             {
-                HttpContextBase context = _contextHelper.GetContext();
-                HttpRequestBase request = context.Request;
+                HttpRequestBase request = _contextHelper.GetHttpRequest();
 
                 // 檢查權限
                 if (!_tools.CheckPermission((int)Permissions.CommodityUpdate)) return Ok(new ExceptionData { ErrorMessage = StateCode.NoPermission.ToString() });

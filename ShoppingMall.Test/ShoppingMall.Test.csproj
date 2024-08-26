@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CommodityControllersTest.cs" />
     <Compile Include="Controllers\OrderControllersTest.cs" />
     <Compile Include="Controllers\MenuControllersTest.cs" />
     <Compile Include="Controllers\MemberControllersTest.cs" />

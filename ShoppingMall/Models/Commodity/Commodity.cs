@@ -74,7 +74,7 @@
         /// <summary>
         /// 類型
         /// </summary>
-        public int Type { set; get; }
+        public int? Type { set; get; }
     }
 
     /// <summary>
