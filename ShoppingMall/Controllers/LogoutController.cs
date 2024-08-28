@@ -15,13 +15,6 @@ namespace ShoppingMall.Controllers
         private ITools _tools;
         private ILogHelper _logHelper;
 
-        public LogoutController()
-        {
-            _logout = new Logout();
-            _tools = new Tools();
-            _logHelper = new LogHelper();
-        }
-
         public LogoutController(ILogout logout, ITools tools, ILogHelper logHelper)
         {
             _logout = logout;

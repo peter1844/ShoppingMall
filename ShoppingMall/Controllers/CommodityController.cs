@@ -21,14 +21,6 @@ namespace ShoppingMall.Controllers
         private ILogHelper _logHelper;
         private IContextHelper _contextHelper;
 
-        public CommodityController()
-        {
-            _commodity = new CommodityProccess();
-            _tools = new Tools();
-            _logHelper = new LogHelper();
-            _contextHelper = new ContextHelper();
-        }
-
         public CommodityController(ICommodity commodity, ITools tools, ILogHelper logHelper, IContextHelper contextHelper)
         {
             _commodity = commodity;

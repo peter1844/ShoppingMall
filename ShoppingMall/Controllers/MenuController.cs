@@ -16,13 +16,6 @@ namespace ShoppingMall.Controllers
         private ITools _tools;
         private ILogHelper _logHelper;
 
-        public MenuController()
-        {
-            _menu = new MenuProccess();
-            _tools = new Tools();
-            _logHelper = new LogHelper();
-        }
-
         public MenuController(IMenu menu, ITools tools, ILogHelper logHelper)
         {
             _menu = menu;

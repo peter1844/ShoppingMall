@@ -17,10 +17,10 @@ public class TokenValidationHandler : DelegatingHandler
     private IToken _token;
     private ILogout _logout;
 
-    public TokenValidationHandler(IToken token = null, ILogout logout = null)
+    public TokenValidationHandler(IToken token, ILogout logout)
     {
-        _token = token ?? new TokenProccess();
-        _logout = logout ?? new Logout();
+        _token = token;
+        _logout = logout;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

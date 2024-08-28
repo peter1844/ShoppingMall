@@ -14,10 +14,10 @@ namespace ShoppingMall.App_Code
         private IContextHelper _contextHelper;
         private IConfigurationsHelper _configurationsHelper;
 
-        public Tools(IContextHelper contextHelper = null, IConfigurationsHelper configurationsHelper = null)
+        public Tools(IContextHelper contextHelper, IConfigurationsHelper configurationsHelper)
         {
-            _contextHelper = contextHelper ?? new ContextHelper();
-            _configurationsHelper = configurationsHelper ?? new ConfigurationsHelper();
+            _contextHelper = contextHelper;
+            _configurationsHelper = configurationsHelper;
         }
 
         /// <summary>

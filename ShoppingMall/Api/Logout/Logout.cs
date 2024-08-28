@@ -10,11 +10,11 @@ namespace ShoppingMall.Api.Logout
         private IDbHelper _dbHelper;
         private ITools _tools;
 
-        public Logout(IContextHelper contextHelper = null, IDbHelper dbHelper = null, ITools tools = null)
+        public Logout(IContextHelper contextHelper, IDbHelper dbHelper, ITools tools)
         {
-            _contextHelper = contextHelper ?? new ContextHelper();
-            _dbHelper = dbHelper ?? new DbHelper();
-            _tools = tools ?? new Tools();
+            _contextHelper = contextHelper;
+            _dbHelper = dbHelper;
+            _tools = tools;
         }
 
         /// <summary>

@@ -19,13 +19,6 @@ namespace ShoppingMall.Controllers
         private ITools _tools;
         private ILogHelper _logHelper;
 
-        public MemberController()
-        {
-            _member = new MemberProccess();
-            _tools = new Tools();
-            _logHelper = new LogHelper();
-        }
-
         public MemberController(IMember member, ITools tools, ILogHelper logHelper)
         {
             _member = member;

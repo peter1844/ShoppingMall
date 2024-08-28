@@ -11,10 +11,10 @@ namespace ShoppingMall.Runtime
         private IOrder _order;
         private ILogHelper _logHelper;
 
-        public DeleteOrder(IOrder order = null, ILogHelper logHelper = null)
+        public DeleteOrder(IOrder order, ILogHelper logHelper)
         {
-            _order = order ?? new OrderProccess();
-            _logHelper = logHelper ?? new LogHelper();
+            _order = order;
+            _logHelper = logHelper;
         }
 
         /// <summary>

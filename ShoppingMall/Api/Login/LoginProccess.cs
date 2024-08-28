@@ -17,11 +17,11 @@ namespace ShoppingMall.Api.Login
         private IDbHelper _dbHelper;
         private ITools _tools;
 
-        public LoginProccess(IContextHelper contextHelper = null, IDbHelper dbHelper = null, ITools tools = null)
+        public LoginProccess(IContextHelper contextHelper, IDbHelper dbHelper, ITools tools)
         {
-            _contextHelper = contextHelper ?? new ContextHelper();
-            _dbHelper = dbHelper ?? new DbHelper();
-            _tools = tools ?? new Tools();
+            _contextHelper = contextHelper;
+            _dbHelper = dbHelper;
+            _tools = tools;
         }
 
         /// <summary>

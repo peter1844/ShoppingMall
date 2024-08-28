@@ -23,12 +23,12 @@ namespace ShoppingMall.Api.Order
         private ITools _tools;
         private ICommodity _commodity;
 
-        public OrderProccess(IContextHelper contextHelper = null, IDbHelper dbHelper = null, ITools tools = null, ICommodity commodity = null)
+        public OrderProccess(IContextHelper contextHelper, IDbHelper dbHelper, ITools tools, ICommodity commodity)
         {
-            _contextHelper = contextHelper ?? new ContextHelper();
-            _dbHelper = dbHelper ?? new DbHelper();
-            _tools = tools ?? new Tools();
-            _commodity = commodity ?? new CommodityProccess();
+            _contextHelper = contextHelper;
+            _dbHelper = dbHelper;
+            _tools = tools;
+            _commodity = commodity;
         }
 
         /// <summary>

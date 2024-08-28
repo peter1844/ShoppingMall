@@ -17,10 +17,10 @@ namespace ShoppingMall.Api.Admin
         private IContextHelper _contextHelper;
         private IDbHelper _dbHelper;
 
-        public AdminProccess(IContextHelper contextHelper = null, IDbHelper dbHelper = null)
+        public AdminProccess(IContextHelper contextHelper, IDbHelper dbHelper)
         {
-            _contextHelper = contextHelper ?? new ContextHelper();
-            _dbHelper = dbHelper ?? new DbHelper();
+            _contextHelper = contextHelper;
+            _dbHelper = dbHelper;
         }
 
         /// <summary>

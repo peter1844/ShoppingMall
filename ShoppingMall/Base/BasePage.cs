@@ -6,12 +6,7 @@ using System.Security.Cryptography;
 
 public class BasePage : System.Web.UI.Page
 {
-    private IConfigurationsHelper _configurationsHelper;
-
-    public BasePage(IConfigurationsHelper configurationsHelper = null)
-    {
-        _configurationsHelper = configurationsHelper ?? new ConfigurationsHelper();
-    }
+    public IConfigurationsHelper _configurationsHelper { get; set; }
 
     protected void Page_Init(object sender, EventArgs e)
     {

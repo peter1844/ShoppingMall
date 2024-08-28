@@ -20,7 +20,7 @@ namespace ShoppingMall.Helper
 
         private ILogHelper _logHelper;
 
-        public ConfigurationsHelper(ILogHelper logHelper = null)
+        public ConfigurationsHelper(ILogHelper logHelper)
         {
             _logHelper = logHelper;
 

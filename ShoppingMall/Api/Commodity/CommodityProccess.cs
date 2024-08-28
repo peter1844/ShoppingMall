@@ -20,11 +20,11 @@ namespace ShoppingMall.Api.Commodity
         private IDbHelper _dbHelper;
         private ITools _tools;
 
-        public CommodityProccess(IContextHelper contextHelper = null, IDbHelper dbHelper = null, ITools tools = null)
+        public CommodityProccess(IContextHelper contextHelper, IDbHelper dbHelper, ITools tools)
         {
-            _contextHelper = contextHelper ?? new ContextHelper();
-            _dbHelper = dbHelper ?? new DbHelper();
-            _tools = tools ?? new Tools();
+            _contextHelper = contextHelper;
+            _dbHelper = dbHelper;
+            _tools = tools;
         }
 
         /// <summary>

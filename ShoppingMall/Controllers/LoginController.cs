@@ -21,15 +21,6 @@ namespace ShoppingMall.Controllers
         private ILogHelper _logHelper;
         private IContextHelper _contextHelper;
 
-        public LoginController()
-        {
-            _login = new LoginProccess();
-            _token = new TokenProccess();
-            _tools = new Tools();
-            _logHelper = new LogHelper();
-            _contextHelper = new ContextHelper();
-        }
-
         public LoginController(ILogin login, IToken token, ITools tools, ILogHelper logHelper, IContextHelper contextHelper)
         {
             _login = login;

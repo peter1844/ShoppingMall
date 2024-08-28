@@ -11,10 +11,10 @@ namespace ShoppingMall.Runtime
         private ILogHelper _logHelper;
         private FileSystemWatcher fileSystemWatcher;
 
-        public VersionListner(IConfigurationsHelper configurationsHelper = null, ILogHelper logHelper = null)
+        public VersionListner(IConfigurationsHelper configurationsHelper, ILogHelper logHelper)
         {
-            _configurationsHelper = configurationsHelper ?? new ConfigurationsHelper();
-            _logHelper = logHelper ?? new LogHelper();
+            _configurationsHelper = configurationsHelper;
+            _logHelper = logHelper;
         }
 
         /// <summary>

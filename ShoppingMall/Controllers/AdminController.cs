@@ -19,13 +19,6 @@ namespace ShoppingMall.Controllers
         private ITools _tools;
         private ILogHelper _logHelper;
 
-        public AdminController()
-        {
-            _admin = new AdminProccess();
-            _tools = new Tools();
-            _logHelper = new LogHelper();
-        }
-
         public AdminController(IAdmin admin, ITools tools, ILogHelper logHelper)
         {
             _admin = admin;

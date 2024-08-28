@@ -11,10 +11,10 @@ namespace ShoppingMall.Api.Token
         private IDbHelper _dbHelper;
         private ITools _tools;
 
-        public TokenProccess(IDbHelper dbHelper = null, ITools tools = null)
+        public TokenProccess(IDbHelper dbHelper, ITools tools)
         {
-            _dbHelper = dbHelper ?? new DbHelper();
-            _tools = tools ?? new Tools();
+            _dbHelper = dbHelper;
+            _tools = tools;
         }
 
         /// <summary>

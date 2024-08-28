@@ -20,13 +20,6 @@ namespace ShoppingMall.Controllers
         private ITools _tools;
         private ILogHelper _logHelper;
 
-        public OrderController()
-        {
-            _order = new OrderProccess();
-            _tools = new Tools();
-            _logHelper = new LogHelper();
-        }
-
         public OrderController(IOrder order, ITools tools, ILogHelper logHelper)
         {
             _order = order;
