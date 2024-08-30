@@ -28,7 +28,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestLogoutProccess()
+        [TestCategory("LogoutProccess")]
+        public void TestLogoutProccessSuccess()
         {
             // Arrange
             _mockLogout.Setup(cmd => cmd.LogoutProccess());

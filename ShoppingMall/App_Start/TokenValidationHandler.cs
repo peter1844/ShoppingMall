@@ -1,6 +1,4 @@
-﻿using ShoppingMall.Api.Logout;
-using ShoppingMall.Api.Token;
-using ShoppingMall.Interface;
+﻿using ShoppingMall.Interface;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Enum;
 using System;

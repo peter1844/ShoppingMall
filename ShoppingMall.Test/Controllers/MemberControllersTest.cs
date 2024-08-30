@@ -31,7 +31,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestGetMemberData()
+        [TestCategory("GetMemberData")]
+        public void TestGetMemberDataSuccess()
         {
             // Arrange
             int dataCount = 2;
@@ -76,11 +77,68 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestUpdateMemberData()
+        [TestCategory("UpdateMemberData")]
+        public void TestUpdateMemberDataSuccess()
         {
             // Arrange
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.MemberUpdate)).Returns(true);
             _mockMember.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateMemberDataDto>())).Returns(true);
+            _mockMember.Setup(cmd => cmd.UpdateMemberData(It.IsAny<UpdateMemberDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = memberController.UpdateMemberData(It.IsAny<UpdateMemberDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateMemberData")]
+        public void TestUpdateMemberDataNoPermissions()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.MemberUpdate)).Returns(false);
+            _mockMember.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateMemberDataDto>())).Returns(true);
+            _mockMember.Setup(cmd => cmd.UpdateMemberData(It.IsAny<UpdateMemberDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = memberController.UpdateMemberData(It.IsAny<UpdateMemberDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateMemberData")]
+        public void TestUpdateMemberDataInvaildInput()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.MemberUpdate)).Returns(true);
+            _mockMember.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateMemberDataDto>())).Returns(false);
             _mockMember.Setup(cmd => cmd.UpdateMemberData(It.IsAny<UpdateMemberDataDto>())).Returns(true);
 
             // Act

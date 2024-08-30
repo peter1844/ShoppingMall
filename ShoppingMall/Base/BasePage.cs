@@ -1,5 +1,4 @@
-﻿using ShoppingMall.Helper;
-using ShoppingMall.Interface;
+﻿using ShoppingMall.Interface;
 using System;
 using System.IO;
 using System.Security.Cryptography;

@@ -30,7 +30,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestSetLanguage()
+        [TestCategory("SetLanguage")]
+        public void TestSetLanguageSuccess()
         {
             // Arrange
             List<MenuLanguageDto> mockInputData = new List<MenuLanguageDto>();

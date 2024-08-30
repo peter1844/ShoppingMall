@@ -1,7 +1,4 @@
-﻿using ShoppingMall.Api.Menu;
-using ShoppingMall.App_Code;
-using ShoppingMall.Helper;
-using ShoppingMall.Interface;
+﻿using ShoppingMall.Interface;
 using ShoppingMall.Models.Common;
 using ShoppingMall.Models.Menu;
 using System;

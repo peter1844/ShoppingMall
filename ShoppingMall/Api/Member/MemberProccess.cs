@@ -1,6 +1,4 @@
-﻿using ShoppingMall.App_Code;
-using ShoppingMall.Helper;
-using ShoppingMall.Interface;
+﻿using ShoppingMall.Interface;
 using ShoppingMall.Models.Enum;
 using ShoppingMall.Models.Member;
 using System;

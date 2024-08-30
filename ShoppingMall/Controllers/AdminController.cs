@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using ShoppingMall.Api.Admin;
-using ShoppingMall.App_Code;
-using ShoppingMall.Helper;
 using ShoppingMall.Interface;
 using ShoppingMall.Models.Admin;
 using ShoppingMall.Models.Common;

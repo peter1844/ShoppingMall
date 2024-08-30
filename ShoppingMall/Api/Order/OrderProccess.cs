@@ -1,7 +1,4 @@
-﻿using ShoppingMall.Api.Commodity;
-using ShoppingMall.App_Code;
-using ShoppingMall.Helper;
-using ShoppingMall.Interface;
+﻿using ShoppingMall.Interface;
 using ShoppingMall.Models.Commodity;
 using ShoppingMall.Models.Enum;
 using ShoppingMall.Models.Order;

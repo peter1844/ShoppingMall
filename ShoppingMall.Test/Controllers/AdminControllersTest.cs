@@ -31,7 +31,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestGetAdminData()
+        [TestCategory("GetAdminData")]
+        public void TestGetAdminDataSuccess()
         {
             // Arrange
             int dataCount = 2;
@@ -79,7 +80,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestGetAdminOptionData()
+        [TestCategory("GetAdminOptionData")]
+        public void TestGetAdminOptionDataSuccess()
         {
             // Arrange
             int dataCount = 2;
@@ -118,7 +120,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestInsertAdminData()
+        [TestCategory("InsertAdminData")]
+        public void TestInsertAdminDataSuccess()
         {
             // Arrange
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminInsert)).Returns(true);
@@ -145,7 +148,64 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestUpdateAdminData()
+        [TestCategory("InsertAdminData")]
+        public void TestInsertAdminDataNoPermissions()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminInsert)).Returns(false);
+            _mockAdmin.Setup(cmd => cmd.CheckInsertInputData(It.IsAny<InsertAdminDataDto>())).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.InsertAdminData(It.IsAny<InsertAdminDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = adminController.InsertAdminData(It.IsAny<InsertAdminDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("InsertAdminData")]
+        public void TestInsertAdminDataInvaildInput()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminInsert)).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.CheckInsertInputData(It.IsAny<InsertAdminDataDto>())).Returns(false);
+            _mockAdmin.Setup(cmd => cmd.InsertAdminData(It.IsAny<InsertAdminDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = adminController.InsertAdminData(It.IsAny<InsertAdminDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateAdminData")]
+        public void TestUpdateAdminDataSuccess()
         {
             // Arrange
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminUpdate)).Returns(true);
@@ -172,11 +232,124 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestDeleteAdminData()
+        [TestCategory("UpdateAdminData")]
+        public void TestUpdateAdminDataNoPermissions()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminUpdate)).Returns(false);
+            _mockAdmin.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateAdminDataDto>())).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.UpdateAdminData(It.IsAny<UpdateAdminDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = adminController.UpdateAdminData(It.IsAny<UpdateAdminDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateAdminData")]
+        public void TestUpdateAdminDataInvaildInput()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminUpdate)).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateAdminDataDto>())).Returns(false);
+            _mockAdmin.Setup(cmd => cmd.UpdateAdminData(It.IsAny<UpdateAdminDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = adminController.UpdateAdminData(It.IsAny<UpdateAdminDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("DeleteAdminData")]
+        public void TestDeleteAdminDataSuccess()
         {
             // Arrange
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminDelete)).Returns(true);
             _mockAdmin.Setup(cmd => cmd.CheckDeleteInputData(It.IsAny<DeleteAdminDataDto>())).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.DeleteAdminData(It.IsAny<DeleteAdminDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = adminController.DeleteAdminData(It.IsAny<DeleteAdminDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("DeleteAdminData")]
+        public void TestDeleteAdminDataNoPermissions()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminDelete)).Returns(false);
+            _mockAdmin.Setup(cmd => cmd.CheckDeleteInputData(It.IsAny<DeleteAdminDataDto>())).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.DeleteAdminData(It.IsAny<DeleteAdminDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = adminController.DeleteAdminData(It.IsAny<DeleteAdminDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("DeleteAdminData")]
+        public void TestDeleteAdminDataInvaildInput()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.AdminDelete)).Returns(true);
+            _mockAdmin.Setup(cmd => cmd.CheckDeleteInputData(It.IsAny<DeleteAdminDataDto>())).Returns(false);
             _mockAdmin.Setup(cmd => cmd.DeleteAdminData(It.IsAny<DeleteAdminDataDto>())).Returns(true);
 
             // Act

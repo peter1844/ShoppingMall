@@ -34,7 +34,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestGetOrderData()
+        [TestCategory("GetOrderData")]
+        public void TestGetOrderDataSuccess()
         {
             // Arrange
             int dataCount = 1;
@@ -84,7 +85,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestOrderOptionData()
+        [TestCategory("OrderOptionData")]
+        public void TestOrderOptionDataSuccess()
         {
             // Arrange
             int dataCount = 1;
@@ -148,7 +150,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestInsertOrderData()
+        [TestCategory("InsertOrderData")]
+        public void TestInsertOrderDataSuccess()
         {
             // Arrange
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.OrderInsert)).Returns(true);
@@ -175,11 +178,124 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestUpdateOrderData()
+        [TestCategory("InsertOrderData")]
+        public void TestInsertOrderDataNoPermissions()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.OrderInsert)).Returns(false);
+            _mockOrder.Setup(cmd => cmd.CheckInsertInputData(It.IsAny<InsertOrderDataDto>())).Returns(true);
+            _mockOrder.Setup(cmd => cmd.InsertOrderData(It.IsAny<InsertOrderDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = orderController.InsertOrderData(It.IsAny<InsertOrderDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("InsertOrderData")]
+        public void TestInsertOrderDataInvaildInput()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.OrderInsert)).Returns(true);
+            _mockOrder.Setup(cmd => cmd.CheckInsertInputData(It.IsAny<InsertOrderDataDto>())).Returns(false);
+            _mockOrder.Setup(cmd => cmd.InsertOrderData(It.IsAny<InsertOrderDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = orderController.InsertOrderData(It.IsAny<InsertOrderDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateOrderData")]
+        public void TestUpdateOrderDataSuccess()
         {
             // Arrange
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.OrderUpdate)).Returns(true);
             _mockOrder.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateOrderDataDto>())).Returns(true);
+            _mockOrder.Setup(cmd => cmd.UpdateOrderData(It.IsAny<UpdateOrderDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = orderController.UpdateOrderData(It.IsAny<UpdateOrderDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateOrderData")]
+        public void TestUpdateOrderDataNoPermissions()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.OrderUpdate)).Returns(false);
+            _mockOrder.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateOrderDataDto>())).Returns(true);
+            _mockOrder.Setup(cmd => cmd.UpdateOrderData(It.IsAny<UpdateOrderDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = orderController.UpdateOrderData(It.IsAny<UpdateOrderDataDto>());
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateOrderData")]
+        public void TestUpdateOrderDataInvaildInput()
+        {
+            // Arrange
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.OrderUpdate)).Returns(true);
+            _mockOrder.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<UpdateOrderDataDto>())).Returns(false);
             _mockOrder.Setup(cmd => cmd.UpdateOrderData(It.IsAny<UpdateOrderDataDto>())).Returns(true);
 
             // Act

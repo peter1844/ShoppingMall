@@ -35,7 +35,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestGetCommodityData()
+        [TestCategory("GetCommodityData")]
+        public void TestGetCommodityDataSuccess()
         {
             // Arrange
             int dataCount = 1;
@@ -76,7 +77,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestGetCommodityOptionData()
+        [TestCategory("GetCommodityOptionData")]
+        public void TestGetCommodityOptionDataSuccess()
         {
             // Arrange
             int dataCount = 2;
@@ -115,7 +117,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestCheckCommodityStock()
+        [TestCategory("GetCommodityOptionData")]
+        public void TestCheckCommodityStockSuccess()
         {
             // Arrange
             int dataCount = 1;
@@ -148,7 +151,8 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestInsertCommodityData()
+        [TestCategory("InsertCommodityData")]
+        public void TestInsertCommodityDataSuccess()
         {
             // Arrange
             Mock<HttpRequestBase> mockRequest = new Mock<HttpRequestBase>();
@@ -200,7 +204,114 @@ namespace ShoppingMallTest.Controllers
         }
 
         [TestMethod]
-        public void TestUpdateCommodityData()
+        [TestCategory("InsertCommodityData")]
+        public void TestInsertCommodityDataNoPermissions()
+        {
+            // Arrange
+            Mock<HttpRequestBase> mockRequest = new Mock<HttpRequestBase>();
+            Mock<HttpPostedFileBase> mockFile = new Mock<HttpPostedFileBase>();
+            Mock<HttpFileCollectionBase> mockFileCollection = new Mock<HttpFileCollectionBase>();
+
+            // 模擬Form內容
+            NameValueCollection mockFormCollection = new NameValueCollection
+            {
+                { "Name", "角落生物-粉粉的" },
+                { "Description", "" },
+                { "Type", "4" },
+                { "Price", "1000" },
+                { "Stock", "9" },
+                { "Open", "1" }
+            };
+            mockRequest.Setup(r => r.Form).Returns(mockFormCollection);
+
+            // 模擬上傳檔案
+            mockFile.Setup(f => f.FileName).Returns("test.txt");
+            mockFileCollection.Setup(c => c.Count).Returns(1);
+            mockFileCollection.Setup(c => c[0]).Returns(mockFile.Object);
+            mockRequest.Setup(r => r.Files).Returns(mockFileCollection.Object);
+
+            _mockContextHelper.Setup(cmd => cmd.GetHttpRequest()).Returns(mockRequest.Object);
+
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.CommodityInsert)).Returns(false);
+            _mockCommodity.Setup(cmd => cmd.CheckInsertInputData(It.IsAny<HttpRequestBase>())).Returns(true);
+            _mockCommodity.Setup(cmd => cmd.UploadCommodityFile(It.IsAny<HttpPostedFileBase>())).Returns("20240826141341_1.png");
+            _mockCommodity.Setup(cmd => cmd.InsertCommodityData(It.IsAny<InsertCommodityDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = commodityController.InsertCommodityData();
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("InsertCommodityData")]
+        public void TestInsertCommodityDataInvaildInput()
+        {
+            // Arrange
+            Mock<HttpRequestBase> mockRequest = new Mock<HttpRequestBase>();
+            Mock<HttpPostedFileBase> mockFile = new Mock<HttpPostedFileBase>();
+            Mock<HttpFileCollectionBase> mockFileCollection = new Mock<HttpFileCollectionBase>();
+
+            // 模擬Form內容
+            NameValueCollection mockFormCollection = new NameValueCollection
+            {
+                { "Name", "角落生物-粉粉的" },
+                { "Description", "" },
+                { "Type", "4" },
+                { "Price", "1000" },
+                { "Stock", "9" },
+                { "Open", "1" }
+            };
+            mockRequest.Setup(r => r.Form).Returns(mockFormCollection);
+
+            // 模擬上傳檔案
+            mockFile.Setup(f => f.FileName).Returns("test.txt");
+            mockFileCollection.Setup(c => c.Count).Returns(1);
+            mockFileCollection.Setup(c => c[0]).Returns(mockFile.Object);
+            mockRequest.Setup(r => r.Files).Returns(mockFileCollection.Object);
+
+            _mockContextHelper.Setup(cmd => cmd.GetHttpRequest()).Returns(mockRequest.Object);
+
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.CommodityInsert)).Returns(true);
+            _mockCommodity.Setup(cmd => cmd.CheckInsertInputData(It.IsAny<HttpRequestBase>())).Returns(false);
+            _mockCommodity.Setup(cmd => cmd.UploadCommodityFile(It.IsAny<HttpPostedFileBase>())).Returns("20240826141341_1.png");
+            _mockCommodity.Setup(cmd => cmd.InsertCommodityData(It.IsAny<InsertCommodityDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = commodityController.InsertCommodityData();
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateCommodityData")]
+        public void TestUpdateCommodityDataSuccess()
         {
             // Arrange
             Mock<HttpRequestBase> mockRequest = new Mock<HttpRequestBase>();
@@ -232,6 +343,118 @@ namespace ShoppingMallTest.Controllers
 
             _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.CommodityUpdate)).Returns(true);
             _mockCommodity.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<HttpRequestBase>())).Returns(true);
+            _mockCommodity.Setup(cmd => cmd.UploadCommodityFile(It.IsAny<HttpPostedFileBase>())).Returns("20240826141341_1.png");
+            _mockCommodity.Setup(cmd => cmd.UpdateCommodityData(It.IsAny<UpdateCommodityDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = commodityController.UpdateCommodityData();
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateCommodityData")]
+        public void TestUpdateCommodityDataNoPermissions()
+        {
+            // Arrange
+            Mock<HttpRequestBase> mockRequest = new Mock<HttpRequestBase>();
+            Mock<HttpPostedFileBase> mockFile = new Mock<HttpPostedFileBase>();
+            Mock<HttpFileCollectionBase> mockFileCollection = new Mock<HttpFileCollectionBase>();
+
+            // 模擬Form內容
+            NameValueCollection mockFormCollection = new NameValueCollection
+            {
+                { "CommodityId", "4" },
+                { "Name", "咖波娃娃" },
+                { "Description", "療癒小物" },
+                { "Type", "3" },
+                { "Price", "500" },
+                { "Stock", "10" },
+                { "Open", "1" },
+                { "OldImage", "20240723151913_1.png" },
+                { "DeleteFlag", "1" }
+            };
+            mockRequest.Setup(r => r.Form).Returns(mockFormCollection);
+
+            // 模擬上傳檔案
+            mockFile.Setup(f => f.FileName).Returns("test.txt");
+            mockFileCollection.Setup(c => c.Count).Returns(1);
+            mockFileCollection.Setup(c => c[0]).Returns(mockFile.Object);
+            mockRequest.Setup(r => r.Files).Returns(mockFileCollection.Object);
+
+            _mockContextHelper.Setup(cmd => cmd.GetHttpRequest()).Returns(mockRequest.Object);
+
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.CommodityUpdate)).Returns(false);
+            _mockCommodity.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<HttpRequestBase>())).Returns(true);
+            _mockCommodity.Setup(cmd => cmd.UploadCommodityFile(It.IsAny<HttpPostedFileBase>())).Returns("20240826141341_1.png");
+            _mockCommodity.Setup(cmd => cmd.UpdateCommodityData(It.IsAny<UpdateCommodityDataDto>())).Returns(true);
+
+            // Act
+            IHttpActionResult result = commodityController.UpdateCommodityData();
+
+            OkNegotiatedContentResult<bool> correctResponse = result as OkNegotiatedContentResult<bool>;
+            OkNegotiatedContentResult<ExceptionData> ExceptionResponse = result as OkNegotiatedContentResult<ExceptionData>;
+
+            // Assert
+            if (correctResponse == null)
+            {
+                // 拋出Exception
+                Assert.Fail(ExceptionResponse.Content.ErrorMessage);
+            }
+            else
+            {
+                // 正常回傳
+                Assert.IsTrue(correctResponse.Content);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("UpdateCommodityData")]
+        public void TestUpdateCommodityDataInvaildInput()
+        {
+            // Arrange
+            Mock<HttpRequestBase> mockRequest = new Mock<HttpRequestBase>();
+            Mock<HttpPostedFileBase> mockFile = new Mock<HttpPostedFileBase>();
+            Mock<HttpFileCollectionBase> mockFileCollection = new Mock<HttpFileCollectionBase>();
+
+            // 模擬Form內容
+            NameValueCollection mockFormCollection = new NameValueCollection
+            {
+                { "CommodityId", "4" },
+                { "Name", "咖波娃娃" },
+                { "Description", "療癒小物" },
+                { "Type", "3" },
+                { "Price", "500" },
+                { "Stock", "10" },
+                { "Open", "1" },
+                { "OldImage", "20240723151913_1.png" },
+                { "DeleteFlag", "1" }
+            };
+            mockRequest.Setup(r => r.Form).Returns(mockFormCollection);
+
+            // 模擬上傳檔案
+            mockFile.Setup(f => f.FileName).Returns("test.txt");
+            mockFileCollection.Setup(c => c.Count).Returns(1);
+            mockFileCollection.Setup(c => c[0]).Returns(mockFile.Object);
+            mockRequest.Setup(r => r.Files).Returns(mockFileCollection.Object);
+
+            _mockContextHelper.Setup(cmd => cmd.GetHttpRequest()).Returns(mockRequest.Object);
+
+            _mockTools.Setup(cmd => cmd.CheckPermission((int)Permissions.CommodityUpdate)).Returns(true);
+            _mockCommodity.Setup(cmd => cmd.CheckUpdateInputData(It.IsAny<HttpRequestBase>())).Returns(false);
             _mockCommodity.Setup(cmd => cmd.UploadCommodityFile(It.IsAny<HttpPostedFileBase>())).Returns("20240826141341_1.png");
             _mockCommodity.Setup(cmd => cmd.UpdateCommodityData(It.IsAny<UpdateCommodityDataDto>())).Returns(true);
 
